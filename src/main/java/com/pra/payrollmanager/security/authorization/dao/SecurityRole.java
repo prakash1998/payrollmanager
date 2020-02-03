@@ -1,16 +1,13 @@
 package com.pra.payrollmanager.security.authorization.dao;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
+@AllArgsConstructor
 public class SecurityRole {
-	private Integer roleId;
-	private String roleName;
-	private Set<UserRoleRel> userRoles = new HashSet<UserRoleRel>(0);
-	private Set<RoleActionRel> roleActions = new HashSet<RoleActionRel>(0);
+	private String roleId;
+    private Collection<SecurityRoleGroup> roleGroups;
 }

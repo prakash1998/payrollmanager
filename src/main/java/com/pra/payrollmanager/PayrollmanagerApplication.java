@@ -2,15 +2,22 @@ package com.pra.payrollmanager;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
-@SpringBootApplication
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@EnableCaching(proxyTargetClass = true)
 @EnableWebSecurity
+@SpringBootApplication
 public class PayrollmanagerApplication {
+	
 
 	public static void main(String[] args) {
-		System.out.print("App started");
+		log.debug("App started");
 		SpringApplication.run(PayrollmanagerApplication.class, args);
 	}
+
 
 }

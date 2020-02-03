@@ -1,0 +1,5 @@
+{
+  "name": " Payroll Application",
+  "description": "Getting stated with java rest.",
+  "addons": [ "java-mongo" ]
+}

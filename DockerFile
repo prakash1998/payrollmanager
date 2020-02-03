@@ -1,0 +1,13 @@
+FROM openjdk:8-jdk-alpine
+VOLUME /tmp
+
+ENV MONGODB_HOST "host.docker.internal"
+ENV MONGODB_PORT 27017
+ENV MONGODB_SCHEMA "springmongodb"
+ENV MONGODB_USER "springuser"
+ENV MONGODB_PASS "springauth"
+
+ARG JAR_FILE=target/*.jar
+COPY ${JAR_FILE} app.jar
+
+ENTRYPOINT ["java","-jar","-Dspring.profiles.active=prod","/app.jar"]

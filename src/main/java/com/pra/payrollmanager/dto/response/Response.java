@@ -1,113 +1,217 @@
 package com.pra.payrollmanager.dto.response;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 
-/**
- * @author Arpit Khandelwal
- */
+
 @Getter
-@Setter
-@Accessors(chain = true)
-@NoArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Response<T> {
 
-    private Status status;
-    private T payload;
-    private Object errors;
-    private Object metadata;
+	private ResponseStatus status;
+	private int statusCode;
+	private String message;
+	private T payload;
+	private List<ResponseError> errors;
+	private PageMetadata pages;
+	
+	private Response(ResponseStatus status, String message,T payload, List<ResponseError> errors, PageMetadata pages) {
+		super();
+		this.status = status;
+		this.statusCode = status.statusCode();
+		this.message = message;
+		this.payload = payload;
+		this.errors = errors;
+		this.pages = pages;
+	}
+	
+	
+	public static ResponseBuilder builder() {
+		return new Response.ResponseBuilder();
+	}
+	
+	@AllArgsConstructor
+	public static class TypedResponseBuilder<T> {
+		private T payload;
+		private ResponseStatus status;
+		private String message;
+		private List<ResponseError> errors;
+		private PageMetadata pages;
+		
+		public TypedResponseBuilder<T>  status(ResponseStatus status) {
+			this.status = status;
+			return this;
+		}
 
-    public static <T> Response<T> badRequest() {
-        Response<T> response = new Response<>();
-        response.setStatus(Status.BAD_REQUEST);
-        return response;
-    }
+		public TypedResponseBuilder<T>  message(String message) {
+			this.message = message;
+			return this;
+		}
+		
+		public TypedResponseBuilder<T>  pageMetadata(PageMetadata pages) {
+			this.pages = pages;
+			return this;
+		}
+		
+		public TypedResponseBuilder<T> payload(T payload){
+			this.payload = payload;
+			return this;
+		}
+		
+		public TypedResponseBuilder<T> addErrorMsg(String errorMsg, Exception ex) {
+			if(this.errors == null) {
+				this.errors = new ArrayList<>();
+			}
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			ex.printStackTrace(pw);
+			this.errors.add(ResponseError.builder()
+//					.display(errorMsg)
+					.message(errorMsg)
+					.trace(sw.toString())
+					.timestamp(LocalDateTime.now())
+					.build());
+			return this;
+		}
+		
+		public Response<T> build() {
+			if(status == null)
+				status = ResponseStatus.OK;
+			return new Response<>(status,message,payload,errors,pages);
+		}
+	}
+	
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class ResponseBuilder {
+		
+		private ResponseStatus status;
+		private List<ResponseError> errors;
+		private String message;
+		private PageMetadata pages;
+		
+		public ResponseBuilder status(ResponseStatus status) {
+			this.status = status;
+			return this;
+		}
 
-    public static <T> Response<T> ok() {
-        Response<T> response = new Response<>();
-        response.setStatus(Status.OK);
-        return response;
-    }
+		public ResponseBuilder message(String message) {
+			this.message = message;
+			return this;
+		}
+		
+		public ResponseBuilder pageMetadata(PageMetadata pages) {
+			this.pages = pages;
+			return this;
+		}
+		
+		public <T> TypedResponseBuilder<T> payload(T payload){
+			return new Response.TypedResponseBuilder<>(payload, status,message, errors, pages);
+		}
+		
+		public ResponseBuilder addErrorMsg(String errorMsg, Exception ex) {
+			if(this.errors == null) {
+				this.errors = new ArrayList<>();
+			}
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			ex.printStackTrace(pw);
+			this.errors.add(ResponseError.builder()
+//					.display(errorMsg)
+					.message(errorMsg)
+					.trace(sw.toString())
+					.timestamp(LocalDateTime.now())
+					.build());
+			return this;
+		}
 
-    public static <T> Response<T> unauthorized() {
-        Response<T> response = new Response<>();
-        response.setStatus(Status.UNAUTHORIZED);
-        return response;
-    }
+		public ResponseBuilder badRequest() {
+			this.status = ResponseStatus.BAD_REQUEST;
+			return this;
+		}
 
-    public static <T> Response<T> validationException() {
-        Response<T> response = new Response<>();
-        response.setStatus(Status.VALIDATION_EXCEPTION);
-        return response;
-    }
+		public ResponseBuilder ok() {
+			this.status = ResponseStatus.OK;
+			return this;
+		}
+		
+		public ResponseBuilder alert() {
+			this.status = ResponseStatus.ALERT;
+			return this;
+		}
 
-    public static <T> Response<T> wrongCredentials() {
-        Response<T> response = new Response<>();
-        response.setStatus(Status.WRONG_CREDENTIALS);
-        return response;
-    }
+		public ResponseBuilder unauthorized() {
+			this.status = ResponseStatus.UNAUTHORIZED;
+			return this;
+		}
 
-    public static <T> Response<T> accessDenied() {
-        Response<T> response = new Response<>();
-        response.setStatus(Status.ACCESS_DENIED);
-        return response;
-    }
+		public ResponseBuilder validationException() {
+			this.status = ResponseStatus.VALIDATION_EXCEPTION;
+			return this;
+		}
 
-    public static <T> Response<T> exception() {
-        Response<T> response = new Response<>();
-        response.setStatus(Status.EXCEPTION);
-        return response;
-    }
+		public ResponseBuilder wrongCredentials() {
+			this.status = ResponseStatus.WRONG_CREDENTIALS;
+			return this;
+		}
 
-    public static <T> Response<T> notFound() {
-        Response<T> response = new Response<>();
-        response.setStatus(Status.NOT_FOUND);
-        return response;
-    }
+		public ResponseBuilder accessDenied() {
+			this.status = ResponseStatus.ACCESS_DENIED;
+			return this;
+		}
 
-    public static <T> Response<T> duplicateEntity() {
-        Response<T> response = new Response<>();
-        response.setStatus(Status.DUPLICATE_ENTITY);
-        return response;
-    }
+		public ResponseBuilder exception() {
+			this.status = ResponseStatus.EXCEPTION;
+			return this;
+		}
 
-    public void addErrorMsgToResponse(String errorMsg, Exception ex) {
-        ResponseError error = new ResponseError()
-                .setDetails(errorMsg)
-                .setMessage(ex.getMessage())
-                .setTimestamp(LocalDateTime.now());
-        setErrors(error);
-    }
+		public ResponseBuilder notFound() {
+			this.status = ResponseStatus.NOT_FOUND;
+			return this;
+		}
 
-    public enum Status {
-        OK, BAD_REQUEST, UNAUTHORIZED, VALIDATION_EXCEPTION, EXCEPTION, WRONG_CREDENTIALS, ACCESS_DENIED, NOT_FOUND, DUPLICATE_ENTITY
-    }
+		public ResponseBuilder duplicateEntity() {
+			this.status = ResponseStatus.DUPLICATE_ENTITY;
+			return this;
+		}
+		
+		public Response<Void> build() {
+			if(status == null)
+				status = ResponseStatus.OK;
+			return new Response<>(status,message,null,errors,pages);
+		}
+	}
 
-    @Getter
-    @Accessors(chain = true)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class PageMetadata {
-        private int size;
-        private long totalElements;
-        private int totalPages;
-        private int number;
+	@Getter
+	@Accessors(chain = true)
+	public static class PageMetadata {
+		private int size;
+		private long totalElements;
+		private int totalPages;
+		private int pageNumber;
 
-        public PageMetadata(int size, long totalElements, int totalPages, int number) {
-            this.size = size;
-            this.totalElements = totalElements;
-            this.totalPages = totalPages;
-            this.number = number;
-        }
-    }
+		public PageMetadata(int size, long totalElements, int totalPages, int pageNumber) {
+			this.size = size;
+			this.totalElements = totalElements;
+			this.totalPages = totalPages;
+			this.pageNumber = pageNumber;
+		}
+	}
+	
+	
+	public static Response<Void> ok(){
+		return Response.builder().ok().build();
+	}
+	
+	public static <T> Response<T> payload(T payload) {
+		return Response.builder().ok().payload(payload).build();
+	}
 
 }
-

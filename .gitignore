@@ -1,5 +1,5 @@
 .mvn
-.settings
+.sts4-cache
 bin
 target
 .classpath
