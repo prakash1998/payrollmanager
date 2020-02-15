@@ -1,13 +1,10 @@
 package com.pra.payrollmanager.security.authorization.permissions;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import javax.management.RuntimeErrorException;
 
 import com.pra.payrollmanager.security.authorization.dao.DynamicSecurityPermission;
 import com.pra.payrollmanager.security.authorization.dao.SecurityPermission;
@@ -21,24 +18,23 @@ import lombok.extern.slf4j.Slf4j;
  * used as constants in validations and tests we can also group them here to
  * show in ui
  * 
+ * <b>CAUTION</b> :: -- this class is open for extension and closed for modification.
+ * 
  * @author prakash dudhat
  *
  */
 
 @Slf4j
 public class SecurityPermissions {
-
-	public static final SecurityPermission ADMIN = SecurityPermission.of("admin");
-
-	public static final SecurityPermission USER = SecurityPermission.of("user");
 	
-	
+	public static final SecurityPermission USERS_MANAGER = SecurityPermission.of("users-manager");
+
 	public static final SecurityPermission SECURITY_PERMISSION_MANAGER = SecurityPermission.of("security-permission-manager");
 	
 	public static final SecurityPermission PASSWORD_UPDATE = SecurityPermission.of("password-update");
 
-	public static final DynamicSecurityPermission TEST = DynamicSecurityPermission.of("pre", "post",
-			Arrays.asList("test1", "test2"));
+//	public static final DynamicSecurityPermission TEST = DynamicSecurityPermission.of("pre", "post",
+//			Arrays.asList("test1", "test2"));
 
 	public static void persistPermissionsIfNot(SecurityPermissionRepo repo) {
 

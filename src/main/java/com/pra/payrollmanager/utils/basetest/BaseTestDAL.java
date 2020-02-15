@@ -13,4 +13,9 @@ public class BaseTestDAL extends BaseDAL<Integer, BaseTestDAO, BaseTestRepo>{
 		return EntityType.BASE_TEST;
 	}
 
+	@Override
+	protected String tableName() {
+		return "BASE_TEST_TEST";
+	}
+
 }

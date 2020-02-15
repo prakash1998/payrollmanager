@@ -1,12 +1,12 @@
 package com.pra.payrollmanager.restcontroller;
 
-import static com.pra.payrollmanager.security.authorization.permissions.SecurityPermissions.ADMIN;
-import static com.pra.payrollmanager.security.authorization.permissions.SecurityPermissions.USER;
+import static com.pra.payrollmanager.security.authorization.permissions.SecurityPermissions.USERS_MANAGER;
 
 import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,30 +25,30 @@ import com.pra.payrollmanager.service.UserService;
 @RestController
 @RequestMapping("user")
 public class UserControl extends BaseControl<UserService> {
-	
-	@GetMapping(produces = "application/json")
+
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response<List<UserDTO>> getUsers() {
-		authService.validatePermissions(ADMIN, USER);
+		authService.validatePermissions(USERS_MANAGER);
 		return Response.payload(service.getAll());
 	}
 
-	@PostMapping(consumes = "application/json", produces = "application/json")
+	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response<Void> createUser(@Valid @RequestBody UserDTO user) throws DuplicateDataEx {
-		authService.validatePermissions(ADMIN);
+		authService.validatePermissions(USERS_MANAGER);
 		service.create(user);
 		return Response.ok();
 	}
 
-	@PutMapping(consumes = "application/json", produces = "application/json")
+	@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response<Void> updateUser(@Valid @RequestBody UserDTO user) throws DataNotFoundEx {
-		authService.validatePermissions(ADMIN);
+		authService.validatePermissions(USERS_MANAGER);
 		service.update(user);
 		return Response.ok();
 	}
 
-	@DeleteMapping(consumes = "application/json", produces = "application/json")
+	@DeleteMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response<Void> deleteUser(@Valid @RequestBody UserDTO user) throws DataNotFoundEx {
-		authService.validatePermissions(ADMIN);
+		authService.validatePermissions(USERS_MANAGER);
 		service.delete(user);
 		return Response.ok();
 	}

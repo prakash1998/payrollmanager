@@ -13,5 +13,10 @@
     "name": "jwt.refresh_cooldown",
     "type": "java.lang.String",
     "description": "A description for 'jwt.refresh_cooldown'"
+  },
+  {
+    "name": "auth.godMode",
+    "type": "java.lang.String",
+    "description": "A description for 'auth.godMode'"
   }
 ]}

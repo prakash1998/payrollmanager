@@ -35,19 +35,17 @@ public class UserControlTest extends BaseControlUnitTest<UserControl, UserServic
 
 	}
 
-	@WithMockUser(authorities = { "admin" })
+	@WithMockUser(authorities = { "users-manager" })
 	@Test
 	public void testSaveApi() throws Exception {
 		MvcResult result = mockMvc
 				.perform(post("/user").contentType(MediaType.APPLICATION_JSON)
 						.content(jsonMapper.writeValueAsString(user)))
 				.andReturn();
-
-		System.out.println(result.getResponse().getContentAsString());
 		assertThat(result.getResponse().getStatus()).isEqualTo(200);
 	}
 
-	@WithMockUser(authorities = { "user" })
+	@WithMockUser(authorities = { "users-manager" })
 	@Test
 	public void testGetApi() throws Exception {
 

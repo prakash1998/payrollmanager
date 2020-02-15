@@ -22,6 +22,7 @@ import com.pra.payrollmanager.dto.response.ResponseStatus;
 import com.pra.payrollmanager.security.authentication.dao.SecurityUser;
 import com.pra.payrollmanager.security.authentication.service.SecurityUserService;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 
 @Component
@@ -37,10 +38,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 		
 		ResponseBuilder responseBuilder = Response.builder()
-				.badRequest()
+				.status(ResponseStatus.JWT_EXCEPTION)
 				.message(msg);
 		
 		if(e != null) {
+			if(e.getCause() instanceof ExpiredJwtException)
+				responseBuilder.status(ResponseStatus.JWT_EXPIRED);
 			responseBuilder.addErrorMsg(e.getMessage(), e);
 		}
 		try {
@@ -89,7 +92,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
 				UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
 						userDetails, null, userDetails.getAuthorities());
-				usernamePasswordAuthenticationToken
+				usernamePasswordAuthenticationToken  
 						.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 				// After setting the Authentication in the context, we specify
 				// that the current user is authenticated. So it passes the

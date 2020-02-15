@@ -25,7 +25,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
 			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 			response.setStatus(HttpStatus.BAD_REQUEST.value());
 		} else {
-			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized Request");
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication Required");
 		}
 	}
 }

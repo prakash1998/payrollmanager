@@ -15,6 +15,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -90,7 +92,6 @@ public class AppConfig {
 				.securitySchemes(Arrays.asList(apiKey()));
 	}
 
-	
 	private ApiInfo apiInfo() {
 		return new ApiInfoBuilder().title("Bus Reservation System - REST APIs")
 				.description("Spring Boot starter kit application.").termsOfServiceUrl("")
@@ -111,7 +112,6 @@ public class AppConfig {
 				.map(Authentication::getName);
 	}
 
-	
 	// on application load
 	@Bean
 	public SmartInitializingSingleton loadSecurityPermissionsToDatabase() {
@@ -119,20 +119,29 @@ public class AppConfig {
 			SecurityPermissions.persistPermissionsIfNot(securityPermissionRepo);
 		};
 	}
-	
-	
-	// json configuration  
-    @Bean
-    public ObjectMapper objectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-	    mapper.registerModule(new JavaTimeModule());
-        return mapper;
-    }
-    
+
+	// json configuration
+	@Bean
+	public ObjectMapper objectMapper() {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		mapper.registerModule(new JavaTimeModule());
+		return mapper;
+	}
+
+	@Bean
+	public WebMvcConfigurer corsConfigurer() {
+		return new WebMvcConfigurer() {
+			@Override
+			public void addCorsMappings(CorsRegistry registry) {
+				registry.addMapping("/**").allowedMethods("GET", "POST", "PUT", "DELETE").allowedOrigins("*")
+						.allowedHeaders("*");
+			}
+		};
+	}
 
 	private ApiKey apiKey() {
 		return new ApiKey("apiKey", "Authorization", "header");

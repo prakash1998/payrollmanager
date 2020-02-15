@@ -1,5 +1,6 @@
 package com.pra.payrollmanager.dao;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.data.annotation.Id;
 
 import com.pra.payrollmanager.dao.base.BaseAuditDAO;
@@ -17,6 +18,8 @@ public class UserDAO extends BaseAuditDAO<String> implements BaseDAOWithDTO<Stri
   @Id private String userName;
   private String firstName;
   private String lastName;
+  private String phone;
+  private String email;
 
   @Override
   public String primaryKeyValue() {
@@ -26,10 +29,12 @@ public class UserDAO extends BaseAuditDAO<String> implements BaseDAOWithDTO<Stri
   @Override
   public UserDTO toDTO() {
     return UserDTO.builder()
-        .userName(this.userName)
+        .userName(userName)
         .password(null)
-        .firstName(this.firstName)
-        .lastName(this.lastName)
+        .firstName(firstName)
+        .lastName(lastName)
+        .phone(phone)
+        .email(email)
         .build();
   }
 }

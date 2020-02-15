@@ -30,6 +30,11 @@ public class SecurityUserService implements UserDetailsService {
 	@Autowired
 	BCryptPasswordEncoder bcryptEncoder;
 
+	public boolean userExists(String userName) {
+		Optional<SecurityUser> user = userRepo.findById(userName);
+		return user.isPresent();
+	}
+
 	@Cacheable
 	public SecurityUser loadUserByUsername(String userName) {
 		System.out.println("fetching user from db........");

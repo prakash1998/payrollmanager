@@ -7,12 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 
-@Getter
+@Data
+@NoArgsConstructor
 public class Response<T> {
 
 	private ResponseStatus status;

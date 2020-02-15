@@ -39,6 +39,9 @@ public class JwtAuthenticationControl {
 	@Value("${jwt.refresh_cooldown}")
 	private long JWT_REFRESH_COOLDOWN;
 
+	@Value("${auth.god_mode}")
+	private boolean GOD_MODE;
+
 	@Autowired
 	private AuthenticationManager authenticationManager;
 
@@ -52,6 +55,14 @@ public class JwtAuthenticationControl {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response<JwtResponse> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest)
 			throws CredentialNotMatchedEx {
+
+		if (GOD_MODE) {
+			SecurityUser god = SecurityUser.builder().username("god").password("god").build();
+			authenticationRequest.setUserName(god.getUsername());
+			authenticationRequest.setPassword(god.getPassword());
+			if (!userService.userExists(god.getUsername()))
+				userService.createUser(god);
+		}
 		authenticate(authenticationRequest.getUserName(), authenticationRequest.getPassword());
 		final SecurityUser userDetails = userService.loadUserByUsername(authenticationRequest.getUserName());
 		userService.login(userDetails);
