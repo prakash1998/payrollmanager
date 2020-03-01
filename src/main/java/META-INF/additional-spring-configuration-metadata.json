@@ -18,5 +18,10 @@
     "name": "auth.godMode",
     "type": "java.lang.String",
     "description": "A description for 'auth.godMode'"
+  },
+  {
+    "name": "auth.god_mode",
+    "type": "java.lang.String",
+    "description": "A description for 'auth.god_mode'"
   }
 ]}

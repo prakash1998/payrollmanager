@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
-import com.pra.payrollmanager.dto.response.Response;
-import com.pra.payrollmanager.dto.response.ResponseError;
-import com.pra.payrollmanager.dto.response.Response.ResponseBuilder;
+import com.pra.payrollmanager.response.dto.Response;
+import com.pra.payrollmanager.response.dto.ResponseError;
+import com.pra.payrollmanager.response.dto.Response.ResponseBuilder;
 
 @Order(2)
 @ControllerAdvice
@@ -37,7 +37,8 @@ public class OverridenExceptionHandler {
 			MethodArgumentNotValidException exception = (MethodArgumentNotValidException) ex;
 			List<ObjectError> allErrors = exception.getBindingResult().getAllErrors();
 			for (ObjectError error : allErrors) {
-				builder.addErrorMsg(error.getDefaultMessage()+";;;"+error.toString(),ex);
+				// builder.addErrorMsg(error.getDefaultMessage()+";;;"+error.toString(),ex);
+				builder.addErrorMsg(error.getDefaultMessage());
 			}
 		} else {
 			builder.addErrorMsg(ex.getMessage(), ex);

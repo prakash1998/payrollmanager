@@ -2,20 +2,15 @@ package com.pra.payrollmanager.utils.basetest;
 
 import org.springframework.stereotype.Repository;
 
-import com.pra.payrollmanager.dal.base.BaseDAL;
-import com.pra.payrollmanager.exception.util.EntityType;
+import com.pra.payrollmanager.base.BaseDALWithCompanyPostfixWithAuditLog;
+import com.pra.payrollmanager.constants.EntityName;
 
 @Repository
-public class BaseTestDAL extends BaseDAL<Integer, BaseTestDAO, BaseTestRepo>{
+public class BaseTestDAL extends BaseDALWithCompanyPostfixWithAuditLog<Integer, BaseTestDAO> {
 
 	@Override
-	protected EntityType entityType() {
-		return EntityType.BASE_TEST;
-	}
-
-	@Override
-	protected String tableName() {
-		return "BASE_TEST_TEST";
+	protected EntityName entity() {
+		return EntityName.BASE_TEST;
 	}
 
 }

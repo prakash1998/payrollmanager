@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.pra.payrollmanager.config.PropertiesConfig;
+import com.pra.payrollmanager.constants.EntityName;
 
 @Component
 public class UncheckedException {
@@ -40,7 +41,7 @@ public class UncheckedException {
      * @param args
      * @return
      */
-    public static RuntimeException appException(EntityType entityType, ExceptionType exceptionType, String... args) {
+    public static RuntimeException appException(EntityName entityType, ExceptionType exceptionType, String... args) {
         String messageTemplate = getMessageTemplate(entityType, exceptionType);
         return appException(exceptionType, messageTemplate, args);
     }
@@ -53,7 +54,7 @@ public class UncheckedException {
      * @param args
      * @return
      */
-    public static RuntimeException appExceptionWithId(EntityType entityType, ExceptionType exceptionType, String id, String... args) {
+    public static RuntimeException appExceptionWithId(EntityName entityType, ExceptionType exceptionType, String id, String... args) {
         String messageTemplate = getMessageTemplate(entityType, exceptionType).concat(".").concat(id);
         return appException(exceptionType, messageTemplate, args);
     }
@@ -67,7 +68,7 @@ public class UncheckedException {
      * @param args
      * @return
      */
-    public static RuntimeException appExceptionWithTemplate(EntityType entityType, ExceptionType exceptionType, String messageTemplate, String... args) {
+    public static RuntimeException appExceptionWithTemplate(EntityName entityType, ExceptionType exceptionType, String messageTemplate, String... args) {
         return appException(exceptionType, messageTemplate, args);
     }
 
@@ -87,7 +88,7 @@ public class UncheckedException {
         return new RuntimeException(format(messageTemplate, args));
     }
 
-    private static String getMessageTemplate(EntityType entityType, ExceptionType exceptionType) {
+    private static String getMessageTemplate(EntityName entityType, ExceptionType exceptionType) {
         return entityType.name().concat(".").concat(exceptionType.getValue()).toLowerCase();
     }
 

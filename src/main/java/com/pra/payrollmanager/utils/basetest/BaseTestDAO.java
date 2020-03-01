@@ -2,17 +2,14 @@ package com.pra.payrollmanager.utils.basetest;
 
 import javax.persistence.Id;
 
-import org.springframework.data.mongodb.core.mapping.Document;
-
-import com.pra.payrollmanager.dao.base.BaseDAO;
-import com.pra.payrollmanager.dao.base.BaseDAOWithDTO;
+import com.pra.payrollmanager.base.BaseAuditDAOWithDTO;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Builder
 @Getter
-public class BaseTestDAO implements BaseDAOWithDTO<Integer,BaseTestDTO>{
+public class BaseTestDAO extends BaseAuditDAOWithDTO<Integer,BaseTestDTO>{
 
 	@Id
 	private Integer id;
@@ -23,7 +20,7 @@ public class BaseTestDAO implements BaseDAOWithDTO<Integer,BaseTestDTO>{
 	}
 
 	@Override
-	public BaseTestDTO toDTO() {
+	public BaseTestDTO toDto() {
 		return BaseTestDTO.builder()
 				.id(id)
 				.build();
