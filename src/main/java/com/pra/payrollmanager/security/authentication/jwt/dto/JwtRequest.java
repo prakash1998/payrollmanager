@@ -1,5 +1,8 @@
 package com.pra.payrollmanager.security.authentication.jwt.dto;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +14,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class JwtRequest {
-	private String userName;
+	@NotNull
+	@Pattern(regexp = "^[^-]*-[^-]*$", message = "User Id should have pattern 'companyId-userName'.")
+	private String userId;
+	@NotNull
 	private String password;
 }

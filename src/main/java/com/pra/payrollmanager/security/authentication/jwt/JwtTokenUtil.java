@@ -4,11 +4,12 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+
+import com.pra.payrollmanager.security.authentication.user.SecurityUser;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -27,7 +28,7 @@ public class JwtTokenUtil implements Serializable {
 	private String secret;
 
 	// retrieve username from jwt token
-	public String getUsernameFromToken(String token) throws JwtException {
+	public String getUserIdFromToken(String token) throws JwtException {
 		return getAllClaimsFromToken(token).getSubject();
 	}
 
@@ -49,9 +50,9 @@ public class JwtTokenUtil implements Serializable {
 	}
 
 	// generate token for user
-	public String generateToken(UserDetails userDetails) {
+	public String generateToken(SecurityUser user) {
 		Map<String, Object> claims = new HashMap<>();
-		return doGenerateToken(claims, userDetails.getUsername());
+		return doGenerateToken(claims, user.getUserId());
 	}
 
 	// while creating the token -
@@ -67,8 +68,8 @@ public class JwtTokenUtil implements Serializable {
 	}
 
 	// validate token
-	public Boolean validateToken(String token, UserDetails userDetails) {
+	public Boolean validateToken(String token, SecurityUser userDetails) {
 		Claims claims = getAllClaimsFromToken(token);
-		return (claims.getSubject().equals(userDetails.getUsername()) && claims.getExpiration().after(new Date()));
+		return (claims.getSubject().equals(userDetails.getUserId()) && claims.getExpiration().after(new Date()));
 	}
 }

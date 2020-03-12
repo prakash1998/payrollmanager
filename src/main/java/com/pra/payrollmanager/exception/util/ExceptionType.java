@@ -11,11 +11,11 @@ public enum ExceptionType {
 
     String value;
 
-    ExceptionType(String value) {
+    private ExceptionType(String value) {
         this.value = value;
     }
 
-    String getValue() {
+    public String getValue() {
         return this.value;
     }
 }

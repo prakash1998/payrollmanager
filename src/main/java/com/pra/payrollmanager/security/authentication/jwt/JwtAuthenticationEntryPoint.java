@@ -12,7 +12,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
-import com.pra.payrollmanager.dto.response.ResponseStatus;
+import com.pra.payrollmanager.response.ResponseStatus;
 
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Serializable {
@@ -25,7 +25,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
 			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 			response.setStatus(HttpStatus.BAD_REQUEST.value());
 		} else {
-			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized Request");
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication Required");
 		}
 	}
 }

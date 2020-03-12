@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.pra.payrollmanager.config.PropertiesConfig;
+import com.pra.payrollmanager.constants.EntityName;
 import com.pra.payrollmanager.exception.checked.CommonAppEx;
 import com.pra.payrollmanager.exception.checked.CredentialNotMatchedEx;
 import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
@@ -41,7 +42,7 @@ public class CheckedException {
    * @param args
    * @return
    */
-  public static CommonAppEx appExceptionWithId(EntityType entityType, String id, String... args) {
+  public static CommonAppEx appExceptionWithId(EntityName entityType, String id, String... args) {
     String messageTemplate = getMessageTemplate(entityType, id);
     return appException(messageTemplate, args);
   }
@@ -55,7 +56,7 @@ public class CheckedException {
    * @return
    */
   public static CommonAppEx appExceptionWithTemplate(
-      EntityType entityType, String id, String... args) {
+      EntityName entityType, String id, String... args) {
     String messageTemplate2 = getMessageTemplate(entityType, id);
     return appException(messageTemplate2, args);
   }
@@ -67,7 +68,7 @@ public class CheckedException {
    * @param args
    * @return
    */
-  public static DataNotFoundEx notFoundEx(EntityType entityType, String... args) {
+  public static DataNotFoundEx notFoundEx(EntityName entityType, String... args) {
     String messageTemplate = getMessageTemplate(entityType, "not.found");
     return new DataNotFoundEx(format(messageTemplate, args));
   }
@@ -79,17 +80,17 @@ public class CheckedException {
    * @param args
    * @return
    */
-  public static DuplicateDataEx duplicateEx(EntityType entityType, String... args) {
+  public static DuplicateDataEx duplicateEx(EntityName entityType, String... args) {
     String messageTemplate = getMessageTemplate(entityType, "duplicate");
     return new DuplicateDataEx(format(messageTemplate, args));
   }
   
-  public static CredentialNotMatchedEx wrongCredentialEx(EntityType entityType, String... args) {
+  public static CredentialNotMatchedEx wrongCredentialEx(EntityName entityType, String... args) {
 	    String messageTemplate = getMessageTemplate(entityType, "wrong.credential");
 	    return new CredentialNotMatchedEx(format(messageTemplate, args));
   }
 
-  private static String getMessageTemplate(EntityType entityType, String messageTemplateId) {
+  private static String getMessageTemplate(EntityName entityType, String messageTemplateId) {
     return entityType.name().concat(".").concat(messageTemplateId).toLowerCase();
   }
 

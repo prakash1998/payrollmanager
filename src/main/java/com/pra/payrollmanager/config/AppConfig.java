@@ -1,6 +1,5 @@
 package com.pra.payrollmanager.config;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
@@ -15,34 +14,23 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.pra.payrollmanager.security.authorization.permissions.SecurityPermissions;
-import com.pra.payrollmanager.security.authorization.repo.SecurityPermissionRepo;
+import com.pra.payrollmanager.security.authentication.user.SecurityUser;
+import com.pra.payrollmanager.security.authorization.SecurityPermissions;
+import com.pra.payrollmanager.security.authorization.permission.SecurityPermissionDAL;
 
-import lombok.extern.slf4j.Slf4j;
-import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.ApiKey;
-import springfox.documentation.service.Contact;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
-@Slf4j
 @Configuration
-@EnableSwagger2
 @EnableMongoAuditing
 public class AppConfig {
 
 	@Autowired
-	SecurityPermissionRepo securityPermissionRepo;
+	SecurityPermissionDAL securityPermissionRepo;
+
+	@Autowired
+	JsonJacksonMapperService mapperService;
 
 	@Bean
 	public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -60,48 +48,6 @@ public class AppConfig {
 		// https://github.com/modelmapper/modelmapper/issues/212
 	}
 
-	/**
-	 * Group BRS contains operations related to reservations and agency mangement
-	 */
-	@Bean
-	public Docket swaggerBRSApi() {
-		return new Docket(DocumentationType.SWAGGER_2)
-				.groupName("BRS")
-				.select()
-				.apis(RequestHandlerSelectors.basePackage("com.starterkit.springboot.brs.controller.v1.api"))
-				.paths(PathSelectors.any())
-				.build()
-				.apiInfo(apiInfo())
-				.securitySchemes(Arrays.asList(apiKey()));
-	}
-
-	/**
-	 * Group User contains operations related to user mangement such as login/logout
-	 */
-	@Bean
-	public Docket swaggerUserApi() {
-		return new Docket(DocumentationType.SWAGGER_2)
-				.groupName("User")
-				.select()
-				.apis(RequestHandlerSelectors.basePackage("com.starterkit.springboot.brs.config"))
-				.paths(PathSelectors.any())
-				.build()
-				.apiInfo(apiInfo())
-				.securitySchemes(Arrays.asList(apiKey()));
-	}
-
-	
-	private ApiInfo apiInfo() {
-		return new ApiInfoBuilder().title("Bus Reservation System - REST APIs")
-				.description("Spring Boot starter kit application.").termsOfServiceUrl("")
-				.contact(new Contact("Arpit Khandelwal", "https://medium.com/the-resonant-web",
-						"khandelwal.arpit@outlook.com"))
-				.license("Apache License Version 2.0")
-				.licenseUrl("https://www.apache.org/licenses/LICENSE-2.0")
-				.version("0.0.1")
-				.build();
-	}
-
 	// auditing injection
 	@Bean
 	public AuditorAware<String> myAuditorProvider() {
@@ -111,7 +57,6 @@ public class AppConfig {
 				.map(Authentication::getName);
 	}
 
-	
 	// on application load
 	@Bean
 	public SmartInitializingSingleton loadSecurityPermissionsToDatabase() {
@@ -119,22 +64,22 @@ public class AppConfig {
 			SecurityPermissions.persistPermissionsIfNot(securityPermissionRepo);
 		};
 	}
-	
-	
-	// json configuration  
-    @Bean
-    public ObjectMapper objectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-	    mapper.registerModule(new JavaTimeModule());
-        return mapper;
-    }
-    
 
-	private ApiKey apiKey() {
-		return new ApiKey("apiKey", "Authorization", "header");
+	// json configuration
+	@Bean
+	public ObjectMapper objectMapper() {
+		return mapperService.mapper();
 	}
+
+	@Bean
+	public WebMvcConfigurer corsConfigurer() {
+		return new WebMvcConfigurer() {
+			@Override
+			public void addCorsMappings(CorsRegistry registry) {
+				registry.addMapping("/**").allowedMethods("GET", "POST", "PUT", "DELETE").allowedOrigins("*")
+						.allowedHeaders("*");
+			}
+		};
+	}
+
 }
