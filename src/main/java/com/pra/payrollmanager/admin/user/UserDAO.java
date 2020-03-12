@@ -12,7 +12,7 @@ import lombok.With;
 @With
 @Value
 @Builder
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false )
 public class UserDAO extends BaseAuditDAOWithDTO<String, UserDTO> {
 
 	@Id

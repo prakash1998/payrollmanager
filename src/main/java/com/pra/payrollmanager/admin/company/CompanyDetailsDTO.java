@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 public class CompanyDetailsDTO extends BaseAuditDTO<CompanyDetailsDAO> {
 
 	public static final String SUPER_USER_NAME = "su";

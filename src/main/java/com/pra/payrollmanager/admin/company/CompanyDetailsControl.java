@@ -8,6 +8,7 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,10 +25,23 @@ import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
 import com.pra.payrollmanager.exception.util.ValidationException;
 import com.pra.payrollmanager.response.dto.Response;
+import com.pra.payrollmanager.security.authentication.company.SecurityCompany;
+import com.pra.payrollmanager.security.authorization.AuthorityService;
 
 @RestController
 @RequestMapping("company")
 public class CompanyDetailsControl extends BaseControl<CompanyDetailsService> {
+
+	@Autowired
+	AuthorityService authSerivce;
+
+	@GetMapping(value = "self", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Response<CompanyDetailsDTO> getSelf() throws DataNotFoundEx {
+		SecurityCompany company = authSerivce.getSecurityCompany();
+		CompanyDetailsDTO dto = service.getDtoById(company.getId());
+		dto.setPermissions(company.getPermissions());
+		return Response.payload(dto);
+	}
 
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response<List<CompanyDetailsDTO>> getCompanyDetails() {

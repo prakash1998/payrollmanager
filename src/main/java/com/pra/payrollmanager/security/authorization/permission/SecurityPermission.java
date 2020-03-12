@@ -12,7 +12,7 @@ import lombok.With;
 @With
 @Value
 @Builder
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false )
 public class SecurityPermission extends BaseAuditDAOWithDTO<String, SecurityPermissionDTO> {
 
 	@Id
@@ -20,6 +20,7 @@ public class SecurityPermission extends BaseAuditDAOWithDTO<String, SecurityPerm
 	private int numericId;
 	private String display;
 	private String category;
+	private String screen;
 	private String description;
 
 	public static SecurityPermission of(int numericId, String id) {
@@ -28,6 +29,7 @@ public class SecurityPermission extends BaseAuditDAOWithDTO<String, SecurityPerm
 				.numericId(numericId)
 				.display(id.replace("-", " "))
 				.category(id)
+				.screen("-")
 				.description("-")
 				.build();
 	}
@@ -48,6 +50,7 @@ public class SecurityPermission extends BaseAuditDAOWithDTO<String, SecurityPerm
 				.numericId(numericId)
 				.display(display)
 				.category(category)
+				.screen(screen)
 				.description(description)
 				.build();
 	}

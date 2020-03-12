@@ -13,7 +13,7 @@ import lombok.With;
 @With
 @Value
 @Builder
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false )
 public class CompanyDetailsDAO extends BaseAuditDAOWithDTO<String,CompanyDetailsDTO>{
 
 	@Id

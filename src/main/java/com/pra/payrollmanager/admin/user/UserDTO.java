@@ -1,5 +1,6 @@
 package com.pra.payrollmanager.admin.user;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 public class UserDTO extends BaseAuditDTO<UserDAO> {
 
 	@NotNull(message = "userName must not be null")

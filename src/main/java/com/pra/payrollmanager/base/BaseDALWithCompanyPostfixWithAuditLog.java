@@ -26,8 +26,10 @@ public abstract class BaseDALWithCompanyPostfixWithAuditLog<PK, DAO extends Base
 	@Override
 	public void update(DAO obj) throws DataNotFoundEx {
 		DAO dbObj = this.findById(obj.primaryKeyValue());
-		mongoTemplate.save(obj, this.tableName());
-		this.auditExistingDAO(dbObj);
+		if (!dbObj.equals(obj)) {
+			mongoTemplate.save(obj, this.tableName());
+			this.auditExistingDAO(dbObj);
+		}
 	}
 
 	@Override

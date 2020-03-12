@@ -23,7 +23,7 @@ import lombok.With;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false )
 public class SecurityUser extends BaseAuditDAO<String> implements UserDetails {
 	/**
 	 * 

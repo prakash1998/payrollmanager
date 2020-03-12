@@ -16,7 +16,7 @@ import lombok.With;
 @With
 @Value
 @Builder
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false )
 public class SecurityCompany extends BaseAuditDAO<String> {
 
 	@Id
