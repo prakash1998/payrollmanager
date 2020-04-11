@@ -1,9 +1,10 @@
-package com.pra.payrollmanager.config;
+package com.pra.payrollmanager.translation;
 
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -14,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class JsonJacksonMapperService {
-	
+
 	public static final String EMPTY_JSON = "{}";
 
 	private ObjectMapper mapper;
@@ -33,13 +34,34 @@ public class JsonJacksonMapperService {
 	public ObjectMapper mapper() {
 		return this.mapper;
 	}
-	
+
 	public <T> String objectToJson(T obj) {
 		try {
 			return this.mapper.writeValueAsString(obj);
 		} catch (JsonProcessingException e) {
-			log.error(String.format("Error While converting Object to json for Class %s",obj.getClass().toString()), e);
+			log.error(String.format("Error While converting Object to json for Class %s", obj.getClass().toString()),
+					e);
 			return EMPTY_JSON;
+		}
+	}
+
+	public <T> T jsonToObject(String json, Class<T> clazz) {
+		try {
+			return this.mapper.readValue(json, clazz);
+		} catch (JsonProcessingException e) {
+			log.error(String.format("Error While converting json to Object for Class %s", clazz.toString()),
+					e);
+			return null;
+		}
+	}
+
+	public <T> T jsonToObject(String json, TypeReference<T> typeReference) {
+		try {
+			return this.mapper.readValue(json, typeReference);
+		} catch (JsonProcessingException e) {
+			log.error(String.format("Error While converting json to Object for Class %s", typeReference.toString()),
+					e);
+			return null;
 		}
 	}
 

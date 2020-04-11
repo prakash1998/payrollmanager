@@ -9,16 +9,16 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.pra.payrollmanager.config.PropertiesConfig;
+import com.pra.payrollmanager.config.ErrorTemplateConfig;
 import com.pra.payrollmanager.constants.EntityName;
 
 @Component
 public class UncheckedException {
 
-    private static PropertiesConfig propertiesConfig;
+    private static ErrorTemplateConfig propertiesConfig;
 
     @Autowired
-    public UncheckedException(PropertiesConfig propertiesConfig) {
+    public UncheckedException(ErrorTemplateConfig propertiesConfig) {
         UncheckedException.propertiesConfig = propertiesConfig;
     }
 

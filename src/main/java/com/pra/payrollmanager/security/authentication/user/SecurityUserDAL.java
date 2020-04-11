@@ -6,13 +6,13 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
-import com.pra.payrollmanager.base.BaseDALWithCompanyPostfix;
+import com.pra.payrollmanager.base.dal.BaseDALWithCompanyPrefix;
 import com.pra.payrollmanager.constants.EntityName;
 import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.util.CheckedException;
 
 @Repository
-public class SecurityUserDAL extends BaseDALWithCompanyPostfix<String, SecurityUser> {
+public class SecurityUserDAL extends BaseDALWithCompanyPrefix<String, SecurityUser> {
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -22,27 +22,27 @@ public class SecurityUserDAL extends BaseDALWithCompanyPostfix<String, SecurityU
 		return EntityName.SECURITY_USER;
 	}
 
-	public boolean existsById(String key, String companyPostfix) {
+	public boolean existsById(String key, String tablePrefix) {
 		return mongoTemplate.exists(Query.query(Criteria.where("_id").is(key)), SecurityUser.class,
-				entity().table() + companyPostfix);
+				tablePrefix + entity().table());
 	}
 
-	public SecurityUser findById(String key, String companyPostfix) throws DataNotFoundEx {
-		if (this.existsById(key, companyPostfix)) {
-			return mongoTemplate.findById(key, SecurityUser.class, entity().table() + companyPostfix);
+	public SecurityUser findById(String key, String tablePrefix) throws DataNotFoundEx {
+		if (this.existsById(key, tablePrefix)) {
+			return mongoTemplate.findById(key, SecurityUser.class, tablePrefix + entity().table());
 		} else {
 			throw CheckedException.notFoundEx(entity(), String.valueOf(key));
 		}
 	}
 
-	public void createSuperUser(SecurityUser superUser, String companyPostfix) {
-		mongoTemplate.insert(superUser, entity().table() + companyPostfix);
+	public void createSuperUser(SecurityUser superUser, String tablePrefix) {
+		mongoTemplate.insert(superUser, tablePrefix + entity().table() );
 	}
 
 	public void updateLogin(SecurityUser user) throws DataNotFoundEx {
-		String companyPostfix = user.getCompany().getTablePostfix();
-		if (this.existsById(user.getUsername(), companyPostfix)) {
-			mongoTemplate.save(user, entity().table() + companyPostfix);
+		String tablePrefix = user.getCompany().getTablePrefix();
+		if (this.existsById(user.getUsername(), tablePrefix)) {
+			mongoTemplate.save(user, tablePrefix + entity().table());
 		} else {
 			throw CheckedException.notFoundEx(entity(), user.getUserId());
 		}

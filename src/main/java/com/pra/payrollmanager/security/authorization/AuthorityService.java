@@ -103,8 +103,8 @@ public class AuthorityService {
 		return this.getAuthentication().getName();
 	}
 
-	public String getTablePostfix() {
-		return this.getSecurityCompany().getTablePostfix();
+	public String getTablePrefix() {
+		return this.getSecurityCompany().getTablePrefix();
 	}
 
 }

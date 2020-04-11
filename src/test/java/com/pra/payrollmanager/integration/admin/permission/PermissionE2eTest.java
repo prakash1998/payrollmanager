@@ -18,7 +18,7 @@ public class PermissionE2eTest extends BaseE2eIntegrationTest<SecurityPermission
 	
 	@Override
 	public void initUserStore(MockUserDetailService authService) {
-		authService.addUserInStore(TESTER, SecurityPermissions.SECURITY_PERMISSION_MANAGER);
+		authService.addUserInStore(TESTER, SecurityPermissions.SECURITY_PERMISSION__MANAGER);
 	}
 	
 	@Override

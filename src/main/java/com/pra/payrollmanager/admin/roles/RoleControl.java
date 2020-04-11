@@ -1,7 +1,7 @@
 package com.pra.payrollmanager.admin.roles;
 
-import static com.pra.payrollmanager.security.authorization.SecurityPermissions.ROLES_MANAGER;
-import static com.pra.payrollmanager.security.authorization.SecurityPermissions.ROLES_VIEWER;
+import static com.pra.payrollmanager.security.authorization.SecurityPermissions.ROLES__MANAGER;
+import static com.pra.payrollmanager.security.authorization.SecurityPermissions.ROLES__VIEWER;
 
 import java.util.List;
 
@@ -24,32 +24,36 @@ import com.pra.payrollmanager.response.dto.Response;
 
 @RestController
 @RequestMapping("roles")
-public class RoleControl extends BaseControl<RoleService>{
-	
-	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+public class RoleControl extends BaseControl<RoleService> {
+
+	@GetMapping(value = "just-info", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response<List<RoleDTO>> getRole() {
-		authService.validatePermissions(ROLES_MANAGER,ROLES_VIEWER);
+		authService.validatePermissions(ROLES__MANAGER, ROLES__VIEWER);
 		return Response.payload(service.getAllDtos());
 	}
-	
+
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	public Response<List<RoleDTO>> getRoleWithPermission() {
+		authService.validatePermissions(ROLES__MANAGER, ROLES__VIEWER);
+		return Response.payload(service.getAllDtosWithPermissions());
+	}
+
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response<RoleDTO> getRole(@PathVariable("id") @NotNull String roleId) throws DataNotFoundEx {
-		authService.validatePermissions(ROLES_MANAGER,ROLES_VIEWER);
+		authService.validatePermissions(ROLES__MANAGER, ROLES__VIEWER);
 		return Response.payload(service.getDtoById(roleId));
 	}
 
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<Void> createRole(@Valid @RequestBody RoleDTO role) throws DuplicateDataEx {
-		authService.validatePermissions(ROLES_MANAGER);
-		service.create(role);
-		return Response.ok();
+	public Response<RoleDTO> createRole(@Valid @RequestBody RoleDTO role) throws DuplicateDataEx {
+		authService.validatePermissions(ROLES__MANAGER);
+		return Response.payload(service.create(role));
 	}
 
 	@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<Void> updateRole(@Valid @RequestBody RoleDTO role) throws DataNotFoundEx, DuplicateDataEx {
-		authService.validatePermissions(ROLES_MANAGER);
-		service.updateRole(role);
-		return Response.ok();
+	public Response<RoleDTO> updateRole(@Valid @RequestBody RoleDTO role) throws DataNotFoundEx, DuplicateDataEx {
+		authService.validatePermissions(ROLES__MANAGER);
+		return Response.payload(service.updateRole(role));
 	}
 
 }

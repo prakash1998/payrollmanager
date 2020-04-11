@@ -1,6 +1,7 @@
 package com.pra.payrollmanager.security.authentication.jwt;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +20,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 @Component
-public class JwtTokenUtil implements Serializable {
+public class JwtTokenService implements Serializable {
 	private static final long serialVersionUID = -2550185165626007488L;
 
 	@Value("${jwt.token_validity}")
@@ -68,8 +69,7 @@ public class JwtTokenUtil implements Serializable {
 	}
 
 	// validate token
-	public Boolean validateToken(String token, SecurityUser userDetails) {
-		Claims claims = getAllClaimsFromToken(token);
-		return (claims.getSubject().equals(userDetails.getUserId()) && claims.getExpiration().after(new Date()));
+	public Boolean validateToken(String token) {
+		return getExpirationDateFromToken(token).after(Date.from(Instant.now()));
 	}
 }

@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pra.payrollmanager.base.BaseControl;
 import com.pra.payrollmanager.base.BaseDTO;
-import com.pra.payrollmanager.base.BaseServiceAuditDTO;
+import com.pra.payrollmanager.base.services.audit.BaseServiceAuditDTO;
 import com.pra.payrollmanager.config.MockUserDetailService;
 import com.pra.payrollmanager.config.TestingConfig;
 import com.pra.payrollmanager.exception.checked.DataNotFoundEx;

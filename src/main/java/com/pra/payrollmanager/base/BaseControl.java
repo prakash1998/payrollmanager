@@ -2,6 +2,7 @@ package com.pra.payrollmanager.base;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.pra.payrollmanager.base.services.audit.BaseServiceAuditDTO;
 import com.pra.payrollmanager.security.authorization.AuthorityService;
 
 import lombok.Setter;

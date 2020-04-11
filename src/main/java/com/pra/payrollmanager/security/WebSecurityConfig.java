@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.pra.payrollmanager.security.authentication.jwt.JwtAuthenticationEntryPoint;
 import com.pra.payrollmanager.security.authentication.jwt.JwtRequestFilter;
+import com.pra.payrollmanager.websocket.config.WebSocketConfig;
 
 @Configuration
 @EnableWebSecurity
@@ -64,11 +65,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
-		// We don't need CSRF for this example
 		httpSecurity.cors().and().csrf().disable()
 				// dont authenticate this particular request
 				.authorizeRequests()
-				.antMatchers("/auth/token", "/auth/token/refresh")
+				.antMatchers("/auth/token", "/auth/token/refresh", WebSocketConfig.WS_ENDPOINT_PREFIX)
 				.permitAll()
 				// all other requests need to be authenticated
 				.anyRequest()

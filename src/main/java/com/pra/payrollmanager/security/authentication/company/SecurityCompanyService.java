@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.pra.payrollmanager.admin.company.CompanyDetailsDTO;
-import com.pra.payrollmanager.base.BaseServiceDAO;
+import com.pra.payrollmanager.base.services.BaseServiceDAO;
 import com.pra.payrollmanager.constants.CacheNameStore;
 import com.pra.payrollmanager.constants.EntityName;
 import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
@@ -36,7 +36,7 @@ public class SecurityCompanyService extends BaseServiceDAO<String, SecurityCompa
 	}
 
 	@Override
-	public void create(SecurityCompany company) throws DuplicateDataEx {
+	public SecurityCompany create(SecurityCompany company) throws DuplicateDataEx {
 		throw new NotUseThisMethod();
 	}
 
@@ -44,14 +44,14 @@ public class SecurityCompanyService extends BaseServiceDAO<String, SecurityCompa
 	public void create(CompanyDetailsDTO company) throws DuplicateDataEx {
 		SecurityCompany securityCompany = company.toSecurityCompany();
 		super.create(securityCompany);
-		securityUserService.createSuperUser(company.toSecurityUser(), securityCompany.getTablePostfix());
+		securityUserService.createSuperUser(company.toSecurityUser(), securityCompany.getTablePrefix());
 	}
 
 	@Override
 	@CacheEvict(cacheNames = { CacheNameStore.SECURITY_COMPANY_STORE, CacheNameStore.SECURITY_USER_STORE },
 			allEntries = true)
-	public void update(SecurityCompany company) throws DataNotFoundEx {
-		super.update(company);
+	public SecurityCompany update(SecurityCompany company) throws DataNotFoundEx {
+		return super.update(company);
 	}
 
 	public void disableCompany(SecurityCompany company) throws DataNotFoundEx {

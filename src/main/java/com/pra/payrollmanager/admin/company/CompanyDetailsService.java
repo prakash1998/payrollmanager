@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.pra.payrollmanager.base.BaseServiceAuditDTO;
+import com.pra.payrollmanager.base.services.audit.BaseServiceAuditDTO;
 import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
 import com.pra.payrollmanager.exception.unchecked.NotUseThisMethod;
@@ -37,17 +37,17 @@ public class CompanyDetailsService
 
 	@Override
 	@Transactional
-	public void create(CompanyDetailsDTO company) throws DuplicateDataEx {
+	public CompanyDetailsDTO create(CompanyDetailsDTO company) throws DuplicateDataEx {
 		securityCompanyService.create(company);
-		super.create(company.toDAO());
+		return super.create(company);
 	}
 
 	@Override
 	@Transactional
-	public void update(CompanyDetailsDTO company) throws DataNotFoundEx {
+	public CompanyDetailsDTO update(CompanyDetailsDTO company) throws DataNotFoundEx {
 		SecurityCompany securityCompany = company.toSecurityCompany();
 		securityCompanyService.update(securityCompany);
-		super.update(company.toDAO());
+		return super.update(company);
 	}
 
 	public void disableCompany(CompanyDetailsDTO company) throws DataNotFoundEx {

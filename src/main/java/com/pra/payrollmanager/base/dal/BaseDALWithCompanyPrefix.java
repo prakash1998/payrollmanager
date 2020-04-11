@@ -1,4 +1,4 @@
-package com.pra.payrollmanager.base;
+package com.pra.payrollmanager.base.dal;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -11,13 +11,14 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.pra.payrollmanager.base.BaseDAO;
 import com.pra.payrollmanager.constants.EntityName;
 import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
 import com.pra.payrollmanager.exception.util.CheckedException;
 import com.pra.payrollmanager.security.authorization.AuthorityService;
 
-public abstract class BaseDALWithCompanyPostfix<PK, DAO extends BaseDAO<PK>> {
+public abstract class BaseDALWithCompanyPrefix<PK, DAO extends BaseDAO<PK>> {
 	// , REPO extends BaseRepo<DAO, PK>
 
 	@Autowired
@@ -31,14 +32,14 @@ public abstract class BaseDALWithCompanyPostfix<PK, DAO extends BaseDAO<PK>> {
 	private Class<DAO> daoClazz;
 
 	@SuppressWarnings("unchecked")
-	public BaseDALWithCompanyPostfix() {
+	public BaseDALWithCompanyPrefix() {
 		Type sooper = getClass().getGenericSuperclass();
 		daoClazz = (Class<DAO>) ((ParameterizedType) sooper)
 				.getActualTypeArguments()[1];
 	}
 
 	public String tableName() {
-		return this.entity().table() + authorityService.getTablePostfix();
+		return authorityService.getTablePrefix() + this.entity().table();
 	}
 
 	public boolean exists(DAO obj) {
@@ -69,26 +70,31 @@ public abstract class BaseDALWithCompanyPostfix<PK, DAO extends BaseDAO<PK>> {
 		return mongoTemplate.findOne(query, daoClazz, this.tableName());
 	}
 
-	public void create(DAO obj) throws DuplicateDataEx {
+	public DAO create(DAO obj) throws DuplicateDataEx {
 		if (this.exists(obj)) {
 			throw CheckedException.duplicateEx(entity(), String.valueOf(obj.primaryKeyValue()));
 		} else {
-			mongoTemplate.insert(obj, this.tableName());
+			return mongoTemplate.insert(obj, this.tableName());
 		}
 	}
 
 	@Transactional
-	public void createAll(Collection<DAO> objList) throws DuplicateDataEx {
+	public Collection<DAO> createAll(Collection<DAO> objList) throws DuplicateDataEx {
 		try {
-			mongoTemplate.insert(objList, this.tableName());
+			return mongoTemplate.insert(objList, this.tableName());
 		} catch (Exception e) {
 			throw new DuplicateDataEx(String.format("Exception When bulk inserting %s", entity()), e);
 		}
 	}
 
-	public void update(DAO obj) throws DataNotFoundEx {
-		if (this.exists(obj)) {
-			mongoTemplate.save(obj, this.tableName());
+	public DAO update(DAO obj) throws DataNotFoundEx {
+		DAO dbObj = this.findById(obj.primaryKeyValue());
+		if (dbObj != null) {
+			if (obj.equals(dbObj)) {
+				return dbObj;
+			} else {
+				return mongoTemplate.save(obj, this.tableName());
+			}
 		} else {
 			throw CheckedException.notFoundEx(entity(), String.valueOf(obj.primaryKeyValue()));
 		}

@@ -7,13 +7,13 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.pra.payrollmanager.base.BaseDALWithCompanyPostfix;
+import com.pra.payrollmanager.base.dal.BaseDALWithCompanyPrefix;
 import com.pra.payrollmanager.constants.EntityName;
 import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
 import com.pra.payrollmanager.utils.QueryUtils;
 
 @Repository
-public class RolePermissionMapDAL extends BaseDALWithCompanyPostfix<String, RolePermissionMap> {
+public class RolePermissionMapDAL extends BaseDALWithCompanyPrefix<String, RolePermissionMap> {
 
 	@Override
 	protected EntityName entity() {

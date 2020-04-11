@@ -7,8 +7,9 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.pra.payrollmanager.base.BaseDALWithCompanyPostfixWithAuditLog;
 import com.pra.payrollmanager.base.BaseDAO;
+import com.pra.payrollmanager.base.dal.BaseDALWithCompanyPrefix;
+import com.pra.payrollmanager.base.dal.audit.BaseDALWithCompanyPrefixWithAuditLog;
 
 /**
  * This parent class will do following things for child class
@@ -32,7 +33,7 @@ import com.pra.payrollmanager.base.BaseDAO;
 @TestInstance(value = Lifecycle.PER_CLASS)
 public abstract class BaseDALIntegrationTest<
 		DAO extends BaseDAO<?>,
-		DAL extends BaseDALWithCompanyPostfix<?, DAO>> {
+		DAL extends BaseDALWithCompanyPrefix<?, DAO>> {
 
 	@Autowired
 	protected DAL dalService;

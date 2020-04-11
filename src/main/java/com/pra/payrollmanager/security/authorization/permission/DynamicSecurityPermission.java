@@ -15,21 +15,21 @@ public class DynamicSecurityPermission {
 	@NonNull
 	private final Map<String, Integer> allowedDynamicParts;
 	@NonNull
-	private final String prefix;
+	private final String groupPrefix;
 	@NonNull
-	private final String postfix;
+	private final String action;
 	@Setter(AccessLevel.NONE)
 	private String dynamicPart;
 
 	private String getId() {
-		return prefix.concat("-" + dynamicPart).concat("-" + postfix);
+		return groupPrefix.concat("_" + dynamicPart).concat("__" + action);
 	}
 
-	public static DynamicSecurityPermission of(String prefix, String postfix,
+	public static DynamicSecurityPermission of(String groupPrefix, String action,
 			Map<String, Integer> allowedDynamicParts) {
 		return DynamicSecurityPermission.builder()
-				.prefix(prefix)
-				.postfix(postfix)
+				.groupPrefix(groupPrefix)
+				.action(action)
 				.allowedDynamicParts(allowedDynamicParts)
 				.build();
 	}

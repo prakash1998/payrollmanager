@@ -16,12 +16,12 @@ import lombok.With;
 @With
 @Value
 @Builder
-@EqualsAndHashCode(callSuper = false )
+@EqualsAndHashCode(callSuper = false)
 public class SecurityCompany extends BaseAuditDAO<String> {
 
 	@Id
 	private String id;
-	private String tablePostfix;
+	private String tablePrefix;
 	@Builder.Default
 	private boolean companyEnabled = true;
 	@Builder.Default
@@ -40,7 +40,7 @@ public class SecurityCompany extends BaseAuditDAO<String> {
 
 		public SecurityCompanyBuilder id(String id) {
 			this.id = id;
-			this.tablePostfix = "_" + id.toUpperCase();
+			this.tablePrefix = id.toUpperCase() + "_";
 			return this;
 		}
 	}

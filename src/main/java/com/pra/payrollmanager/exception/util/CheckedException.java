@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.pra.payrollmanager.config.PropertiesConfig;
+import com.pra.payrollmanager.config.ErrorTemplateConfig;
 import com.pra.payrollmanager.constants.EntityName;
 import com.pra.payrollmanager.exception.checked.CommonAppEx;
 import com.pra.payrollmanager.exception.checked.CredentialNotMatchedEx;
@@ -16,10 +16,10 @@ import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
 @Component
 public class CheckedException {
 
-  private static PropertiesConfig propertiesConfig;
+  private static ErrorTemplateConfig propertiesConfig;
 
   @Autowired
-  public CheckedException(PropertiesConfig propertiesConfig) {
+  public CheckedException(ErrorTemplateConfig propertiesConfig) {
     CheckedException.propertiesConfig = propertiesConfig;
   }
 

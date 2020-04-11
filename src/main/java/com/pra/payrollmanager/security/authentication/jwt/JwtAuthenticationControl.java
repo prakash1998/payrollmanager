@@ -51,7 +51,7 @@ public class JwtAuthenticationControl {
 	private AuthenticationManager authenticationManager;
 
 	@Autowired
-	private JwtTokenUtil jwtTokenUtil;
+	private JwtTokenService jwtTokenUtil;
 
 	@Autowired
 	private SecurityUserService userService;

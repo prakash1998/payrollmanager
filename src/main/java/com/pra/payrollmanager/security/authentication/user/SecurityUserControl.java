@@ -29,7 +29,7 @@ public class SecurityUserControl {
 	@PostMapping(path = "password/update", consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response<Void> updatePassword(@Valid @RequestBody UserPasswordResetDTO user) throws CredentialNotMatchedEx {
-		authService.validatePermissions(SecurityPermissions.PASSWORD_UPDATE);
+		authService.validatePermissions(SecurityPermissions.USER__PASSWORD_UPDATE);
 		service.updateUserPassword(user);
 		return Response.builder()
 				.ok()

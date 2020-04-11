@@ -14,6 +14,8 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.pra.payrollmanager.base.dal.BaseDALWithCompanyPrefix;
+import com.pra.payrollmanager.base.services.BaseServiceDTO;
 import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
 
@@ -21,7 +23,7 @@ import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
 @TestInstance(value = Lifecycle.PER_CLASS)
 public abstract class BaseServiceUnitTest<DAO extends BaseDAOWithDTO<?, DTO>,
 		DTO extends BaseDTO<DAO>,
-		DAL extends BaseDALWithCompanyPostfix<?, DAO>,
+		DAL extends BaseDALWithCompanyPrefix<?, DAO>,
 		SERVICE extends BaseServiceDTO<?, ?, ?, DAL>> {
 
 	@Autowired

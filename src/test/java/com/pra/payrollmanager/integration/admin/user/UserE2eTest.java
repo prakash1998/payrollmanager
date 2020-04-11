@@ -36,7 +36,7 @@ public class UserE2eTest extends BaseE2eIntegrationTest<UserControl> {
 
 	@Override
 	public void initUserStore(MockUserDetailService authService) {
-		authService.addUserInStore(TESTER, SecurityPermissions.USERS_MANAGER);
+		authService.addUserInStore(TESTER, SecurityPermissions.USERS__MANAGER);
 	}
 
 	@Override

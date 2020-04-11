@@ -33,23 +33,24 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SecurityPermissions {
-	
-	public static final SecurityPermission USERS_VIEWER= SecurityPermission.of(1, "users-details-viewer");
 
-	public static final SecurityPermission USERS_MANAGER = SecurityPermission.of(2, "users-details-manager");
+	public static final SecurityPermission USERS__VIEWER = SecurityPermission.of(1);
 
-	public static final SecurityPermission SECURITY_PERMISSION_MANAGER = SecurityPermission.of(3,
-			"security-permission-manager");
+	public static final SecurityPermission USERS__MANAGER = SecurityPermission.of(2);
 
-	public static final SecurityPermission PASSWORD_UPDATE = SecurityPermission.of(4, "password-update");
+	public static final SecurityPermission SECURITY_PERMISSION__MANAGER = SecurityPermission.of(3);
+
+	public static final SecurityPermission USER__PASSWORD_UPDATE = SecurityPermission.of(4);
+
+	public static final SecurityPermission COMAPNY_DETAILS__VIEWER = SecurityPermission.of(5);
+
+	public static final SecurityPermission COMAPNY_DETAILS__MANAGER = SecurityPermission.of(6);
+
+	public static final SecurityPermission ROLES__VIEWER = SecurityPermission.of(7);
+
+	public static final SecurityPermission ROLES__MANAGER = SecurityPermission.of(8);
 	
-	public static final SecurityPermission COMAPNY_DETAILS_VIEWER = SecurityPermission.of(5, "company-details-viewer");
-	
-	public static final SecurityPermission COMAPNY_DETAILS_MANAGER = SecurityPermission.of(6, "company-details-manager");
-	
-	public static final SecurityPermission ROLES_VIEWER = SecurityPermission.of(7, "roles-viewer");
-	
-	public static final SecurityPermission ROLES_MANAGER = SecurityPermission.of(8, "roles-manager");
+	public static final SecurityPermission API_PERMISSION__MANAGER = SecurityPermission.of(9);
 
 	private static DynamicSecurityPermission createDynamicPermission(String prefix, String postfix, List<String> ids,
 			List<Integer> numericIds) {
@@ -78,7 +79,7 @@ public class SecurityPermissions {
 	}
 
 	public static void persistPermissionsIfNot(SecurityPermissionDAL repo) {
-		Set<String> permissionIds = new HashSet<>();
+		// Set<String> permissionIds = new HashSet<>();
 		Map<Integer, SecurityPermission> allPermisssions = new HashMap<>();
 		Field[] allFields = SecurityPermissions.class.getDeclaredFields();
 
@@ -86,27 +87,31 @@ public class SecurityPermissions {
 			for (Field field : allFields) {
 				if (field.getType() == SecurityPermission.class) {
 					SecurityPermission permission = (SecurityPermission) field.get(null);
-					if (!permissionIds.add(permission.getId())) {
-						throw new RuntimeException(
-								String.format("id - '%s' is repeated for field %s , please resolve  it",
-										permission.getId(), field.getName()));
-					} else if (allPermisssions.containsKey(permission.getNumericId())) {
+					// if (!permissionIds.add(permission.getId())) {
+					// throw new RuntimeException(
+					// String.format("id - '%s' is repeated for field %s , please resolve it",
+					// permission.getId(), field.getName()));
+					// } else
+					if (allPermisssions.containsKey(permission.getNumericId())) {
 						throw new RuntimeException(
 								String.format("numericId - '%s' is repeated  for field %s , please resolve  it",
 										permission.getNumericId(), field.getName()));
 					} else {
-						allPermisssions.put(permission.getNumericId(), permission);
+						allPermisssions.put(permission.getNumericId(),
+								SecurityPermission.of(permission.getNumericId(), field.getName()));
 					}
 				}
 				if (field.getType() == DynamicSecurityPermission.class) {
 					DynamicSecurityPermission dynamicPermission = (DynamicSecurityPermission) field.get(null);
 					dynamicPermission.allPossiblePermissions().forEach(permission -> {
-						if (!permissionIds.add(permission.getId())) {
-							throw new RuntimeException(
-									String.format(
-											"id - '%s' is repeated in Dynamic permission  for field %s , please resolve  it",
-											permission.getId(), field.getName()));
-						} else if (allPermisssions.containsKey(permission.getNumericId())) {
+						// if (!permissionIds.add(permission.getId())) {
+						// throw new RuntimeException(
+						// String.format(
+						// "id - '%s' is repeated in Dynamic permission for field %s , please resolve
+						// it",
+						// permission.getId(), field.getName()));
+						// } else
+						if (allPermisssions.containsKey(permission.getNumericId())) {
 							throw new RuntimeException(
 									String.format(
 											"numericId - '%s' is repeated in Dynamic permission for field %s , please resolve  it",

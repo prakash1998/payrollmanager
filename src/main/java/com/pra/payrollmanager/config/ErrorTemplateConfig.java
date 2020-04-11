@@ -5,12 +5,9 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-/**
- * Created by Arpit Khandelwal.
- */
 @Component
 @PropertySource("classpath:errtemplate.properties")
-public class PropertiesConfig {
+public class ErrorTemplateConfig {
     @Autowired
     private Environment env;
 

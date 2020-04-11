@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false )
+@EqualsAndHashCode(callSuper = false)
 public class SecurityPermissionDTO extends BaseAuditDTO<SecurityPermission> {
 
 	@NotNull
@@ -23,7 +23,6 @@ public class SecurityPermissionDTO extends BaseAuditDTO<SecurityPermission> {
 	private String id;
 	private String display;
 	private String category;
-	private String screen;
 	private String description;
 
 	@Override
@@ -33,7 +32,6 @@ public class SecurityPermissionDTO extends BaseAuditDTO<SecurityPermission> {
 				.numericId(numericId)
 				.display(display)
 				.category(category)
-				.screen(screen)
 				.description(description)
 				.build();
 	}

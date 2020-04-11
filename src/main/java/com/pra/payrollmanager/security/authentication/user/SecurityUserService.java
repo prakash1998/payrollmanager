@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.pra.payrollmanager.base.BaseServiceDAO;
+import com.pra.payrollmanager.base.services.BaseServiceDAO;
 import com.pra.payrollmanager.constants.CacheNameStore;
 import com.pra.payrollmanager.constants.EntityName;
 import com.pra.payrollmanager.exception.checked.CredentialNotMatchedEx;
@@ -39,7 +39,7 @@ public class SecurityUserService extends BaseServiceDAO<String, SecurityUser, Se
 		SecurityCompany company = securityCompanyService.loadCompanyById(companyId);
 		try {
 			System.out.println("fetching user from db. .......");
-			return dataAccessLayer.findById(userName, company.getTablePostfix()).withUserId(userId)
+			return dataAccessLayer.findById(userName, company.getTablePrefix()).withUserId(userId)
 					.withCompany(company);
 		} catch (DataNotFoundEx e) {
 			throw UncheckedException.appException(EntityName.SECURITY_USER, ExceptionType.ENTITY_NOT_FOUND, userName);
@@ -51,17 +51,17 @@ public class SecurityUserService extends BaseServiceDAO<String, SecurityUser, Se
 	}
 
 	@Override
-	public void create(SecurityUser user) {
+	public SecurityUser create(SecurityUser user) {
 		try {
-			super.create(this.withEncodedPassword(user));
+			return super.create(this.withEncodedPassword(user));
 		} catch (DuplicateDataEx e) {
 			throw UncheckedException.appException(EntityName.SECURITY_USER, ExceptionType.DUPLICATE_ENTITY,
 					user.getUsername());
 		}
 	}
 
-	public void createSuperUser(SecurityUser user, String companyPostfix) {
-		dataAccessLayer.createSuperUser(this.withEncodedPassword(user), companyPostfix);
+	public void createSuperUser(SecurityUser user, String tablePrefix) {
+		dataAccessLayer.createSuperUser(this.withEncodedPassword(user), tablePrefix);
 	}
 
 	public void updateUserPassword(UserPasswordResetDTO user) throws CredentialNotMatchedEx {

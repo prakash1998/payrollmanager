@@ -1,14 +1,16 @@
-package com.pra.payrollmanager.base;
+package com.pra.payrollmanager.base.dal.audit;
 
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
-import com.pra.payrollmanager.config.JsonJacksonMapperService;
+import com.pra.payrollmanager.base.BaseAuditDAO;
+import com.pra.payrollmanager.base.dal.BaseDALWithCompanyPrefix;
 import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
+import com.pra.payrollmanager.translation.JsonJacksonMapperService;
 
-public abstract class BaseDALWithCompanyPostfixWithAuditLog<PK, DAO extends BaseAuditDAO<PK>>
-		extends BaseDALWithCompanyPostfix<PK, DAO> {
+public abstract class BaseDALWithCompanyPrefixWithAuditLog<PK, DAO extends BaseAuditDAO<PK>>
+		extends BaseDALWithCompanyPrefix<PK, DAO> {
 	// , REPO extends BaseRepo<DAO, PK>
 
 	public static final String AUDIT_POSTFIX = "_ODT";
@@ -24,12 +26,12 @@ public abstract class BaseDALWithCompanyPostfixWithAuditLog<PK, DAO extends Base
 	}
 
 	@Override
-	public void update(DAO obj) throws DataNotFoundEx {
-		DAO dbObj = this.findById(obj.primaryKeyValue());
+	public DAO update(DAO obj) throws DataNotFoundEx {
+		DAO dbObj = super.update(obj);
 		if (!dbObj.equals(obj)) {
-			mongoTemplate.save(obj, this.tableName());
 			this.auditExistingDAO(dbObj);
 		}
+		return dbObj;
 	}
 
 	@Override

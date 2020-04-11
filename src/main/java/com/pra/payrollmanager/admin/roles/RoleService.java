@@ -8,7 +8,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.pra.payrollmanager.base.BaseServiceAuditDTO;
+import com.pra.payrollmanager.base.services.audit.BaseServiceAuditDTO;
 import com.pra.payrollmanager.constants.CacheNameStore;
 import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
@@ -21,8 +21,7 @@ public class RoleService extends BaseServiceAuditDTO<String, RoleDAO, RoleDTO, R
 	@Autowired
 	RolePermissionMapDAL rolePermissionMapDAL;
 
-	@Override
-	public List<RoleDTO> getAllDtos() {
+	public List<RoleDTO> getAllDtosWithPermissions() {
 		return super.getAllDtos().stream()
 				.map(dto -> {
 					dto.setPermissions(rolePermissionMapDAL.getPermissionsForRole(dto.getRoleId()));
@@ -40,20 +39,22 @@ public class RoleService extends BaseServiceAuditDTO<String, RoleDAO, RoleDTO, R
 
 	@Override
 	@Transactional
-	public void create(RoleDTO role) throws DuplicateDataEx {
-		super.create(role);
+	public RoleDTO create(RoleDTO role) throws DuplicateDataEx {
+		RoleDTO savedObj = super.create(role);
 		rolePermissionMapDAL.replaceEntries(role.roleId, role.permissions);
+		return savedObj;
 	}
 
 	@Transactional
 	@CacheEvict(cacheNames = CacheNameStore.SECURITY_USER_PERMISSION_STORE, allEntries = true)
-	public void updateRole(RoleDTO role) throws DataNotFoundEx, DuplicateDataEx {
-		super.update(role);
+	public RoleDTO updateRole(RoleDTO role) throws DataNotFoundEx, DuplicateDataEx {
+		RoleDTO updatedObj = super.update(role);
 		rolePermissionMapDAL.replaceEntries(role.roleId, role.permissions);
+		return updatedObj;
 	}
 
 	@Override
-	public void update(RoleDTO user) {
+	public RoleDTO update(RoleDTO user) {
 		throw new NotUseThisMethod();
 	}
 
