@@ -12,6 +12,12 @@ public class ApiPermissionDAL extends AuditDALWithoutCompany<String, ApiPermissi
 	public EntityName entity() {
 		return EntityName.API_PERMISSION;
 	}
+
+	@Override
+	public ApiPermission apiPermission() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 
 }

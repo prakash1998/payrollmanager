@@ -8,6 +8,9 @@ import com.pra.payrollmanager.base.dal.next.DataStoreService;
 import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
 import com.pra.payrollmanager.message.MessageSendingService;
+import com.pra.payrollmanager.security.authorization.AuthorityService;
+import com.pra.payrollmanager.security.authorization.permission.api.ApiPermission;
+import com.pra.payrollmanager.security.authorization.permission.api.ApiServices;
 
 abstract public class RTServiceDTO<PK,
 		DAO extends BaseDAOWithDTO<PK, DTO>,
@@ -29,6 +32,19 @@ abstract public class RTServiceDTO<PK,
 	@Override
 	public MessageSendingService messageService() {
 		return messageService;
+	}
+
+	@Autowired
+	protected AuthorityService authorityService;
+
+	@Override
+	public AuthorityService authorityService() {
+		return authorityService;
+	}
+	
+	@Override
+	public ApiPermission apiPermission() {
+		return dataAccessLayer.apiPermission();
 	}
 
 	@Override

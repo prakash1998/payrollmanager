@@ -1,12 +1,16 @@
 package com.pra.payrollmanager.security.authentication.company;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.data.annotation.Id;
 
 import com.pra.payrollmanager.base.BaseAuditDAO;
 import com.pra.payrollmanager.security.authorization.permission.SecurityPermission;
+import com.pra.payrollmanager.security.authorization.permission.api.ApiPermission;
+import com.pra.payrollmanager.security.authorization.permission.api.ApiServices;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -30,9 +34,19 @@ public class SecurityCompany extends BaseAuditDAO<String> {
 	private boolean accountExpired = false;
 	@Builder.Default
 	private Set<Integer> permissions = new HashSet<>();
+	@Builder.Default
+	private Map<Integer, Set<ApiServices>> apiPermissions = new HashMap<>();
 
 	public boolean hasAccessTo(SecurityPermission permission) {
 		return permissions.contains(permission.getNumericId());
+	}
+
+	public boolean hasAccessTo(ApiPermission permission, ApiServices service) {
+		Integer apiId = permission.getNumericId();
+		Set<ApiServices> allowedServices = apiPermissions.get(apiId);
+		if(allowedServices == null)
+			return false;
+		return allowedServices.contains(service);
 	}
 
 	public static class SecurityCompanyBuilder {

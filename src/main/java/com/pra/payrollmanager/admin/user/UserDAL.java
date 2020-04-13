@@ -8,6 +8,8 @@ import com.pra.payrollmanager.base.dal.next.AuditDALWithCompany;
 import com.pra.payrollmanager.constants.EntityName;
 import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.util.CheckedException;
+import com.pra.payrollmanager.security.authorization.ApiPermissions;
+import com.pra.payrollmanager.security.authorization.permission.api.ApiPermission;
 
 @Repository
 public class UserDAL extends AuditDALWithCompany<String, UserDAO> {
@@ -24,6 +26,9 @@ public class UserDAL extends AuditDALWithCompany<String, UserDAO> {
 		return EntityName.USER;
 	}
 
-
+	@Override
+	public ApiPermission apiPermission() {
+		return ApiPermissions.ADMIN__USERS;
+	}
 
 }

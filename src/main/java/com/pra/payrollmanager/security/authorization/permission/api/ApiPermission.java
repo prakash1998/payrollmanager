@@ -19,7 +19,7 @@ import lombok.With;
 @Value
 @Builder
 @EqualsAndHashCode(callSuper = false)
-public class ApiPermission extends BaseAuditDAOWithDTO<String,ApiPermissionDTO> {
+public class ApiPermission extends BaseAuditDAOWithDTO<String, ApiPermissionDTO> {
 
 	@Id
 	private String id;
@@ -35,7 +35,7 @@ public class ApiPermission extends BaseAuditDAOWithDTO<String,ApiPermissionDTO> 
 		return ApiPermission.builder()
 				.id(id)
 				.numericId(numericId)
-				.display(id.replace("__","_").replace("_", " "))
+				.display(id.replace("__", "_").replace("_", " "))
 				.category(category)
 				.services(services)
 				.build();
@@ -47,9 +47,9 @@ public class ApiPermission extends BaseAuditDAOWithDTO<String,ApiPermissionDTO> 
 				.services(new HashSet<>(Arrays.asList(services)))
 				.build();
 	}
-	
+
 	public static ApiPermission of(int numericId) {
-		return of(numericId,ApiServices.AUDIT,ApiServices.REALTIME);
+		return of(numericId, ApiServices.AUDIT, ApiServices.REALTIME);
 	}
 
 	@Override

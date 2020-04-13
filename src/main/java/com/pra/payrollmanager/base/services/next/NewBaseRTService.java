@@ -8,5 +8,6 @@ public interface NewBaseRTService<PK,
 		DATA,
 		DAL extends DataStoreService<PK, DAO>>
 		extends NewBaseService<PK, DAO, DATA, DAL>, BaseRTService<PK> {
-
+	
+// not used
 }

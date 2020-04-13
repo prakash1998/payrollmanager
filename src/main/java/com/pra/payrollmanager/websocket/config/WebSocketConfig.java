@@ -12,7 +12,7 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
 
-import com.pra.payrollmanager.websocket.security.AppChannelInterceptor;
+import com.pra.payrollmanager.websocket.security.AppInChannelInterceptor;
 import com.pra.payrollmanager.websocket.security.AppHandshakeHandler;
 import com.pra.payrollmanager.websocket.security.AppHandshakeInterceptor;
 import com.pra.payrollmanager.websocket.security.AppWebSocketHandlerDecoratorFactory;
@@ -29,7 +29,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
 	@Autowired
-	private AppChannelInterceptor appChannelInterceptor;
+	private AppInChannelInterceptor appChannelInterceptor;
 
 	@Autowired
 	private AppWebSocketHandlerDecoratorFactory appWebSocketHandlerDecoratorFactory;

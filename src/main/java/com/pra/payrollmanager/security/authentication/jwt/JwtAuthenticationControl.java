@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pra.payrollmanager.admin.company.CompanyDetailsDTO;
-import com.pra.payrollmanager.admin.company.CompanyDetailsService;
 import com.pra.payrollmanager.constants.EntityName;
 import com.pra.payrollmanager.exception.checked.CredentialNotMatchedEx;
 import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
@@ -29,6 +28,7 @@ import com.pra.payrollmanager.security.authentication.jwt.dto.JwtRequest;
 import com.pra.payrollmanager.security.authentication.jwt.dto.JwtResponse;
 import com.pra.payrollmanager.security.authentication.user.SecurityUser;
 import com.pra.payrollmanager.security.authentication.user.SecurityUserService;
+import com.pra.payrollmanager.security.authorization.AuthorityService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -38,20 +38,17 @@ import io.jsonwebtoken.JwtException;
 @CrossOrigin
 public class JwtAuthenticationControl {
 
-	@Value("${jwt.token_validity}")
-	private long JWT_TOKEN_VALIDITY;
-
 	@Value("${jwt.refresh_cooldown}")
 	private long JWT_REFRESH_COOLDOWN;
 
-	@Value("${auth.god_mode}")
-	private boolean GOD_MODE;
-
 	@Autowired
 	private AuthenticationManager authenticationManager;
+	
+	@Autowired
+	private AuthorityService authService;
 
 	@Autowired
-	private JwtTokenService jwtTokenUtil;
+	private JwtTokenService jwtTokenService;
 
 	@Autowired
 	private SecurityUserService userService;
@@ -63,7 +60,7 @@ public class JwtAuthenticationControl {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response<JwtResponse> createAuthenticationToken(@Valid @RequestBody JwtRequest authenticationRequest)
 			throws CredentialNotMatchedEx, DuplicateDataEx {
-		if (GOD_MODE) {
+		if (authService.inGodMode()) {
 			CompanyDetailsDTO godCompany = CompanyDetailsDTO.builder()
 					.companyId("god")
 					.superUserPassword("god")
@@ -77,10 +74,10 @@ public class JwtAuthenticationControl {
 		authenticate(authenticationRequest.getUserId(), authenticationRequest.getPassword());
 		final SecurityUser userDetails = userService.loadUserByUsername(authenticationRequest.getUserId());
 		userService.login(authenticationRequest.getUserId());
-		final String token = jwtTokenUtil.generateToken(userDetails);
+		final String token = jwtTokenService.generateToken(userDetails);
 		return Response.payload(JwtResponse.builder()
 				.jwt(token)
-				.validity(JWT_TOKEN_VALIDITY)
+				.validity(jwtTokenService.getTokenValidity())
 				.refreshToken(refreshToken(token, userDetails.getPassword()))
 				.refreshCoolDown(JWT_REFRESH_COOLDOWN)
 				.build());
@@ -94,7 +91,7 @@ public class JwtAuthenticationControl {
 		Date expireDate;
 		try {
 			try {
-				Claims claims = jwtTokenUtil.getAllClaimsFromToken(expiredJwt);
+				Claims claims = jwtTokenService.getAllClaimsFromToken(expiredJwt);
 				userId = claims.getSubject();
 				expireDate = claims.getExpiration();
 			} catch (JwtException e) {
@@ -142,10 +139,10 @@ public class JwtAuthenticationControl {
 					.build();
 		}
 
-		final String token = jwtTokenUtil.generateToken(userDetails);
+		final String token = jwtTokenService.generateToken(userDetails);
 		return Response.payload(JwtResponse.builder()
 				.jwt(token)
-				.validity(JWT_TOKEN_VALIDITY)
+				.validity(jwtTokenService.getTokenValidity())
 				.refreshToken(refreshToken(token, userDetails.getPassword()))
 				.refreshCoolDown(JWT_REFRESH_COOLDOWN)
 				.build());

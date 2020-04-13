@@ -21,6 +21,10 @@ public class AuthorityService {
 	@Value("${auth.god_mode}")
 	private boolean GOD_MODE;
 
+	public boolean inGodMode() {
+		return GOD_MODE;
+	}
+
 	@Autowired
 	SecurityUserPermissionService securityUserPermissionService;
 
@@ -40,7 +44,7 @@ public class AuthorityService {
 
 	public void validatePermissions(SecurityPermission... permissions) {
 
-		if (GOD_MODE) {
+		if (inGodMode()) {
 			return;
 		}
 

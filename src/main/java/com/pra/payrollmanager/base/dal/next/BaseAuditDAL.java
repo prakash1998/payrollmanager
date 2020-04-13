@@ -8,6 +8,8 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.pra.payrollmanager.base.BaseAuditDAO;
 import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
+import com.pra.payrollmanager.security.authorization.AuthorityService;
+import com.pra.payrollmanager.security.authorization.permission.api.ApiServices;
 import com.pra.payrollmanager.translation.JsonJacksonMapperService;
 
 public abstract class BaseAuditDAL<PK, DAO extends BaseAuditDAO<PK>>
@@ -25,7 +27,10 @@ public abstract class BaseAuditDAL<PK, DAO extends BaseAuditDAO<PK>>
 
 	@Autowired
 	private JsonJacksonMapperService mapper;
-	
+
+	@Autowired
+	protected AuthorityService authorityService;
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<DAO> daoClazz() {
@@ -42,6 +47,11 @@ public abstract class BaseAuditDAL<PK, DAO extends BaseAuditDAO<PK>>
 	@Override
 	public JsonJacksonMapperService mapper() {
 		return mapper;
+	}
+	
+	@Override
+	public AuthorityService authorityService() {
+		return authorityService;
 	}
 
 	@Override

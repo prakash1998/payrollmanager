@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import com.pra.payrollmanager.security.authentication.user.SecurityUser;
@@ -25,8 +24,13 @@ public class JwtTokenService implements Serializable {
 
 	@Value("${jwt.token_validity}")
 	private long JWT_TOKEN_VALIDITY;
+	
 	@Value("${jwt.secret}")
 	private String secret;
+	
+	public long getTokenValidity() {
+		return JWT_TOKEN_VALIDITY;
+	}
 
 	// retrieve username from jwt token
 	public String getUserIdFromToken(String token) throws JwtException {

@@ -2,7 +2,6 @@ package com.pra.payrollmanager.base.services.realtime;
 
 import java.util.Set;
 
-import com.pra.payrollmanager.base.BaseDAO;
 import com.pra.payrollmanager.base.BaseDAOWithDTO;
 import com.pra.payrollmanager.base.BaseDTO;
 import com.pra.payrollmanager.base.dal.BaseDALWithCompanyPrefix;

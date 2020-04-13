@@ -7,8 +7,9 @@ import com.pra.payrollmanager.message.Message;
 import com.pra.payrollmanager.message.MessageSendingService;
 import com.pra.payrollmanager.message.MessageUtil;
 import com.pra.payrollmanager.message.WSMessage;
+import com.pra.payrollmanager.security.authorization.permission.api.ApiServices;
 
-public interface BaseRTService<PK> {
+public interface BaseRTService<PK> extends ApiRestriction {
 
 	MessageSendingService messageService();
 
@@ -19,7 +20,7 @@ public interface BaseRTService<PK> {
 	}
 
 	default boolean realTimeDataEnabled() {
-		return mqTopic() != null;
+		return mqTopic() != null && isAllowedFor(ApiServices.REALTIME);
 	}
 
 	default void sendCreateMessage(Object obj) {

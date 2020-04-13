@@ -13,6 +13,7 @@ import com.pra.payrollmanager.constants.EntityName;
 import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
 import com.pra.payrollmanager.exception.util.CheckedException;
+import com.pra.payrollmanager.security.authorization.permission.api.ApiPermission;
 
 public interface DataStoreService<PK, DAO extends BaseDAO<PK>> {
 
@@ -23,6 +24,8 @@ public interface DataStoreService<PK, DAO extends BaseDAO<PK>> {
 	Class<DAO> daoClazz();
 
 	String tableName();
+	
+	ApiPermission apiPermission();
 
 	default boolean exists(DAO obj) {
 		return this.existsById(obj.primaryKeyValue());
