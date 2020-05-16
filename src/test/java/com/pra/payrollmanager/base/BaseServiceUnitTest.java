@@ -14,17 +14,20 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.pra.payrollmanager.base.dal.BaseDALWithCompanyPrefix;
-import com.pra.payrollmanager.base.services.BaseServiceDTO;
+import com.pra.payrollmanager.base.dal.DALWithCompany;
+import com.pra.payrollmanager.base.data.BaseDAO;
+import com.pra.payrollmanager.base.data.BaseDTO;
+import com.pra.payrollmanager.base.data.WithDTO;
+import com.pra.payrollmanager.base.services.ServiceDTO;
 import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
 
 @SpringBootTest
 @TestInstance(value = Lifecycle.PER_CLASS)
-public abstract class BaseServiceUnitTest<DAO extends BaseDAOWithDTO<?, DTO>,
+public abstract class BaseServiceUnitTest<DAO extends BaseDAO<?> & WithDTO<DTO>,
 		DTO extends BaseDTO<DAO>,
-		DAL extends BaseDALWithCompanyPrefix<?, DAO>,
-		SERVICE extends BaseServiceDTO<?, ?, ?, DAL>> {
+		DAL extends DALWithCompany<?, DAO>,
+		SERVICE extends ServiceDTO<?, ?, ?, DAL>> {
 
 	@Autowired
 	protected SERVICE entityService;
@@ -36,6 +39,8 @@ public abstract class BaseServiceUnitTest<DAO extends BaseDAOWithDTO<?, DTO>,
 	private Class<DAL> dalClazz;
 
 	public BaseServiceUnitTest() {
+		// specified in each class in hierarchy because we can access type parameter
+		// class in immediate parent only
 		Type sooper = getClass().getGenericSuperclass();
 		daoClazz = (Class<DAO>) ((ParameterizedType) sooper)
 				.getActualTypeArguments()[0];

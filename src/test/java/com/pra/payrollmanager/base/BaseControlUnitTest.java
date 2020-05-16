@@ -24,11 +24,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pra.payrollmanager.base.BaseControl;
-import com.pra.payrollmanager.base.BaseDTO;
-import com.pra.payrollmanager.base.services.audit.BaseServiceAuditDTO;
+import com.pra.payrollmanager.base.data.BaseDTO;
+import com.pra.payrollmanager.base.services.ServiceDTO;
 import com.pra.payrollmanager.config.MockUserDetailService;
 import com.pra.payrollmanager.config.TestingConfig;
+import com.pra.payrollmanager.exception.AnyThrowable;
 import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
 
@@ -37,7 +37,7 @@ import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
 		classes = TestingConfig.class)
 @TestInstance(value = Lifecycle.PER_CLASS)
 abstract public class BaseControlUnitTest<CONTROL extends BaseControl<SERVICE>,
-		SERVICE extends BaseServiceAuditDTO<?, ?, ?, ?>,
+		SERVICE extends ServiceDTO<?, ?, ?, ?>,
 		DTO extends BaseDTO<?>> {
 
 	protected final static String TESTER = "test-user-pra";
@@ -81,7 +81,8 @@ abstract public class BaseControlUnitTest<CONTROL extends BaseControl<SERVICE>,
 
 	@SuppressWarnings("unchecked")
 	public BaseControlUnitTest() {
-		Type sooper = getClass().getGenericSuperclass();
+		 // specified in each class in hierarchy because we can access type parameter class in immediate parent only 
+    Type sooper = getClass().getGenericSuperclass();
 		controlClazz = (Class<CONTROL>) ((ParameterizedType) sooper)
 				.getActualTypeArguments()[0];
 		serviceClazz = (Class<SERVICE>) ((ParameterizedType) sooper)
@@ -96,7 +97,7 @@ abstract public class BaseControlUnitTest<CONTROL extends BaseControl<SERVICE>,
 
 	public abstract List<DTO> initMockDtoStore();
 
-	public void setBaseMockServiceMethods() throws DuplicateDataEx, DataNotFoundEx {
+	public void setBaseMockServiceMethods() throws DuplicateDataEx, DataNotFoundEx, AnyThrowable {
 		Mockito.doAnswer(invocation -> {
 			return mockDataStore;
 		}).when(mockEntityService)
@@ -128,7 +129,7 @@ abstract public class BaseControlUnitTest<CONTROL extends BaseControl<SERVICE>,
 	public abstract void initUserStore(MockUserDetailService authService);
 
 	@BeforeAll
-	public void beforeClass() throws Exception {
+	public void beforeClass() throws Throwable {
 		mockDataStore = initMockDtoStore();
 		mockDataStore = mockDataStore == null ? new ArrayList<>() : mockDataStore;
 		mockMvc = MockMvcBuilders

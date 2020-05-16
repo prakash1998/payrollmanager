@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.pra.payrollmanager.security.authentication.user.SecurityUser;
-import com.pra.payrollmanager.security.authorization.permission.SecurityPermission;
+import com.pra.payrollmanager.user.root.permissions.security.SecurityPermission;
 
 public class MockUserDetailService implements UserDetailsService {
 

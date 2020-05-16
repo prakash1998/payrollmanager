@@ -8,7 +8,7 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.pra.payrollmanager.base.BaseAuditDAO;
+import com.pra.payrollmanager.base.data.BaseAuditDAO;
 import com.pra.payrollmanager.security.authentication.company.SecurityCompany;
 
 import lombok.AllArgsConstructor;

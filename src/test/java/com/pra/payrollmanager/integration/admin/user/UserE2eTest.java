@@ -14,9 +14,9 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.pra.payrollmanager.admin.user.UserControl;
-import com.pra.payrollmanager.admin.user.UserDAO;
-import com.pra.payrollmanager.admin.user.UserDTO;
+import com.pra.payrollmanager.admin.common.user.UserControl;
+import com.pra.payrollmanager.admin.common.user.UserDAO;
+import com.pra.payrollmanager.admin.common.user.UserDTO;
 import com.pra.payrollmanager.base.BaseE2eIntegrationTest;
 import com.pra.payrollmanager.config.MockUserDetailService;
 import com.pra.payrollmanager.constants.EntityName;
@@ -36,7 +36,7 @@ public class UserE2eTest extends BaseE2eIntegrationTest<UserControl> {
 
 	@Override
 	public void initUserStore(MockUserDetailService authService) {
-		authService.addUserInStore(TESTER, SecurityPermissions.USERS__MANAGER);
+//		authService.addUserInStore(TESTER, SecurityPermissions.USER_DETAILS__MANAGE);
 	}
 
 	@Override

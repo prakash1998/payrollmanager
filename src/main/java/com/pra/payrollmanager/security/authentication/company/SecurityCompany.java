@@ -7,10 +7,11 @@ import java.util.Set;
 
 import org.springframework.data.annotation.Id;
 
-import com.pra.payrollmanager.base.BaseAuditDAO;
-import com.pra.payrollmanager.security.authorization.permission.SecurityPermission;
-import com.pra.payrollmanager.security.authorization.permission.api.ApiPermission;
-import com.pra.payrollmanager.security.authorization.permission.api.ApiServices;
+import com.pra.payrollmanager.base.data.BaseAuditDAO;
+import com.pra.payrollmanager.security.authorization.permission.ResourceFeatures;
+import com.pra.payrollmanager.user.root.permissions.endpoint.EndpointPermission;
+import com.pra.payrollmanager.user.root.permissions.feature.FeaturePermission;
+import com.pra.payrollmanager.user.root.permissions.security.SecurityPermission;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -22,6 +23,11 @@ import lombok.With;
 @Builder
 @EqualsAndHashCode(callSuper = false)
 public class SecurityCompany extends BaseAuditDAO<String> {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3356823150761471502L;
 
 	@Id
 	private String id;
@@ -35,16 +41,22 @@ public class SecurityCompany extends BaseAuditDAO<String> {
 	@Builder.Default
 	private Set<Integer> permissions = new HashSet<>();
 	@Builder.Default
-	private Map<Integer, Set<ApiServices>> apiPermissions = new HashMap<>();
+	private Set<Integer> endpointPermissions = new HashSet<>();
+	@Builder.Default
+	private Map<Integer, Set<ResourceFeatures>> resourceFeatures = new HashMap<>();
 
 	public boolean hasAccessTo(SecurityPermission permission) {
 		return permissions.contains(permission.getNumericId());
 	}
 
-	public boolean hasAccessTo(ApiPermission permission, ApiServices service) {
+	public boolean hasAccessTo(EndpointPermission permission) {
+		return endpointPermissions.contains(permission.getNumericId());
+	}
+
+	public boolean hasAccessTo(FeaturePermission permission, ResourceFeatures service) {
 		Integer apiId = permission.getNumericId();
-		Set<ApiServices> allowedServices = apiPermissions.get(apiId);
-		if(allowedServices == null)
+		Set<ResourceFeatures> allowedServices = resourceFeatures.get(apiId);
+		if (allowedServices == null)
 			return false;
 		return allowedServices.contains(service);
 	}
@@ -54,7 +66,7 @@ public class SecurityCompany extends BaseAuditDAO<String> {
 
 		public SecurityCompanyBuilder id(String id) {
 			this.id = id;
-			this.tablePrefix = id.toUpperCase() + "_";
+			this.tablePrefix = id.trim().toUpperCase() + "_";
 			return this;
 		}
 	}

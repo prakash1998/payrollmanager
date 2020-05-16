@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.pra.payrollmanager.base.services.BaseServiceDAO;
+import com.pra.payrollmanager.base.services.ServiceDAO;
 import com.pra.payrollmanager.constants.CacheNameStore;
 import com.pra.payrollmanager.constants.EntityName;
 import com.pra.payrollmanager.exception.checked.CredentialNotMatchedEx;
@@ -22,7 +22,7 @@ import com.pra.payrollmanager.security.authentication.company.SecurityCompanySer
 
 @Service
 @CacheConfig(cacheNames = CacheNameStore.SECURITY_USER_STORE)
-public class SecurityUserService extends BaseServiceDAO<String, SecurityUser, SecurityUserDAL>
+public class SecurityUserService extends ServiceDAO<String, SecurityUser, SecurityUserDAL>
 		implements UserDetailsService {
 
 	@Autowired

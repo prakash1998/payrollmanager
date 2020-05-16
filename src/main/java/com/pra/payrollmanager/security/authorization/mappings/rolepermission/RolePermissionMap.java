@@ -1,30 +1,16 @@
 package com.pra.payrollmanager.security.authorization.mappings.rolepermission;
-	
-import org.springframework.data.annotation.Id;
 
-import com.pra.payrollmanager.base.BaseDAO;
+import com.pra.payrollmanager.base.data.BaseMapDAO;
 
-import lombok.Value;
-import lombok.With;
+public class RolePermissionMap extends BaseMapDAO<String, Integer> {
 
-@With
-@Value
-public class RolePermissionMap implements BaseDAO<String> {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2586602126892269691L;
 
-	@Id
-	private String rolePermissionId;
-
-	private String roleId;
-	private Integer permissionId;
-
-	public static RolePermissionMap of(String roleId, Integer permissionId) {
-		String rolePermiisionId = String.format("%s``%s", roleId, permissionId);
-		return new RolePermissionMap(rolePermiisionId, roleId, permissionId);
-	}
-
-	@Override
-	public String primaryKeyValue() {
-		return roleId;
+	public RolePermissionMap(String roleId, Integer permissionId) {
+		super(roleId, permissionId);
 	}
 
 }

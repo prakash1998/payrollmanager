@@ -12,10 +12,7 @@ import org.springframework.stereotype.Component;
 import com.pra.payrollmanager.security.authentication.user.SecurityUser;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 @Component
@@ -24,34 +21,26 @@ public class JwtTokenService implements Serializable {
 
 	@Value("${jwt.token_validity}")
 	private long JWT_TOKEN_VALIDITY;
-	
+
 	@Value("${jwt.secret}")
 	private String secret;
-	
+
 	public long getTokenValidity() {
 		return JWT_TOKEN_VALIDITY;
 	}
 
 	// retrieve username from jwt token
-	public String getUserIdFromToken(String token) throws JwtException {
+	public String getUserIdFromToken(String token) {
 		return getAllClaimsFromToken(token).getSubject();
 	}
 
-	public Date getExpirationDateFromToken(String token) throws JwtException {
+	public Date getExpirationDateFromToken(String token) {
 		return getAllClaimsFromToken(token).getExpiration();
 	}
 
 	// for retrieveing any information from token we will need the secret key
-	public Claims getAllClaimsFromToken(String token) throws JwtException {
-		try {
-			return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
-		} catch (MalformedJwtException e) {
-			throw new JwtException("Mulformed Jwt Exception", e);
-		} catch (IllegalArgumentException e) {
-			throw new JwtException("Unable to get JWT Token", e);
-		} catch (ExpiredJwtException e) {
-			throw new JwtException("JWT Token has been expired", e);
-		}
+	public Claims getAllClaimsFromToken(String token) {
+		return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
 	}
 
 	// generate token for user

@@ -28,5 +28,15 @@
     "name": "spring.kafka.proprties.reconnect.backoff.ms",
     "type": "java.lang.String",
     "description": "A description for 'spring.kafka.proprties.reconnect.backoff.ms'"
+  },
+  {
+    "name": "spring.kafka.enabled",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.kafka.enabled'"
+  },
+  {
+    "name": "spring.kafka.proprties.reconnect.backoff.max.ms",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.kafka.proprties.reconnect.backoff.max.ms'"
   }
 ]}

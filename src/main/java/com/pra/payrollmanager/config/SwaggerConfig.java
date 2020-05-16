@@ -1,13 +1,11 @@
 package com.pra.payrollmanager.config;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-
-import com.google.common.collect.Lists;
+import org.springframework.context.annotation.Profile;
 
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -15,17 +13,15 @@ import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.ApiKey;
-import springfox.documentation.service.AuthorizationScope;
 import springfox.documentation.service.Contact;
-import springfox.documentation.service.SecurityReference;
 import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
 @EnableSwagger2
 @Import(BeanValidatorPluginsConfiguration.class)
+@Profile("dev")
 public class SwaggerConfig {
 
 	private ApiKey apiKey() {
@@ -36,7 +32,7 @@ public class SwaggerConfig {
 	 * Group Security contains api s related to security / token
 	 */
 	@Bean
-	public Docket swaggerBRSApi() {
+	public Docket swaggerSecurityApi() {
 		return new Docket(DocumentationType.SWAGGER_2)
 				.groupName("Security")
 				.select()
@@ -51,11 +47,26 @@ public class SwaggerConfig {
 	 * Group Admin contains operations related to administration
 	 */
 	@Bean
-	public Docket swaggerUserApi() {
+	public Docket swaggerAdminApi() {
 		return new Docket(DocumentationType.SWAGGER_2)
 				.groupName("Admin")
 				.select()
 				.apis(RequestHandlerSelectors.basePackage("com.pra.payrollmanager.admin"))
+				.paths(PathSelectors.any())
+				.build()
+				.apiInfo(apiInfo())
+				.securitySchemes(Arrays.asList(apiKey()));
+	}
+
+	/**
+	 * Group Admin contains operations related to administration
+	 */
+	@Bean
+	public Docket swaggerUserApi() {
+		return new Docket(DocumentationType.SWAGGER_2)
+				.groupName("User")
+				.select()
+				.apis(RequestHandlerSelectors.basePackage("com.pra.payrollmanager.user"))
 				.paths(PathSelectors.any())
 				.build()
 				.apiInfo(apiInfo())

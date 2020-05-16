@@ -5,20 +5,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 
 import com.pra.payrollmanager.base.BaseE2eIntegrationTest;
 import com.pra.payrollmanager.config.MockUserDetailService;
-import com.pra.payrollmanager.security.authorization.SecurityPermissions;
-import com.pra.payrollmanager.security.authorization.permission.SecurityPermissionControl;
+import com.pra.payrollmanager.user.root.permissions.security.SecurityPermissionControl;
 
 public class PermissionE2eTest extends BaseE2eIntegrationTest<SecurityPermissionControl> {
 
 	
 	@Override
 	public void initUserStore(MockUserDetailService authService) {
-		authService.addUserInStore(TESTER, SecurityPermissions.SECURITY_PERMISSION__MANAGER);
+//		authService.addUserInStore(TESTER, SecurityPermissions.);
 	}
 	
 	@Override

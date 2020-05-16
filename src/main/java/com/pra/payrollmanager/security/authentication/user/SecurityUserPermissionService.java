@@ -9,6 +9,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.pra.payrollmanager.constants.CacheNameStore;
+import com.pra.payrollmanager.security.authorization.mappings.roleendpoint.RoleEndpointPermissionMapDAL;
 import com.pra.payrollmanager.security.authorization.mappings.rolepermission.RolePermissionMapDAL;
 import com.pra.payrollmanager.security.authorization.mappings.userrole.UserRoleMapDAL;
 
@@ -22,12 +23,24 @@ public class SecurityUserPermissionService {
 	@Autowired
 	RolePermissionMapDAL rolePermissionMapDAL;
 
+	@Autowired
+	RoleEndpointPermissionMapDAL roleEndpointPermissionMapDAL;
+
 	@Cacheable
 	public Set<Integer> loadPermissionsForUserId(String userId) {
 		String[] companyUser = userId.split("-");
 		String userName = companyUser[1];
-		return userRoleMapDAL.getRoleIdsForUser(userName).stream()
-				.flatMap(roleId -> rolePermissionMapDAL.getPermissionsForRole(roleId).stream())
+		return userRoleMapDAL.getValuesForKey(userName).stream()
+				.flatMap(roleId -> rolePermissionMapDAL.getValuesForKey(roleId).stream())
+				.collect(Collectors.toSet());
+	}
+
+	@Cacheable
+	public Set<Integer> loadEndpointPermissionsForUserId(String userId) {
+		String[] companyUser = userId.split("-");
+		String userName = companyUser[1];
+		return userRoleMapDAL.getValuesForKey(userName).stream()
+				.flatMap(roleId -> roleEndpointPermissionMapDAL.getValuesForKey(roleId).stream())
 				.collect(Collectors.toSet());
 	}
 

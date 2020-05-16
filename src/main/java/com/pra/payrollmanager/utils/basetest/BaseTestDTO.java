@@ -2,8 +2,8 @@ package com.pra.payrollmanager.utils.basetest;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.pra.payrollmanager.base.BaseAuditDTO;
-import com.pra.payrollmanager.base.BaseDTO;
+import com.pra.payrollmanager.base.data.BaseAuditDTO;
+import com.pra.payrollmanager.base.data.BaseDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,7 +25,7 @@ public class BaseTestDTO extends BaseAuditDTO<BaseTestDAO>{
 	private Integer id;
 	
 	@Override
-	public BaseTestDAO toDAO() {
+	public BaseTestDAO toPlainDAO() {
 		return BaseTestDAO.builder().id(id).build();
 	}
 

@@ -7,8 +7,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.pra.payrollmanager.admin.company.CompanyDetailsDTO;
-import com.pra.payrollmanager.base.services.BaseServiceDAO;
+import com.pra.payrollmanager.base.services.ServiceDAO;
 import com.pra.payrollmanager.constants.CacheNameStore;
 import com.pra.payrollmanager.constants.EntityName;
 import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
@@ -17,10 +16,11 @@ import com.pra.payrollmanager.exception.unchecked.NotUseThisMethod;
 import com.pra.payrollmanager.exception.util.ExceptionType;
 import com.pra.payrollmanager.exception.util.UncheckedException;
 import com.pra.payrollmanager.security.authentication.user.SecurityUserService;
+import com.pra.payrollmanager.user.root.company.CompanyDetailsDTO;
 
 @Service
 @CacheConfig(cacheNames = CacheNameStore.SECURITY_COMPANY_STORE)
-public class SecurityCompanyService extends BaseServiceDAO<String, SecurityCompany, SecurityCompanyDAL> {
+public class SecurityCompanyService extends ServiceDAO<String, SecurityCompany, SecurityCompanyDAL> {
 
 	@Autowired
 	SecurityUserService securityUserService;
@@ -44,7 +44,7 @@ public class SecurityCompanyService extends BaseServiceDAO<String, SecurityCompa
 	public void create(CompanyDetailsDTO company) throws DuplicateDataEx {
 		SecurityCompany securityCompany = company.toSecurityCompany();
 		super.create(securityCompany);
-		securityUserService.createSuperUser(company.toSecurityUser(), securityCompany.getTablePrefix());
+		securityUserService.createSuperUser(company.toSuperUser(), securityCompany.getTablePrefix());
 	}
 
 	@Override

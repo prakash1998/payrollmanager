@@ -2,7 +2,7 @@ package com.pra.payrollmanager.utils.basetest;
 
 import javax.persistence.Id;
 
-import com.pra.payrollmanager.base.BaseAuditDAOWithDTO;
+import com.pra.payrollmanager.base.data.BaseAuditDAOWithDTO;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -20,7 +20,7 @@ public class BaseTestDAO extends BaseAuditDAOWithDTO<Integer,BaseTestDTO>{
 	}
 
 	@Override
-	public BaseTestDTO toDto() {
+	public BaseTestDTO toPlainDTO() {
 		return BaseTestDTO.builder()
 				.id(id)
 				.build();

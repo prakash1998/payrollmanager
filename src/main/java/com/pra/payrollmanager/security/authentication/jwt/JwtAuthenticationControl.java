@@ -1,5 +1,6 @@
 package com.pra.payrollmanager.security.authentication.jwt;
 
+import java.time.Instant;
 import java.util.Date;
 
 import javax.validation.Valid;
@@ -16,8 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pra.payrollmanager.admin.company.CompanyDetailsDTO;
 import com.pra.payrollmanager.constants.EntityName;
+import com.pra.payrollmanager.exception.AnyThrowable;
 import com.pra.payrollmanager.exception.checked.CredentialNotMatchedEx;
 import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
 import com.pra.payrollmanager.exception.util.CheckedException;
@@ -29,6 +30,9 @@ import com.pra.payrollmanager.security.authentication.jwt.dto.JwtResponse;
 import com.pra.payrollmanager.security.authentication.user.SecurityUser;
 import com.pra.payrollmanager.security.authentication.user.SecurityUserService;
 import com.pra.payrollmanager.security.authorization.AuthorityService;
+import com.pra.payrollmanager.user.root.company.CompanyDetailsDAO;
+import com.pra.payrollmanager.user.root.company.CompanyDetailsDTO;
+import com.pra.payrollmanager.user.root.company.CompanyDetailsService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -43,7 +47,7 @@ public class JwtAuthenticationControl {
 
 	@Autowired
 	private AuthenticationManager authenticationManager;
-	
+
 	@Autowired
 	private AuthorityService authService;
 
@@ -54,12 +58,15 @@ public class JwtAuthenticationControl {
 	private SecurityUserService userService;
 
 	@Autowired
-	private SecurityCompanyService companyService;
+	private CompanyDetailsService companyDetailService;
+
+	@Autowired
+	private SecurityCompanyService securityCompanyService;
 
 	@PostMapping(value = "/auth/token", consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response<JwtResponse> createAuthenticationToken(@Valid @RequestBody JwtRequest authenticationRequest)
-			throws CredentialNotMatchedEx, DuplicateDataEx {
+			throws CredentialNotMatchedEx, DuplicateDataEx, AnyThrowable {
 		if (authService.inGodMode()) {
 			CompanyDetailsDTO godCompany = CompanyDetailsDTO.builder()
 					.companyId("god")
@@ -67,8 +74,15 @@ public class JwtAuthenticationControl {
 					.build();
 			authenticationRequest.setUserId(godCompany.getCompanyId() + "-" + CompanyDetailsDTO.SUPER_USER_NAME);
 			authenticationRequest.setPassword(godCompany.getSuperUserPassword());
-			if (!companyService.existsById(godCompany.getCompanyId())) {
-				companyService.create(godCompany);
+			if (!securityCompanyService.existsById(godCompany.getCompanyId())) {
+				securityCompanyService.create(godCompany);
+				CompanyDetailsDAO godDAO = godCompany.toDAO();
+				Instant now = Instant.now();
+				godDAO.setCreatedBy("god");
+				godDAO.setCreatedDate(now);
+				godDAO.setModifier("god");
+				godDAO.setModifiedDate(now);
+				companyDetailService.dataAccessLayer().save(godDAO);
 			}
 		}
 		authenticate(authenticationRequest.getUserId(), authenticationRequest.getPassword());
@@ -77,7 +91,6 @@ public class JwtAuthenticationControl {
 		final String token = jwtTokenService.generateToken(userDetails);
 		return Response.payload(JwtResponse.builder()
 				.jwt(token)
-				.validity(jwtTokenService.getTokenValidity())
 				.refreshToken(refreshToken(token, userDetails.getPassword()))
 				.refreshCoolDown(JWT_REFRESH_COOLDOWN)
 				.build());
@@ -142,7 +155,6 @@ public class JwtAuthenticationControl {
 		final String token = jwtTokenService.generateToken(userDetails);
 		return Response.payload(JwtResponse.builder()
 				.jwt(token)
-				.validity(jwtTokenService.getTokenValidity())
 				.refreshToken(refreshToken(token, userDetails.getPassword()))
 				.refreshCoolDown(JWT_REFRESH_COOLDOWN)
 				.build());

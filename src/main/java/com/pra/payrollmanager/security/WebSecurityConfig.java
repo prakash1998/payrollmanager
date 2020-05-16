@@ -1,5 +1,9 @@
 package com.pra.payrollmanager.security;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,20 +20,26 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.pra.payrollmanager.security.authentication.jwt.JwtAuthenticationEntryPoint;
-import com.pra.payrollmanager.security.authentication.jwt.JwtRequestFilter;
+import com.pra.payrollmanager.filter.AuthorizationFilter;
+import com.pra.payrollmanager.filter.JwtRequestFilter;
 import com.pra.payrollmanager.websocket.config.WebSocketConfig;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-	@Autowired
-	private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
+	public static final Set<String> openEndpoints = new HashSet<>(Arrays.asList(
+			"/auth/token", "/auth/token/refresh", WebSocketConfig.WS_ENDPOINT_PREFIX));
+
+	// @Autowired
+	// private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 	@Autowired
 	private UserDetailsService jwtUserDetailsService;
 	@Autowired
 	private JwtRequestFilter jwtRequestFilter;
+	@Autowired
+	private AuthorizationFilter authrizationFilter;
 
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -41,19 +51,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
-		// return new PasswordEncoder() {
-		//
-		// @Override
-		// public String encode(CharSequence arg0) {
-		// return arg0.toString();
-		// }
-		//
-		// @Override
-		// public boolean matches(CharSequence arg0, String arg1) {
-		// return arg0.toString().equals(arg1);
-		// }App started
-		//
-		// };
 		return new BCryptPasswordEncoder(12);
 	}
 
@@ -68,21 +65,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		httpSecurity.cors().and().csrf().disable()
 				// dont authenticate this particular request
 				.authorizeRequests()
-				.antMatchers("/auth/token", "/auth/token/refresh", WebSocketConfig.WS_ENDPOINT_PREFIX)
+				.antMatchers(openEndpoints.toArray(new String[0]))
 				.permitAll()
 				// all other requests need to be authenticated
 				.anyRequest()
 				.authenticated()
 				.and()
+				.exceptionHandling()
+				// .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+				.and()
 				// make sure we use stateless session; session won't be used to
 				// store user's state.
-				.exceptionHandling()
-				.authenticationEntryPoint(jwtAuthenticationEntryPoint)
-				.and()
 				.sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and()
-				.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+				.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+				.addFilterAfter(authrizationFilter, JwtRequestFilter.class);
 
 	}
 

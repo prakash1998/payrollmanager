@@ -5,7 +5,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.stereotype.Service;
 
-import com.pra.payrollmanager.message.WSMessage;
+import com.pra.payrollmanager.message.MessageProxy;
 import com.pra.payrollmanager.translation.JsonJacksonMapperService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ public class WebSocketMessageSendingService {
 	@Autowired
 	private SimpUserRegistry simpUserRegistry;
 
-	public void send(String topic, WSMessage wsMessage) {
+	public void send(String topic, MessageProxy wsMessage) {
 		log.debug("message sent to topic : " + topic);
 		log.debug("message is : " + wsMessage);
 

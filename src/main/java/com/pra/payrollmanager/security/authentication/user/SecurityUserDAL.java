@@ -6,19 +6,19 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
-import com.pra.payrollmanager.base.dal.BaseDALWithCompanyPrefix;
+import com.pra.payrollmanager.base.dal.DALWithCompany;
 import com.pra.payrollmanager.constants.EntityName;
 import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.util.CheckedException;
 
 @Repository
-public class SecurityUserDAL extends BaseDALWithCompanyPrefix<String, SecurityUser> {
+public class SecurityUserDAL extends DALWithCompany<String, SecurityUser> {
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
 	@Override
-	protected EntityName entity() {
+	public EntityName entity() {
 		return EntityName.SECURITY_USER;
 	}
 
@@ -36,7 +36,7 @@ public class SecurityUserDAL extends BaseDALWithCompanyPrefix<String, SecurityUs
 	}
 
 	public void createSuperUser(SecurityUser superUser, String tablePrefix) {
-		mongoTemplate.insert(superUser, tablePrefix + entity().table() );
+		mongoTemplate.insert(superUser, tablePrefix + entity().table());
 	}
 
 	public void updateLogin(SecurityUser user) throws DataNotFoundEx {

@@ -9,7 +9,6 @@ import lombok.Getter;
 @Getter
 public class JwtResponse {
 	private String jwt;
-	private long validity;
 	private String refreshToken;
 	private long refreshCoolDown;
 }

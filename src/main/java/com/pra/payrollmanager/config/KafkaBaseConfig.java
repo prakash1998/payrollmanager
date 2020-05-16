@@ -17,7 +17,7 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
 import com.pra.payrollmanager.constants.KafkaTopics;
-import com.pra.payrollmanager.message.WSMessage;
+import com.pra.payrollmanager.message.MessageProxy;
 import com.pra.payrollmanager.translation.JsonJacksonMapperService;
 
 @Configuration
@@ -67,12 +67,12 @@ public class KafkaBaseConfig {
 	// }
 
 	@Bean
-	public ProducerFactory<String, WSMessage> wsMessageProducerFactory() {
+	public ProducerFactory<String, MessageProxy> wsMessageProducerFactory() {
 		return this.jsonProducerFactory();
 	}
 
 	@Bean
-	public KafkaTemplate<String, WSMessage> wsMessageKafakaTemplate() {
+	public KafkaTemplate<String, MessageProxy> wsMessageKafakaTemplate() {
 		return new KafkaTemplate<>(wsMessageProducerFactory());
 	}
 
@@ -101,14 +101,14 @@ public class KafkaBaseConfig {
 //	}
 
 	@Bean
-	public ConsumerFactory<String, WSMessage> wsMessageConsumerFactory() {
+	public ConsumerFactory<String, MessageProxy> wsMessageConsumerFactory() {
 		return this.jsonConsumerFactory();
 	}
 
 	@Bean
-	public ConcurrentKafkaListenerContainerFactory<String, WSMessage> kafkaListenerContainerFactory() {
+	public ConcurrentKafkaListenerContainerFactory<String, MessageProxy> kafkaListenerContainerFactory() {
 		ConcurrentKafkaListenerContainerFactory<String,
-				WSMessage> factory = new ConcurrentKafkaListenerContainerFactory<>();
+				MessageProxy> factory = new ConcurrentKafkaListenerContainerFactory<>();
 		factory.setConsumerFactory(wsMessageConsumerFactory());
 		return factory;
 	}
