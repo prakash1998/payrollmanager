@@ -1,8 +1,6 @@
 package com.pra.payrollmanager.admin.common.user;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +47,8 @@ public class UserService extends AuditRTServiceDTO<String, UserDAO, UserDTO, Use
 	@Transactional
 	public UserDTO create(UserDTO user) throws DuplicateDataEx, AnyThrowable {
 		securityUserService.create(user.toSecurityUser());
+		if(true)
+			throw new AnyThrowable("testing app");
 		UserDTO savedObj = super.create(user);
 		userRoleMapDAL.replaceEntries(user.getUserName(), user.getRoleIds());
 		savedObj.setRoleIds(user.getRoleIds());
@@ -77,7 +77,7 @@ public class UserService extends AuditRTServiceDTO<String, UserDAO, UserDTO, Use
 		userRoleMapDAL.deleteEntriesByValue(user.getUserName());
 		return deletedUser;
 	}
-
+	
 	public UserDTO findByFirstName(String name) throws DataNotFoundEx {
 		return dataAccessLayer.getByFirstName(name).toDTO();
 	}
@@ -85,11 +85,6 @@ public class UserService extends AuditRTServiceDTO<String, UserDAO, UserDTO, Use
 	@Override
 	public String mqTopic() {
 		return KafkaTopics.USERS;
-	}
-
-	@Override
-	public Set<String> targetedUserIds() {
-		return new HashSet<>();
 	}
 
 }

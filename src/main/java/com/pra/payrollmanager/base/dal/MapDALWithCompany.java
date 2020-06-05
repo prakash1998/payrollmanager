@@ -25,7 +25,7 @@ abstract public class MapDALWithCompany<KEY extends Serializable,
 		// class in immediate parent only
 		Type sooper = getClass().getGenericSuperclass();
 		return (Class<DAO>) ((ParameterizedType) sooper)
-				.getActualTypeArguments()[1];
+				.getActualTypeArguments()[2];
 	}
 
 	public Set<VAL> getValuesForKey(KEY key) {
@@ -43,7 +43,7 @@ abstract public class MapDALWithCompany<KEY extends Serializable,
 		// BaseMapDAO.MAP_PK_JOIN_STR)
 		// .addCriteria(Criteria.where("value").nin(values)));
 		List<DAO> rolePermissionMaps = values.stream()
-				.map(id -> getInstance(key, id))
+				.map(val -> getInstance(key, val))
 				.collect(Collectors.toList());
 		super.createMultiple(rolePermissionMaps);
 	}

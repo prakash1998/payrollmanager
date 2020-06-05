@@ -9,8 +9,8 @@ public class RolePermissionMap extends BaseMapDAO<String, Integer> {
 	 */
 	private static final long serialVersionUID = 2586602126892269691L;
 
-	public RolePermissionMap(String roleId, Integer permissionId) {
-		super(roleId, permissionId);
+	public RolePermissionMap(String key, Integer value) {
+		super(key, value);
 	}
 
 }

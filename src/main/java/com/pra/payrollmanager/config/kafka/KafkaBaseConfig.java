@@ -1,4 +1,4 @@
-package com.pra.payrollmanager.config;
+package com.pra.payrollmanager.config.kafka;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -74,11 +74,6 @@ public class KafkaBaseConfig {
 	@Bean
 	public KafkaTemplate<String, MessageProxy> wsMessageKafakaTemplate() {
 		return new KafkaTemplate<>(wsMessageProducerFactory());
-	}
-
-	@Bean
-	public NewTopic adviceTopic() {
-		return new NewTopic(KafkaTopics.USERS, 3, (short) 1);
 	}
 
 	// Consumer configuration

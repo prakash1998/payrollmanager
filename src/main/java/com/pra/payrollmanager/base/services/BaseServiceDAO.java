@@ -3,16 +3,15 @@ package com.pra.payrollmanager.base.services;
 import java.util.List;
 import java.util.Set;
 
-import com.pra.payrollmanager.base.dal.DataStoreService;
+import com.pra.payrollmanager.base.dal.BaseDAL;
 import com.pra.payrollmanager.base.data.BaseDAO;
-import com.pra.payrollmanager.exception.AnyThrowable;
 import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
 
-public interface NewBaseServiceDAO<PK,
+public interface BaseServiceDAO<PK,
 		DAO extends BaseDAO<PK>,
-		DAL extends DataStoreService<PK, DAO>>
-		extends NewBaseService<PK, DAO, DAO, DAL> {
+		DAL extends BaseDAL<PK, DAO>>
+		extends BaseService<PK, DAO, DAO, DAL> {
 
 	@Override
 	default boolean exists(DAO obj) {
@@ -44,10 +43,10 @@ public interface NewBaseServiceDAO<PK,
 		return dataAccessLayer().update(obj);
 	}
 
-	@Override
-	default DAO upsert(DAO obj) throws AnyThrowable {
-		return dataAccessLayer().upsert(obj);
-	}
+//	@Override
+//	default DAO upsert(DAO obj) throws AnyThrowable {
+//		return dataAccessLayer().upsert(obj);
+//	}
 
 	@Override
 	default DAO delete(DAO obj) throws DataNotFoundEx {

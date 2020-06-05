@@ -2,7 +2,7 @@ package com.pra.payrollmanager.base.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.pra.payrollmanager.base.dal.DataStoreService;
+import com.pra.payrollmanager.base.dal.BaseDAL;
 import com.pra.payrollmanager.base.data.BaseDAO;
 import com.pra.payrollmanager.base.data.BaseDTO;
 import com.pra.payrollmanager.base.data.WithDTO;
@@ -15,8 +15,8 @@ import com.pra.payrollmanager.security.authorization.AuthorityService;
 abstract public class RTServiceDTO<PK,
 		DAO extends BaseDAO<PK> & WithDTO<DTO>,
 		DTO extends BaseDTO<DAO>,
-		DAL extends DataStoreService<PK, DAO>>
-		implements NewBaseServiceDTO<PK, DAO, DTO, DAL>, BaseRTService<PK> {
+		DAL extends BaseDAL<PK, DAO>>
+		implements BaseServiceDTO<PK, DAO, DTO, DAL>, BaseRTService<DTO> {
 
 	@Autowired
 	protected DAL dataAccessLayer;
@@ -44,30 +44,45 @@ abstract public class RTServiceDTO<PK,
 
 	@Override
 	public DTO create(DTO obj) throws DuplicateDataEx, AnyThrowable {
-		DTO savedObj = NewBaseServiceDTO.super.create(obj);
+		DTO savedObj = BaseServiceDTO.super.create(obj);
 		sendCreateMessage(savedObj);
 		return savedObj;
 	}
 
 	@Override
 	public DTO update(DTO obj) throws DataNotFoundEx, AnyThrowable {
-		DTO updatedObj = NewBaseServiceDTO.super.update(obj);
+		DTO updatedObj = BaseServiceDTO.super.update(obj);
 		sendUpdateMessage(updatedObj);
 		return updatedObj;
 	}
 
+	// @Override
+	// public DTO upsert(DTO obj) throws AnyThrowable {
+	// DAO daoObj = obj.toDAO();
+	// DTO upserted;
+	// if (dataAccessLayer().exists(daoObj)) {
+	// upserted = dataAccessLayer().save(daoObj).toDTO();
+	// sendUpdateMessage(upserted);
+	// } else {
+	// upserted = dataAccessLayer().insert(daoObj).toDTO();
+	// sendCreateMessage(upserted);
+	// }
+	// return upserted;
+	// }
+
 	@Override
 	public DTO delete(DTO obj) throws DataNotFoundEx, AnyThrowable {
-		DTO deletedObj = NewBaseServiceDTO.super.delete(obj);
+		DTO deletedObj = BaseServiceDTO.super.delete(obj);
 		sendDeleteMessage(deletedObj);
 		return deletedObj;
 	}
 
 	@Override
 	public DTO deleteById(PK key) throws DataNotFoundEx, AnyThrowable {
-		DTO deletedObj = NewBaseServiceDTO.super.deleteById(key);
+		DTO deletedObj = BaseServiceDTO.super.deleteById(key);
 		sendDeleteMessage(deletedObj);
 		return deletedObj;
 	}
+
 
 }

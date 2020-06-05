@@ -17,8 +17,12 @@ import lombok.extern.slf4j.Slf4j;
 public class ResourceFeaturePermissions {
 
 	public static final FeaturePermission ADMIN__USERS = FeaturePermission.of(1);
-	
+
 	public static final FeaturePermission ROOT__COMPANY = FeaturePermission.of(2);
+
+	public static final FeaturePermission PRODUCT__STOCKBOOK = FeaturePermission.of(3);
+
+	public static final FeaturePermission USER__NOTIFICATIONS = FeaturePermission.of(4);
 
 	public static void persistApiPermissionsIfNot(FeaturePermissionDAL dataAccess) {
 		Map<Integer, FeaturePermission> allPermisssions = new HashMap<>();

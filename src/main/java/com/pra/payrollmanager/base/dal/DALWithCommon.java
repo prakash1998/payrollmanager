@@ -6,7 +6,7 @@ import java.lang.reflect.Type;
 import com.pra.payrollmanager.base.data.BaseDAO;
 
 public abstract class DALWithCommon<PK, DAO extends BaseDAO<PK>>
-		extends BaseDAL<PK, DAO> implements WithTablePrefix {
+		extends AbstractDAL<PK, DAO> implements WithTablePrefix {
 
 	@SuppressWarnings("unchecked")
 	public Class<DAO> daoClazz() {

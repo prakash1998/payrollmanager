@@ -8,7 +8,7 @@ import java.util.Set;
 import org.springframework.data.annotation.Id;
 
 import com.pra.payrollmanager.base.data.BaseAuditDAO;
-import com.pra.payrollmanager.security.authorization.permission.ResourceFeatures;
+import com.pra.payrollmanager.security.authorization.permission.ApiFeatures;
 import com.pra.payrollmanager.user.root.permissions.endpoint.EndpointPermission;
 import com.pra.payrollmanager.user.root.permissions.feature.FeaturePermission;
 import com.pra.payrollmanager.user.root.permissions.security.SecurityPermission;
@@ -43,7 +43,7 @@ public class SecurityCompany extends BaseAuditDAO<String> {
 	@Builder.Default
 	private Set<Integer> endpointPermissions = new HashSet<>();
 	@Builder.Default
-	private Map<Integer, Set<ResourceFeatures>> resourceFeatures = new HashMap<>();
+	private Map<Integer, Set<ApiFeatures>> resourceFeatures = new HashMap<>();
 
 	public boolean hasAccessTo(SecurityPermission permission) {
 		return permissions.contains(permission.getNumericId());
@@ -53,9 +53,9 @@ public class SecurityCompany extends BaseAuditDAO<String> {
 		return endpointPermissions.contains(permission.getNumericId());
 	}
 
-	public boolean hasAccessTo(FeaturePermission permission, ResourceFeatures service) {
+	public boolean hasAccessTo(FeaturePermission permission, ApiFeatures service) {
 		Integer apiId = permission.getNumericId();
-		Set<ResourceFeatures> allowedServices = resourceFeatures.get(apiId);
+		Set<ApiFeatures> allowedServices = resourceFeatures.get(apiId);
 		if (allowedServices == null)
 			return false;
 		return allowedServices.contains(service);

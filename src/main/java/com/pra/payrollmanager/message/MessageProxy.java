@@ -21,6 +21,8 @@ public class MessageProxy {
 	Message message;
 	@Builder.Default
 	Set<String> targetedUserIds = new HashSet<>();
+//	@Builder.Default
+//	boolean ignoreTargeted = false;
 
 	public boolean isPublic() {
 		return targetedUserIds.isEmpty();
@@ -38,4 +40,12 @@ public class MessageProxy {
 				.targetedUserIds(targetedUserIds)
 				.build();
 	}
+
+//	public static MessageProxy of(Message message, Set<String> targetedUserIds, boolean ignoreTargeted) {
+//		return MessageProxy.builder()
+//				.message(message)
+//				.targetedUserIds(targetedUserIds)
+//				.ignoreTargeted(ignoreTargeted)
+//				.build();
+//	}
 }

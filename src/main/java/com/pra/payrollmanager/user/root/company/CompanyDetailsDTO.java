@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
 import com.pra.payrollmanager.base.data.BaseAuditDTO;
 import com.pra.payrollmanager.security.authentication.company.SecurityCompany;
 import com.pra.payrollmanager.security.authentication.user.SecurityUser;
-import com.pra.payrollmanager.security.authorization.permission.ResourceFeatures;
+import com.pra.payrollmanager.security.authorization.permission.ApiFeatures;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -49,7 +49,7 @@ public class CompanyDetailsDTO extends BaseAuditDTO<CompanyDetailsDAO> {
 	private Set<Integer> permissions = new HashSet<>();
 
 	@Builder.Default
-	private Map<Integer, Set<ResourceFeatures>> resourceFeatures = new HashMap<>();
+	private Map<Integer, Set<ApiFeatures>> resourceFeatures = new HashMap<>();
 
 	@Builder.Default
 	private Set<String> screenIds = new HashSet<>();

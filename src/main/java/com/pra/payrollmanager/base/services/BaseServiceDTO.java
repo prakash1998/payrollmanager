@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.pra.payrollmanager.base.dal.DataStoreService;
+import com.pra.payrollmanager.base.dal.BaseDAL;
 import com.pra.payrollmanager.base.data.BaseDAO;
 import com.pra.payrollmanager.base.data.BaseDTO;
 import com.pra.payrollmanager.base.data.WithDTO;
@@ -12,11 +12,11 @@ import com.pra.payrollmanager.exception.AnyThrowable;
 import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
 
-public interface NewBaseServiceDTO<PK,
+public interface BaseServiceDTO<PK,
 		DAO extends BaseDAO<PK> & WithDTO<DTO>,
 		DTO extends BaseDTO<DAO>,
-		DAL extends DataStoreService<PK, DAO>>
-		extends NewBaseService<PK, DAO, DTO, DAL> {
+		DAL extends BaseDAL<PK, DAO>>
+		extends BaseService<PK, DAO, DTO, DAL> {
 
 	@Override
 	default boolean exists(DTO obj) {
@@ -31,7 +31,7 @@ public interface NewBaseServiceDTO<PK,
 	@Override
 	default List<DTO> getByIds(Set<PK> ids) {
 		return dataAccessLayer().findByIds(ids).stream()
-				.map(WithDTO::toDTO)
+				.map(obj -> obj.toDTO())
 				.collect(Collectors.toList());
 	}
 
@@ -52,10 +52,10 @@ public interface NewBaseServiceDTO<PK,
 		return dataAccessLayer().update(obj.toDAO()).toDTO();
 	}
 
-	@Override
-	default DTO upsert(DTO obj) throws AnyThrowable {
-		return dataAccessLayer().upsert(obj.toDAO()).toDTO();
-	}
+	// @Override
+	// default DTO upsert(DTO obj) throws AnyThrowable {
+	// return dataAccessLayer().upsert(obj.toDAO()).toDTO();
+	// }
 
 	@Override
 	default DTO delete(DTO obj) throws DataNotFoundEx, AnyThrowable {

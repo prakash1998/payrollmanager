@@ -65,8 +65,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		httpSecurity.cors().and().csrf().disable()
 				// dont authenticate this particular request
 				.authorizeRequests()
-				.antMatchers(openEndpoints.toArray(new String[0]))
-				.permitAll()
+//				.antMatchers(openEndpoints.toArray(new String[0]))
+//				.permitAll()
 				// all other requests need to be authenticated
 				.anyRequest()
 				.authenticated()
@@ -86,7 +86,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers(
+		web.ignoring()
+		.antMatchers(openEndpoints.toArray(new String[0]))
+		.antMatchers(
 				"/",
 				"/v2/api-docs", // swagger
 				"/webjars/**", // swagger-ui webjars

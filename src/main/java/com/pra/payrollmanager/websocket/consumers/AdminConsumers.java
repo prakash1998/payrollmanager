@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.pra.payrollmanager.constants.KafkaTopics;
 import com.pra.payrollmanager.message.MessageProxy;
-import com.pra.payrollmanager.websocket.security.WebSocketMessageSendingService;
+import com.pra.payrollmanager.websocket.WebSocketMessageSendingService;
 
 @Service
 public class AdminConsumers {
@@ -15,7 +15,8 @@ public class AdminConsumers {
 	WebSocketMessageSendingService messageSenderService;
 
 	@KafkaListener(topics = KafkaTopics.USERS , autoStartup = "${spring.kafka.enabled}")
-	public void consume(MessageProxy message) {
+	public void sendToUsers(MessageProxy message) {
 		messageSenderService.send(KafkaTopics.USERS, message);
 	}
+	
 }

@@ -6,7 +6,7 @@ import java.util.Set;
 import javax.validation.constraints.NotNull;
 
 import com.pra.payrollmanager.base.data.BaseAuditDTO;
-import com.pra.payrollmanager.security.authorization.permission.ResourceFeatures;
+import com.pra.payrollmanager.security.authorization.permission.ApiFeatures;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,7 +33,7 @@ public class FeaturePermissionDTO extends BaseAuditDTO<FeaturePermission> {
 	private String display;
 	private String description;
 	@Builder.Default
-	private Set<ResourceFeatures> features = new HashSet<>();
+	private Set<ApiFeatures> features = new HashSet<>();
 
 	@Override
 	public FeaturePermission toPlainDAO() {

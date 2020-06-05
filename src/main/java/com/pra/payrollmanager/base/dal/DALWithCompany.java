@@ -9,7 +9,7 @@ import com.pra.payrollmanager.base.data.BaseDAO;
 import com.pra.payrollmanager.security.authorization.AuthorityService;
 
 abstract public class DALWithCompany<PK, DAO extends BaseDAO<PK>>
-		extends BaseDAL<PK, DAO> implements WithTablePrefix {
+		extends AbstractDAL<PK, DAO> implements WithTablePrefix {
 
 	@Autowired
 	private AuthorityService authorityService;

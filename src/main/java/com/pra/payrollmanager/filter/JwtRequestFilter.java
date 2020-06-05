@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.pra.payrollmanager.response.ResponseStatus;
-import com.pra.payrollmanager.security.WebSecurityConfig;
 import com.pra.payrollmanager.security.authentication.jwt.JwtTokenService;
 import com.pra.payrollmanager.security.authentication.user.SecurityUser;
 import com.pra.payrollmanager.security.authentication.user.SecurityUserService;
@@ -40,7 +39,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws ServletException, IOException {
 
-		if (!WebSecurityConfig.openEndpoints.contains(request.getRequestURI())) {
+//		if (!WebSecurityConfig.openEndpoints.contains(request.getRequestURI())) {
 
 			final String requestTokenHeader = request.getHeader("Authorization");
 
@@ -94,7 +93,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 					}
 				}
 			}
-		}
+//		}
 		chain.doFilter(request, response);
 	}
 }

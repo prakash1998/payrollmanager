@@ -6,7 +6,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import com.pra.payrollmanager.security.authorization.AuthorityService;
-import com.pra.payrollmanager.websocket.security.WebSocketMessageSendingService;
+import com.pra.payrollmanager.websocket.WebSocketMessageSendingService;
 
 @Service
 public class MessageSendingService {

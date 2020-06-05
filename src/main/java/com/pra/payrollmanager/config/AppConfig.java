@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
-import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,12 +19,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pra.payrollmanager.translation.JsonJacksonMapperService;
 
 @Configuration
-@EnableMongoAuditing
+//@EnableMongoAuditing
 public class AppConfig {
 
 
 	@Autowired
 	JsonJacksonMapperService mapperService;
+	// json configuration
+	@Bean
+	public ObjectMapper objectMapper() {
+		return mapperService.mapper();
+	}
 
 	@Bean
 	public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -50,14 +54,6 @@ public class AppConfig {
 				.map(SecurityContext::getAuthentication)
 				.filter(Authentication::isAuthenticated)
 				.map(Authentication::getName);
-	}
-
-
-
-	// json configuration
-	@Bean
-	public ObjectMapper objectMapper() {
-		return mapperService.mapper();
 	}
 
 	@Bean

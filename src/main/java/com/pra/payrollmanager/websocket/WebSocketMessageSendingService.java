@@ -1,4 +1,4 @@
-package com.pra.payrollmanager.websocket.security;
+package com.pra.payrollmanager.websocket;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -28,15 +28,16 @@ public class WebSocketMessageSendingService {
 		log.debug("message is : " + wsMessage);
 
 		String messageString = mapper.objectToJson(wsMessage.getMessage());
-		// messageTemplate.convertAndSend(WebSocketConfig.TOPIC_PREFIX+"/"+topic,
-		// messageString);
-		// messageTemplate.convertAndSendToUser("god-su", topic, messageString);
-		if (wsMessage.isPublic()) {
+		if (wsMessage.isPublic()
+		// || wsMessage.isIgnoreTargeted()
+		) {
 			String compnayPrefix = wsMessage.getCompanyId() + "-";
 			simpUserRegistry.getUsers()
 					.forEach(simpUser -> {
 						String userId = simpUser.getName();
-						if (userId.startsWith(compnayPrefix))
+						if (
+						// !wsMessage.getTargetedUserIds().contains(userId) &&
+						userId.startsWith(compnayPrefix))
 							messageTemplate.convertAndSendToUser(userId, topic, messageString);
 					});
 		} else {

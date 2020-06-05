@@ -9,7 +9,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.pra.payrollmanager.constants.CacheNameStore;
-import com.pra.payrollmanager.security.authorization.mappings.roleendpoint.RoleEndpointPermissionMapDAL;
+import com.pra.payrollmanager.security.authorization.mappings.roleendpoint.RoleEndpointMapDAL;
 import com.pra.payrollmanager.security.authorization.mappings.rolepermission.RolePermissionMapDAL;
 import com.pra.payrollmanager.security.authorization.mappings.userrole.UserRoleMapDAL;
 
@@ -24,7 +24,7 @@ public class SecurityUserPermissionService {
 	RolePermissionMapDAL rolePermissionMapDAL;
 
 	@Autowired
-	RoleEndpointPermissionMapDAL roleEndpointPermissionMapDAL;
+	RoleEndpointMapDAL roleEndpointPermissionMapDAL;
 
 	@Cacheable
 	public Set<Integer> loadPermissionsForUserId(String userId) {

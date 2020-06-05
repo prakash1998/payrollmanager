@@ -1,5 +1,5 @@
 package com.pra.payrollmanager.security.authorization.permission;
 
-public enum ResourceFeatures {
+public enum ApiFeatures {
 	AUDIT, REALTIME,
 }

@@ -14,7 +14,7 @@ import com.pra.payrollmanager.constants.CacheNameStore;
 import com.pra.payrollmanager.exception.AnyThrowable;
 import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
-import com.pra.payrollmanager.security.authorization.mappings.roleendpoint.RoleEndpointPermissionMapDAL;
+import com.pra.payrollmanager.security.authorization.mappings.roleendpoint.RoleEndpointMapDAL;
 import com.pra.payrollmanager.security.authorization.mappings.rolepermission.RolePermissionMapDAL;
 
 @Service
@@ -24,7 +24,7 @@ public class RoleService extends ServiceDTO<String, RoleDAO, RoleDTO, RoleDAL> {
 	RolePermissionMapDAL rolePermissionMapDAL;
 
 	@Autowired
-	RoleEndpointPermissionMapDAL roleEndpointPermissionMapDAL;
+	RoleEndpointMapDAL roleEndpointPermissionMapDAL;
 
 	private RoleDTO injectPermissions(RoleDTO dto) {
 		dto.setPermissions(rolePermissionMapDAL.getValuesForKey(dto.getRoleId()));

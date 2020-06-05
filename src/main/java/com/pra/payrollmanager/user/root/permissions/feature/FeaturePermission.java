@@ -8,7 +8,7 @@ import org.springframework.data.annotation.Id;
 
 import com.mongodb.lang.NonNull;
 import com.pra.payrollmanager.base.data.BaseAuditDAOWithDTO;
-import com.pra.payrollmanager.security.authorization.permission.ResourceFeatures;
+import com.pra.payrollmanager.security.authorization.permission.ApiFeatures;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -33,9 +33,9 @@ public class FeaturePermission extends BaseAuditDAOWithDTO<String, FeaturePermis
 	private String display;
 	private String description;
 	@Builder.Default
-	private Set<ResourceFeatures> features = new HashSet<>();
+	private Set<ApiFeatures> features = new HashSet<>();
 
-	public static FeaturePermission of(int numericId, String id, Set<ResourceFeatures> features) {
+	public static FeaturePermission of(int numericId, String id, Set<ApiFeatures> features) {
 		return FeaturePermission.builder()
 				.id(id)
 				.numericId(numericId)
@@ -45,7 +45,7 @@ public class FeaturePermission extends BaseAuditDAOWithDTO<String, FeaturePermis
 				.build();
 	}
 
-	public static FeaturePermission of(int numericId, ResourceFeatures... features) {
+	public static FeaturePermission of(int numericId, ApiFeatures... features) {
 		return FeaturePermission.builder()
 				.numericId(numericId)
 				.features(new HashSet<>(Arrays.asList(features)))
@@ -53,7 +53,7 @@ public class FeaturePermission extends BaseAuditDAOWithDTO<String, FeaturePermis
 	}
 
 	public static FeaturePermission of(int numericId) {
-		return of(numericId, ResourceFeatures.AUDIT, ResourceFeatures.REALTIME);
+		return of(numericId, ApiFeatures.AUDIT, ApiFeatures.REALTIME);
 	}
 
 	@Override

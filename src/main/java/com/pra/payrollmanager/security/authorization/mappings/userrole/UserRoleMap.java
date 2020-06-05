@@ -2,6 +2,11 @@ package com.pra.payrollmanager.security.authorization.mappings.userrole;
 
 import com.pra.payrollmanager.base.data.BaseMapDAO;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class UserRoleMap extends BaseMapDAO<String, String> {
 
 	/**

@@ -29,7 +29,7 @@ public class SwaggerConfig {
 	}
 
 	/**
-	 * Group Security contains api s related to security / token
+	 * Group Security contains apis related to security / token
 	 */
 	@Bean
 	public Docket swaggerSecurityApi() {

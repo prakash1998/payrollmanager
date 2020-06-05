@@ -6,7 +6,7 @@ import com.pra.payrollmanager.base.dal.MapDALWithCompany;
 import com.pra.payrollmanager.constants.EntityName;
 
 @Repository
-public class RoleEndpointPermissionMapDAL extends MapDALWithCompany<String, Integer, RoleEndpointPermissionMap> {
+public class RoleEndpointMapDAL extends MapDALWithCompany<String, Integer, RoleEndpointMap> {
 
 	@Override
 	public EntityName entity() {
@@ -14,8 +14,8 @@ public class RoleEndpointPermissionMapDAL extends MapDALWithCompany<String, Inte
 	}
 
 	@Override
-	public RoleEndpointPermissionMap getInstance(String key, Integer value) {
-		return new RoleEndpointPermissionMap(key, value);
+	public RoleEndpointMap getInstance(String key, Integer value) {
+		return new RoleEndpointMap(key, value);
 	}
 
 }

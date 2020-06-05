@@ -70,14 +70,14 @@ public class AuthorityService {
 	}
 
 	public void validatePermissions(SecurityPermission... permissions) {
+		if (inGodMode()) {
+			return;
+		}
 
 		List<SecurityPermission> fullPermissions = Stream.of(permissions)
 				.map(p -> SecurityPermissions.universalSecurityPermissionMap.get(p.getNumericId()))
 				.collect(Collectors.toList());
 
-		if (inGodMode()) {
-			return;
-		}
 
 		SecurityUser user = this.getSecurityUser();
 		SecurityCompany company = this.getSecurityCompany();

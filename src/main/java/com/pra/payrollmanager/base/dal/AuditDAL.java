@@ -2,6 +2,7 @@ package com.pra.payrollmanager.base.dal;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.time.Instant;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +12,9 @@ import org.springframework.data.mongodb.core.query.Query;
 import com.pra.payrollmanager.base.data.BaseAuditDAO;
 import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
 import com.pra.payrollmanager.security.authorization.AuthorityService;
-import com.pra.payrollmanager.translation.JsonJacksonMapperService;
 
-public abstract class BaseAuditDAL<PK, DAO extends BaseAuditDAO<PK>>
-		implements DataStoreService<PK, DAO>, AuditingService<PK, DAO> {
+public abstract class AuditDAL<PK, DAO extends BaseAuditDAO<PK>>
+		implements BaseDAL<PK, DAO>, AuditingHelper<PK, DAO> {
 
 	public static final String AUDIT_POSTFIX = "_ODT";
 
@@ -25,9 +25,6 @@ public abstract class BaseAuditDAL<PK, DAO extends BaseAuditDAO<PK>>
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
-
-	@Autowired
-	private JsonJacksonMapperService mapper;
 
 	@Autowired
 	protected AuthorityService authorityService;
@@ -48,11 +45,6 @@ public abstract class BaseAuditDAL<PK, DAO extends BaseAuditDAO<PK>>
 	}
 
 	@Override
-	public JsonJacksonMapperService mapper() {
-		return mapper;
-	}
-
-	@Override
 	public AuthorityService authorityService() {
 		return authorityService;
 	}
@@ -62,27 +54,43 @@ public abstract class BaseAuditDAL<PK, DAO extends BaseAuditDAO<PK>>
 		return this.entity().table();
 	}
 
+	protected DAO injectAuditInfoOnUpdate(DAO dbObj, DAO obj) {
+		obj.setCreatedBy(dbObj.getCreatedBy());
+		obj.setCreatedDate(dbObj.getCreatedDate());
+		obj.setModifier(user());
+		obj.setModifiedDate(Instant.now());
+		return obj;
+	}
+
+	protected DAO injectAuditInfoOnCreate(DAO obj) {
+		Instant now = Instant.now();
+		obj.setCreatedBy(user());
+		obj.setCreatedDate(now);
+		obj.setModifier(user());
+		obj.setModifiedDate(now);
+		return obj;
+	}
+
 	@Override
 	public DAO insert(DAO obj) {
-		DataStoreService.super.insert(injectCreationInfo(obj));
-		return obj;
+		return BaseDAL.super.insert(injectAuditInfoOnCreate(obj));
 	}
 
 	@Override
 	public DAO update(DAO obj) throws DataNotFoundEx {
 		DAO dbObj = this.findById(obj.primaryKeyValue());
-		if (!dbObj.getModifiedDate().equals(obj.getModifiedDate()))
+		if (dbObj.getModifiedDate() != null && !dbObj.getModifiedDate().equals(obj.getModifiedDate()))
 			throw new RuntimeException("Data is modified...");
 		if (!obj.equals(dbObj)) {
-			DataStoreService.super.save(injectModificationInfo(dbObj, obj));
 			audit(dbObj);
+			return BaseDAL.super.save(injectAuditInfoOnUpdate(dbObj, obj));
 		}
-		return obj;
+		return dbObj;
 	}
 
 	@Override
 	public List<DAO> deleteWith(Query query) {
-		List<DAO> deletedObjs = DataStoreService.super.deleteWith(query);
+		List<DAO> deletedObjs = BaseDAL.super.deleteWith(query);
 		auditDeleted(deletedObjs);
 		return deletedObjs;
 	}

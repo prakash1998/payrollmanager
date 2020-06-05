@@ -6,7 +6,7 @@ import java.lang.reflect.Type;
 import com.pra.payrollmanager.base.data.BaseAuditDAO;
 
 public abstract class AuditDALWithCommon<PK, DAO extends BaseAuditDAO<PK>>
-		extends BaseAuditDAL<PK, DAO> implements WithTablePrefix{
+		extends AuditDAL<PK, DAO> implements WithTablePrefix{
 
 	@SuppressWarnings("unchecked")
 	@Override
