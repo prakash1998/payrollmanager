@@ -18,9 +18,11 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
+import com.pra.payrollmanager.entity.EntityUtils;
 import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
 import com.pra.payrollmanager.filter.AuthorizationFilter;
 import com.pra.payrollmanager.security.WebSecurityConfig;
+import com.pra.payrollmanager.security.authentication.company.SecurityCompanyService;
 import com.pra.payrollmanager.security.authorization.ResourceFeaturePermissions;
 import com.pra.payrollmanager.security.authorization.ScreenPermissions;
 import com.pra.payrollmanager.security.authorization.SecurityPermissions;
@@ -37,32 +39,39 @@ import lombok.extern.slf4j.Slf4j;
 public class SpringEvents {
 
 	@Autowired
-	private SecurityPermissionDAL securityPermissionRepo;
+	private SecurityPermissionDAL securityPermissionDAL;
 
 	@Autowired
 	private FeaturePermissionDAL apiPermissionDAL;
 
 	@Autowired
 	private EndpointPermissionDAL endpointPermissionDAL;
-	
+
 	@Autowired
 	private ScreenPermissionDAL screenPermissionDAL;
 
+	@Autowired
+	private SecurityCompanyService securityCompanyService;
 
 	@Autowired
 	private RequestMappingHandlerMapping requestHandlerMapping;
 
 	@EventListener
 	public void handleContextRefresh(ContextRefreshedEvent event) throws DuplicateDataEx {
+		// creating all common tables on boot if not exists
+		EntityUtils.createTableForCommonEntities(securityPermissionDAL);
+		// creating all tables for existing companies if not exists
+		securityCompanyService.getAll().stream().forEach(company -> {
+			EntityUtils.createTableForCompanyEntities(securityPermissionDAL.mongoTemplate(), company.getTablePrefix());
+		});
 
-		SecurityPermissions.persistPermissionsIfNot(securityPermissionRepo);
+		SecurityPermissions.persistPermissionsIfNot(securityPermissionDAL);
 		ResourceFeaturePermissions.persistApiPermissionsIfNot(apiPermissionDAL);
 		ScreenPermissions.persistScreenPermissionsIfNot(screenPermissionDAL);
-		
-		persistEndPointsIfNot();
+		persistEndpointsIfNot();
 	}
 
-	private void persistEndPointsIfNot() throws DuplicateDataEx {
+	private void persistEndpointsIfNot() throws DuplicateDataEx {
 
 		List<EndpointPermission> existingEndpoints = endpointPermissionDAL.findAll();
 
@@ -99,9 +108,9 @@ public class SpringEvents {
 							: endpointPattern.substring(1, indexOfBackslash);
 
 					String methodPhrase = httpMethod.toLowerCase();
-					if(httpMethod.equals(HttpMethod.POST.name()))
+					if (httpMethod.equals(HttpMethod.POST.name()))
 						methodPhrase = "create";
-					if(httpMethod.equals(HttpMethod.PUT.name()))
+					if (httpMethod.equals(HttpMethod.PUT.name()))
 						methodPhrase = "update";
 
 					EndpointPermission newEndpoint = EndpointPermission.builder()

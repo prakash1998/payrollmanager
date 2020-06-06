@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import com.pra.payrollmanager.base.dal.AuditDALWithCompany;
-import com.pra.payrollmanager.constants.EntityName;
+import com.pra.payrollmanager.entity.CompanyEntityNames;
 import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
 import com.pra.payrollmanager.security.authentication.user.SecurityUserService;
 import com.pra.payrollmanager.security.authorization.ResourceFeaturePermissions;
@@ -24,8 +24,8 @@ public class NotificationAckDAL extends AuditDALWithCompany<ObjectId, Notificati
 	SecurityUserService userService;
 
 	@Override
-	public EntityName entity() {
-		return EntityName.NOTIFICATION_ACK;
+	public CompanyEntityNames entity() {
+		return CompanyEntityNames.NOTIFICATION_ACK;
 	}
 
 	@Override

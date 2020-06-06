@@ -24,7 +24,7 @@ public class CompanyDetailsService
 
 	private CompanyDetailsDTO injectPermissions(CompanyDetailsDTO dto) {
 		try {
-			SecurityCompany company = securityCompanyService.getById(dto.getCompanyId());
+			SecurityCompany company = securityCompanyService.getById(dto.getId());
 			dto.setPermissions(company.getPermissions());
 			dto.setResourceFeatures(company.getResourceFeatures());
 			dto.setEndpoints(company.getEndpointPermissions());
@@ -73,9 +73,14 @@ public class CompanyDetailsService
 		return injectPermissionsFromTo(company, updatedCompany);
 	}
 
-	public void disableCompany(CompanyDetailsDTO company) throws DataNotFoundEx, AnyThrowable {
-		securityCompanyService.disableCompany(company.toSecurityCompany());
-		super.delete(company);
+	public void lockCompany(CompanyDetailsDTO company) throws DataNotFoundEx, AnyThrowable {
+		securityCompanyService.lockCompany(company.toSecurityCompany());
+//		super.delete(company);
+	}
+	
+	public void activateCompany(CompanyDetailsDTO company) throws DataNotFoundEx, AnyThrowable {
+		securityCompanyService.unlockCompany(company.toSecurityCompany());
+//		super.delete(company);
 	}
 
 	@Override

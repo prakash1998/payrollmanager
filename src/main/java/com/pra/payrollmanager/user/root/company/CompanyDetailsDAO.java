@@ -39,8 +39,8 @@ public class CompanyDetailsDAO extends BaseAuditDAOWithDTO<String, CompanyDetail
 	@Override
 	public CompanyDetailsDTO toPlainDTO() {
 		return CompanyDetailsDTO.builder()
-				.companyId(id)
-				.companyName(name)
+				.id(id)
+				.name(name)
 				.address(address)
 				.screenIds(screenIds)
 				.build();

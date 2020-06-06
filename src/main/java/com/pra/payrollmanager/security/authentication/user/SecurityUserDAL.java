@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import com.pra.payrollmanager.base.dal.DALWithCompany;
-import com.pra.payrollmanager.constants.EntityName;
+import com.pra.payrollmanager.entity.CompanyEntityNames;
 import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.util.CheckedException;
 
@@ -18,8 +18,8 @@ public class SecurityUserDAL extends DALWithCompany<String, SecurityUser> {
 	private MongoTemplate mongoTemplate;
 
 	@Override
-	public EntityName entity() {
-		return EntityName.SECURITY_USER;
+	public CompanyEntityNames entity() {
+		return CompanyEntityNames.SECURITY_USER;
 	}
 
 	public boolean existsById(String key, String tablePrefix) {

@@ -33,7 +33,7 @@ public class SecurityCompany extends BaseAuditDAO<String> {
 	private String id;
 	private String tablePrefix;
 	@Builder.Default
-	private boolean companyEnabled = true;
+	private boolean enabled = true;
 	@Builder.Default
 	private boolean accountLocked = false;
 	@Builder.Default

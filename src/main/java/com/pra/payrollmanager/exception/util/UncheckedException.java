@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.pra.payrollmanager.config.ErrorTemplateConfig;
-import com.pra.payrollmanager.constants.EntityName;
+import com.pra.payrollmanager.entity.EntityName;
 
 @Component
 public class UncheckedException {

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.pra.payrollmanager.base.services.ServiceDAO;
 import com.pra.payrollmanager.constants.CacheNameStore;
-import com.pra.payrollmanager.constants.EntityName;
+import com.pra.payrollmanager.entity.CompanyEntityNames;
 import com.pra.payrollmanager.exception.checked.CredentialNotMatchedEx;
 import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
@@ -42,7 +42,7 @@ public class SecurityUserService extends ServiceDAO<String, SecurityUser, Securi
 			return dataAccessLayer.findById(userName, company.getTablePrefix()).withUserId(userId)
 					.withCompany(company);
 		} catch (DataNotFoundEx e) {
-			throw UncheckedException.appException(EntityName.SECURITY_USER, ExceptionType.ENTITY_NOT_FOUND, userName);
+			throw UncheckedException.appException(CompanyEntityNames.SECURITY_USER, ExceptionType.ENTITY_NOT_FOUND, userName);
 		}
 	}
 
@@ -55,7 +55,7 @@ public class SecurityUserService extends ServiceDAO<String, SecurityUser, Securi
 		try {
 			return super.create(this.withEncodedPassword(user));
 		} catch (DuplicateDataEx e) {
-			throw UncheckedException.appException(EntityName.SECURITY_USER, ExceptionType.DUPLICATE_ENTITY,
+			throw UncheckedException.appException(CompanyEntityNames.SECURITY_USER, ExceptionType.DUPLICATE_ENTITY,
 					user.getUsername());
 		}
 	}
@@ -68,10 +68,10 @@ public class SecurityUserService extends ServiceDAO<String, SecurityUser, Securi
 		try {
 			SecurityUser dbUser = super.getById(user.getUserName());
 			if (!dbUser.getPassword().equals(user.getOldPassword()))
-				throw CheckedException.wrongCredentialEx(EntityName.SECURITY_USER, user.getUserName());
+				throw CheckedException.wrongCredentialEx(CompanyEntityNames.SECURITY_USER, user.getUserName());
 			super.update(this.withEncodedPassword(dbUser));
 		} catch (DataNotFoundEx e) {
-			throw UncheckedException.appException(EntityName.SECURITY_USER, ExceptionType.ENTITY_NOT_FOUND,
+			throw UncheckedException.appException(CompanyEntityNames.SECURITY_USER, ExceptionType.ENTITY_NOT_FOUND,
 					user.getUserName());
 		}
 	}
@@ -84,7 +84,7 @@ public class SecurityUserService extends ServiceDAO<String, SecurityUser, Securi
 		try {
 			dataAccessLayer.updateLogin(dbUser.withLoggedIn(true));
 		} catch (DataNotFoundEx e) {
-			throw UncheckedException.appException(EntityName.SECURITY_USER, ExceptionType.ENTITY_NOT_FOUND, userId);
+			throw UncheckedException.appException(CompanyEntityNames.SECURITY_USER, ExceptionType.ENTITY_NOT_FOUND, userId);
 		}
 	}
 
@@ -99,7 +99,7 @@ public class SecurityUserService extends ServiceDAO<String, SecurityUser, Securi
 			try {
 				super.update(dbUser.withLoggedIn(false));
 			} catch (DataNotFoundEx e) {
-				throw UncheckedException.appException(EntityName.SECURITY_USER, ExceptionType.ENTITY_NOT_FOUND,
+				throw UncheckedException.appException(CompanyEntityNames.SECURITY_USER, ExceptionType.ENTITY_NOT_FOUND,
 						userId);
 			}
 		}
@@ -113,7 +113,7 @@ public class SecurityUserService extends ServiceDAO<String, SecurityUser, Securi
 		try {
 			super.delete(user);
 		} catch (DataNotFoundEx e) {
-			throw UncheckedException.appException(EntityName.SECURITY_USER, ExceptionType.ENTITY_NOT_FOUND,
+			throw UncheckedException.appException(CompanyEntityNames.SECURITY_USER, ExceptionType.ENTITY_NOT_FOUND,
 					user.getUsername());
 		}
 	}

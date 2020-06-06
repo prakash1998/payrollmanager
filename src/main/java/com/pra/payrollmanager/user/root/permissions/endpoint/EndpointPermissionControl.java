@@ -21,6 +21,9 @@ import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
 import com.pra.payrollmanager.filter.AuthorizationFilter;
 import com.pra.payrollmanager.response.dto.Response;
 
+import springfox.documentation.annotations.ApiIgnore;
+
+@ApiIgnore
 @RestController
 @RequestMapping("endpoint-permissions")
 public class EndpointPermissionControl extends BaseControl<EndpointPermissionService> {

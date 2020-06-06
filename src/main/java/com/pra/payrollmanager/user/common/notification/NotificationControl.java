@@ -16,6 +16,9 @@ import com.pra.payrollmanager.exception.AnyThrowable;
 import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
 import com.pra.payrollmanager.response.dto.Response;
 
+import springfox.documentation.annotations.ApiIgnore;
+
+@ApiIgnore
 @RestController
 @RequestMapping("notifications")
 public class NotificationControl extends BaseControl<NotificationService> {

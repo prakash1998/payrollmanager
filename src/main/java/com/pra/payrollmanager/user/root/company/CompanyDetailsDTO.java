@@ -14,12 +14,14 @@ import com.pra.payrollmanager.security.authentication.company.SecurityCompany;
 import com.pra.payrollmanager.security.authentication.user.SecurityUser;
 import com.pra.payrollmanager.security.authorization.permission.ApiFeatures;
 
+import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+@ApiModel(value = "Restaurant")
 @Data
 @Builder
 @NoArgsConstructor
@@ -37,8 +39,8 @@ public class CompanyDetailsDTO extends BaseAuditDTO<CompanyDetailsDAO> {
 	@NotNull
 	@Size(min = 3, max = 24, message = "Company ID length must be between {min} and {max} charaters.")
 	@Pattern(regexp = "^[^-]*$", message = "company ID should not contain '-'.")
-	private String companyId;
-	private String companyName;
+	private String id;
+	private String name;
 	private String address;
 	private String superUserPassword;
 
@@ -57,8 +59,8 @@ public class CompanyDetailsDTO extends BaseAuditDTO<CompanyDetailsDAO> {
 	@Override
 	public CompanyDetailsDAO toPlainDAO() {
 		return CompanyDetailsDAO.builder()
-				.id(companyId)
-				.name(companyName)
+				.id(id)
+				.name(name)
 				.address(address)
 				.screenIds(screenIds)
 				.build();
@@ -66,7 +68,7 @@ public class CompanyDetailsDTO extends BaseAuditDTO<CompanyDetailsDAO> {
 
 	public SecurityCompany toSecurityCompany() {
 		return SecurityCompany.builder()
-				.id(companyId)
+				.id(id)
 				.permissions(permissions)
 				.endpointPermissions(endpoints)
 				.resourceFeatures(resourceFeatures)

@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.pra.payrollmanager.base.data.BaseDAO;
-import com.pra.payrollmanager.constants.EntityName;
+import com.pra.payrollmanager.entity.EntityName;
 import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
 import com.pra.payrollmanager.exception.util.CheckedException;
@@ -86,19 +86,24 @@ public interface BaseDAL<PK, DAO extends BaseDAO<PK>> {
 			// return obj;
 		}
 	}
-
-	@Transactional
+	
 	default Collection<DAO> createMultiple(Collection<DAO> objList) throws DuplicateDataEx {
-		if(objList.isEmpty())
+		if (objList.isEmpty())
 			return objList;
+		
+		
 		try {
-			return mongoTemplate().insert(objList, this.tableName());
-//			return objList;
+			return insertManyTransactional(objList);
 		} catch (Exception e) {
 			throw new DuplicateDataEx(String.format("Exception When bulk inserting %s", entity()), e);
 		}
 	}
 
+	@Transactional
+	default Collection<DAO> insertManyTransactional(Collection<DAO> objList){
+		return mongoTemplate().insert(objList, this.tableName());
+	}
+	
 	default DAO update(DAO obj) throws DataNotFoundEx {
 		DAO dbObj = this.findById(obj.primaryKeyValue());
 		if (!obj.equals(dbObj)) {
@@ -135,8 +140,9 @@ public interface BaseDAL<PK, DAO extends BaseDAO<PK>> {
 		this.deleteWith(Query.query(Criteria.where("_id").in(keys)));
 	}
 
-	// default void deleteAll() {
-	// mongoTemplate().dropCollection(this.tableName());
-	// }
+//	default void deleteAll() {
+//		mongoTemplate().dropCollection(this.tableName());
+//		mongoTemplate().createCollection(this.tableName());
+//	}
 
 }

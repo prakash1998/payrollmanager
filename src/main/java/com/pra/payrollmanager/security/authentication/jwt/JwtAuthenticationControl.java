@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pra.payrollmanager.constants.EntityName;
+import com.pra.payrollmanager.entity.CompanyEntityNames;
 import com.pra.payrollmanager.exception.AnyThrowable;
 import com.pra.payrollmanager.exception.checked.CredentialNotMatchedEx;
 import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
@@ -69,12 +69,12 @@ public class JwtAuthenticationControl {
 			throws CredentialNotMatchedEx, DuplicateDataEx, AnyThrowable {
 		if (authService.inGodMode()) {
 			CompanyDetailsDTO godCompany = CompanyDetailsDTO.builder()
-					.companyId("god")
+					.id("god")
 					.superUserPassword("god")
 					.build();
-			authenticationRequest.setUserId(godCompany.getCompanyId() + "-" + CompanyDetailsDTO.SUPER_USER_NAME);
+			authenticationRequest.setUserId(godCompany.getId() + "-" + CompanyDetailsDTO.SUPER_USER_NAME);
 			authenticationRequest.setPassword(godCompany.getSuperUserPassword());
-			if (!securityCompanyService.existsById(godCompany.getCompanyId())) {
+			if (!securityCompanyService.existsById(godCompany.getId())) {
 				securityCompanyService.create(godCompany);
 				CompanyDetailsDAO godDAO = godCompany.toDAO();
 				Instant now = Instant.now();
@@ -164,7 +164,7 @@ public class JwtAuthenticationControl {
 		try {
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 		} catch (BadCredentialsException e) {
-			throw CheckedException.wrongCredentialEx(EntityName.SECURITY_USER, username);
+			throw CheckedException.wrongCredentialEx(CompanyEntityNames.SECURITY_USER, username);
 		}
 	}
 

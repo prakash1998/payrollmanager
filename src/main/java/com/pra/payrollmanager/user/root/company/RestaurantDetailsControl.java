@@ -7,7 +7,6 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,12 +23,12 @@ import com.pra.payrollmanager.response.dto.Response;
 import com.pra.payrollmanager.security.authentication.company.SecurityCompany;
 import com.pra.payrollmanager.validation.FieldValidator;
 
-import springfox.documentation.annotations.ApiIgnore;
+import io.swagger.annotations.ApiOperation;
 
-@ApiIgnore
+@ApiOperation("Manage Restaurants")
 @RestController
-@RequestMapping("company")
-public class CompanyDetailsControl extends BaseControl<CompanyDetailsService> {
+@RequestMapping("restaurant")
+public class RestaurantDetailsControl extends BaseControl<CompanyDetailsService> {
 
 	@GetMapping(value = "self", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response<CompanyDetailsDTO> getSelf() throws DataNotFoundEx, AnyThrowable {
@@ -38,18 +37,18 @@ public class CompanyDetailsControl extends BaseControl<CompanyDetailsService> {
 	}
 
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<List<CompanyDetailsDTO>> getCompanyDetails() {
+	public Response<List<CompanyDetailsDTO>> getRestaurantDetails() {
 		return Response.payload(service.getAll());
 	}
 
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<CompanyDetailsDTO> getCompany(@PathVariable("id") @NotNull String companyId)
+	public Response<CompanyDetailsDTO> getRestaurantDetail(@PathVariable("id") @NotNull String companyId)
 			throws DataNotFoundEx, AnyThrowable {
 		return Response.payload(service.getById(companyId));
 	}
 
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<CompanyDetailsDTO> createCompanyDetails(@Valid @RequestBody CompanyDetailsDTO company)
+	public Response<CompanyDetailsDTO> createRestaurantDetails(@Valid @RequestBody CompanyDetailsDTO company)
 			throws DuplicateDataEx, MethodArgumentNotValidException, NoSuchMethodException,
 			AnyThrowable {
 
@@ -59,15 +58,24 @@ public class CompanyDetailsControl extends BaseControl<CompanyDetailsService> {
 	}
 
 	@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<CompanyDetailsDTO> updateCompanyDetails(@Valid @RequestBody CompanyDetailsDTO company)
+	public Response<CompanyDetailsDTO> updateRestaurantDetails(@Valid @RequestBody CompanyDetailsDTO company)
 			throws DataNotFoundEx, AnyThrowable {
 		return Response.payload(service.update(company));
 	}
 
-	@DeleteMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<Void> disableCompnay(@Valid @RequestBody CompanyDetailsDTO company)
+	@PutMapping(value = "lock", consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public Response<Void> lockRestaurant(@Valid @RequestBody CompanyDetailsDTO company)
 			throws DataNotFoundEx, AnyThrowable {
 		service.lockCompany(company);
+		return Response.ok();
+	}
+
+	@PutMapping(value = "activate", consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public Response<Void> activateRestaurant(@Valid @RequestBody CompanyDetailsDTO company)
+			throws DataNotFoundEx, AnyThrowable {
+		service.activateCompany(company);
 		return Response.ok();
 	}
 

@@ -4,7 +4,7 @@ import org.bson.types.ObjectId;
 import org.springframework.stereotype.Repository;
 
 import com.pra.payrollmanager.base.dal.AuditDALWithCompany;
-import com.pra.payrollmanager.constants.EntityName;
+import com.pra.payrollmanager.entity.CompanyEntityNames;
 import com.pra.payrollmanager.security.authorization.ResourceFeaturePermissions;
 import com.pra.payrollmanager.user.root.permissions.feature.FeaturePermission;
 
@@ -12,8 +12,8 @@ import com.pra.payrollmanager.user.root.permissions.feature.FeaturePermission;
 public class NotificationDAL extends AuditDALWithCompany<ObjectId, Notification> {
 
 	@Override
-	public EntityName entity() {
-		return EntityName.NOTIFICATION;
+	public CompanyEntityNames entity() {
+		return CompanyEntityNames.NOTIFICATION;
 	}
 
 	@Override

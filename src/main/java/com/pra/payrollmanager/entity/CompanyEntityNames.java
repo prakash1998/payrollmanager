@@ -1,11 +1,6 @@
-package com.pra.payrollmanager.constants;
+package com.pra.payrollmanager.entity;
 
-public enum EntityName {
-
-	SECURITY_COMPANY("SECURITY_COMPANY"), COMPANY("COMPANY_DETAILS"), PERMISSION(
-			"SECURITY_PERMISSIONS"), FEATURE_PERMISSION(
-					"FEATURE_PERMISSIONS"), ENDPOINT_PERMISSION(
-							"ENDPOINT_PERMISSIONS"), SCREEN_PERMISSION("SCREEN_PERMISSIONS"),
+public enum CompanyEntityNames implements EntityName{
 
 	SECURITY_USER("SECURITY_USERS"), USER("USERS"), ROLE("ROLES"), BASE_TEST(
 			"BASE_TEST_TEST"), USER_ROLE_MAP(
@@ -16,7 +11,7 @@ public enum EntityName {
 
 	String tableName;
 
-	private EntityName(String tableName) {
+	private CompanyEntityNames(String tableName) {
 		this.tableName = tableName;
 	}
 

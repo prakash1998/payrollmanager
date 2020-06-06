@@ -28,7 +28,6 @@ abstract public class AuditDALWithCompany<PK, DAO extends BaseAuditDAO<PK>>
 		return WithTablePrefix.super.companyPrefix(authorityService) + this.entity().table();
 	}
 	
-	
 	@Override
 	public String user() {
 		return authorityService.getUserName();

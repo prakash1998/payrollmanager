@@ -19,7 +19,7 @@ import com.pra.payrollmanager.admin.common.user.UserDAO;
 import com.pra.payrollmanager.admin.common.user.UserDTO;
 import com.pra.payrollmanager.base.BaseE2eIntegrationTest;
 import com.pra.payrollmanager.config.MockUserDetailService;
-import com.pra.payrollmanager.constants.EntityName;
+import com.pra.payrollmanager.entity.CompanyEntityNames;
 import com.pra.payrollmanager.security.authentication.user.SecurityUserRepo;
 import com.pra.payrollmanager.security.authorization.SecurityPermissions;
 
@@ -69,7 +69,7 @@ public class UserE2eTest extends BaseE2eIntegrationTest<UserControl> {
 	@Override
 	public void cleanUp() throws Exception {
 		securityUserRepo.deleteById("test1");
-		super.cleanUpTableForTESTER(UserDAO.class, EntityName.USER.table());
+		super.cleanUpTableForTESTER(UserDAO.class, CompanyEntityNames.USER.table());
 	}
 
 }

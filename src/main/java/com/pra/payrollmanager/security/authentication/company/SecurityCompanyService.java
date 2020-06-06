@@ -9,12 +9,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.pra.payrollmanager.base.services.ServiceDAO;
 import com.pra.payrollmanager.constants.CacheNameStore;
-import com.pra.payrollmanager.constants.EntityName;
+import com.pra.payrollmanager.entity.CommonEntityNames;
+import com.pra.payrollmanager.entity.EntityUtils;
 import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
 import com.pra.payrollmanager.exception.unchecked.NotUseThisMethod;
 import com.pra.payrollmanager.exception.util.ExceptionType;
 import com.pra.payrollmanager.exception.util.UncheckedException;
+import com.pra.payrollmanager.security.authentication.user.SecurityUser;
 import com.pra.payrollmanager.security.authentication.user.SecurityUserService;
 import com.pra.payrollmanager.user.root.company.CompanyDetailsDTO;
 
@@ -31,7 +33,7 @@ public class SecurityCompanyService extends ServiceDAO<String, SecurityCompany, 
 		try {
 			return super.getById(companyId);
 		} catch (DataNotFoundEx e) {
-			throw UncheckedException.appException(EntityName.COMPANY, ExceptionType.ENTITY_NOT_FOUND, companyId);
+			throw UncheckedException.appException(CommonEntityNames.COMPANY, ExceptionType.ENTITY_NOT_FOUND, companyId);
 		}
 	}
 
@@ -40,11 +42,19 @@ public class SecurityCompanyService extends ServiceDAO<String, SecurityCompany, 
 		throw new NotUseThisMethod();
 	}
 
-	@Transactional
 	public void create(CompanyDetailsDTO company) throws DuplicateDataEx {
 		SecurityCompany securityCompany = company.toSecurityCompany();
+		
+		// creating company specific tables when company got created.
+		EntityUtils.createTableForCompanyEntities(dataAccessLayer.mongoTemplate(),
+				securityCompany.getTablePrefix());
+		this.createSecurityCompany(securityCompany, company.toSuperUser());
+	}
+
+	@Transactional
+	private void createSecurityCompany(SecurityCompany securityCompany, SecurityUser superUser) throws DuplicateDataEx {
 		super.create(securityCompany);
-		securityUserService.createSuperUser(company.toSuperUser(), securityCompany.getTablePrefix());
+		securityUserService.createSuperUser(superUser, securityCompany.getTablePrefix());
 	}
 
 	@Override
@@ -54,8 +64,12 @@ public class SecurityCompanyService extends ServiceDAO<String, SecurityCompany, 
 		return super.update(company);
 	}
 
-	public void disableCompany(SecurityCompany company) throws DataNotFoundEx {
-		super.update(company.withCompanyEnabled(false));
+	public void lockCompany(SecurityCompany company) throws DataNotFoundEx {
+		super.update(company.withAccountLocked(true));
+	}
+
+	public void unlockCompany(SecurityCompany company) throws DataNotFoundEx {
+		super.update(company.withAccountLocked(false));
 	}
 
 }

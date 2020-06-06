@@ -45,13 +45,39 @@ public class AuthorityService {
 		}
 		return auth;
 	}
-
+	
+	private void validateSecurityCompany(SecurityCompany company) {
+		if(!company.isEnabled()) {
+			throw new AuthorizationServiceException("Disabled :  " + company.getId() + " is disabled by Admin.");
+		}
+		if(!company.isAccountLocked()) {
+			throw new AuthorizationServiceException("Locked :  " + company.getId() + " is locked by Admin.");
+		}
+		if(!company.isAccountExpired()) {
+			throw new AuthorizationServiceException("Expired :  " + company.getId() + " is expired.");
+		}
+	}
+	
+	private void validateSecurityUser(SecurityUser user) {
+		if(!user.isEnabled()) {
+			throw new AuthorizationServiceException("Disabled :  " + user.getUsername() + " is disabled by Admin.");
+		}
+		if(!user.isAccountLocked()) {
+			throw new AuthorizationServiceException("Locked :  " + user.getUsername() + " is locked by Admin.");
+		}
+		if(!user.isAccountExpired()) {
+			throw new AuthorizationServiceException("Expired :  " + user.getUsername() + " is expired.");
+		}
+	}
+	
 	public void validateEndpointPermission(EndpointPermission permission) {
 		if (inGodMode())
 			return;
 
-		SecurityUser user = this.getSecurityUser();
 		SecurityCompany company = this.getSecurityCompany();
+		validateSecurityCompany(company);
+		SecurityUser user = this.getSecurityUser();
+		validateSecurityUser(user);
 
 		if (!company.hasAccessTo(permission)) {
 			throw new AuthorizationServiceException(
@@ -73,14 +99,15 @@ public class AuthorityService {
 		if (inGodMode()) {
 			return;
 		}
+		
+		SecurityCompany company = this.getSecurityCompany();
+		validateSecurityCompany(company);
+		SecurityUser user = this.getSecurityUser();
+		validateSecurityUser(user);
 
 		List<SecurityPermission> fullPermissions = Stream.of(permissions)
 				.map(p -> SecurityPermissions.universalSecurityPermissionMap.get(p.getNumericId()))
 				.collect(Collectors.toList());
-
-
-		SecurityUser user = this.getSecurityUser();
-		SecurityCompany company = this.getSecurityCompany();
 
 		boolean companyAuthorized = false;
 		for (SecurityPermission permission : fullPermissions) {
