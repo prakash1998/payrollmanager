@@ -50,10 +50,10 @@ public class AuthorityService {
 		if(!company.isEnabled()) {
 			throw new AuthorizationServiceException("Disabled :  " + company.getId() + " is disabled by Admin.");
 		}
-		if(!company.isAccountLocked()) {
+		if(company.isAccountLocked()) {
 			throw new AuthorizationServiceException("Locked :  " + company.getId() + " is locked by Admin.");
 		}
-		if(!company.isAccountExpired()) {
+		if(company.isAccountExpired()) {
 			throw new AuthorizationServiceException("Expired :  " + company.getId() + " is expired.");
 		}
 	}
@@ -62,10 +62,10 @@ public class AuthorityService {
 		if(!user.isEnabled()) {
 			throw new AuthorizationServiceException("Disabled :  " + user.getUsername() + " is disabled by Admin.");
 		}
-		if(!user.isAccountLocked()) {
+		if(user.isAccountLocked()) {
 			throw new AuthorizationServiceException("Locked :  " + user.getUsername() + " is locked by Admin.");
 		}
-		if(!user.isAccountExpired()) {
+		if(user.isAccountExpired()) {
 			throw new AuthorizationServiceException("Expired :  " + user.getUsername() + " is expired.");
 		}
 	}

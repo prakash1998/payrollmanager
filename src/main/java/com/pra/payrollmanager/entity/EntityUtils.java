@@ -2,6 +2,7 @@ package com.pra.payrollmanager.entity;
 
 import org.springframework.data.mongodb.core.MongoTemplate;
 
+import com.pra.payrollmanager.base.dal.AuditDAL;
 import com.pra.payrollmanager.base.dal.DALWithCommon;
 
 public class EntityUtils {
@@ -11,8 +12,11 @@ public class EntityUtils {
 		EntityName[] tables = entityEnum.getEnumConstants();
 		for (EntityName entity : tables) {
 			String collectionName = prefix + entity.table();
+			String auditCollectionName = collectionName + AuditDAL.AUDIT_POSTFIX;
 			if (!mongoTemplate.collectionExists(collectionName))
 				mongoTemplate.createCollection(collectionName);
+			if (!mongoTemplate.collectionExists(auditCollectionName))
+				mongoTemplate.createCollection(auditCollectionName);
 		}
 	}
 
