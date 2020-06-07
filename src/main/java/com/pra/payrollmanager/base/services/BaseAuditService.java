@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.pra.payrollmanager.exception.AnyThrowable;
-import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
+import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 
 public interface BaseAuditService<PK, DATA> {
 

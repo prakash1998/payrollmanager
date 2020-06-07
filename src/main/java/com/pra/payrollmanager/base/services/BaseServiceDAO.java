@@ -5,8 +5,8 @@ import java.util.Set;
 
 import com.pra.payrollmanager.base.dal.BaseDAL;
 import com.pra.payrollmanager.base.data.BaseDAO;
-import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
-import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
+import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
+import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 
 public interface BaseServiceDAO<PK,
 		DAO extends BaseDAO<PK>,

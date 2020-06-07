@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
+import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.security.authorization.permission.DynamicSecurityPermission;
 import com.pra.payrollmanager.user.root.permissions.endpoint.EndpointPermission;
 import com.pra.payrollmanager.user.root.permissions.security.SecurityPermission;

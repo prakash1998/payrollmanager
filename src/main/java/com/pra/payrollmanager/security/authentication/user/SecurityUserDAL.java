@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.pra.payrollmanager.base.dal.DALWithCompany;
 import com.pra.payrollmanager.entity.CompanyEntityNames;
-import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
+import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.util.CheckedException;
 
 @Repository

@@ -19,7 +19,7 @@ import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import com.pra.payrollmanager.entity.EntityUtils;
-import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
+import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.filter.AuthorizationFilter;
 import com.pra.payrollmanager.security.WebSecurityConfig;
 import com.pra.payrollmanager.security.authentication.company.SecurityCompanyService;

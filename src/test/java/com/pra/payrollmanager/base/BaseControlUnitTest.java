@@ -29,8 +29,8 @@ import com.pra.payrollmanager.base.services.ServiceDTO;
 import com.pra.payrollmanager.config.MockUserDetailService;
 import com.pra.payrollmanager.config.TestingConfig;
 import com.pra.payrollmanager.exception.AnyThrowable;
-import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
-import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
+import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
+import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 
 @SpringBootTest(
 		webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,

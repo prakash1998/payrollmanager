@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.pra.payrollmanager.base.data.BaseMapDAO;
-import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
+import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.utils.QueryUtils;
 
 abstract public class MapDALWithCompany<KEY extends Serializable,

@@ -9,8 +9,8 @@ import com.pra.payrollmanager.base.data.BaseDAO;
 import com.pra.payrollmanager.base.data.BaseDTO;
 import com.pra.payrollmanager.base.data.WithDTO;
 import com.pra.payrollmanager.exception.AnyThrowable;
-import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
-import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
+import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
+import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 
 public interface BaseServiceDTO<PK,
 		DAO extends BaseDAO<PK> & WithDTO<DTO>,

@@ -12,8 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.pra.payrollmanager.base.services.AuditRTServiceDAO;
 import com.pra.payrollmanager.constants.KafkaTopics;
-import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
-import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
+import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
+import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 
 import lombok.extern.slf4j.Slf4j;
 

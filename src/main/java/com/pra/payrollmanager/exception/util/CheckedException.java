@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 
 import com.pra.payrollmanager.config.ErrorTemplateConfig;
 import com.pra.payrollmanager.entity.EntityName;
-import com.pra.payrollmanager.exception.checked.CommonAppEx;
 import com.pra.payrollmanager.exception.checked.CredentialNotMatchedEx;
-import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
-import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
+import com.pra.payrollmanager.exception.unchecked.AppException;
+import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
+import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 
 @Component
 public class CheckedException {
@@ -30,8 +30,8 @@ public class CheckedException {
 	 * @param args
 	 * @return
 	 */
-	public static CommonAppEx appException(String messageTemplate, String... args) {
-		return new CommonAppEx(format(messageTemplate, args));
+	public static AppException appException(String messageTemplate, String... args) {
+		return new AppException(format(messageTemplate, args));
 	}
 
 	/**
@@ -43,7 +43,7 @@ public class CheckedException {
 	 * @param args
 	 * @return
 	 */
-	public static CommonAppEx appExceptionWithId(EntityName entityType, String id, String... args) {
+	public static AppException appExceptionWithId(EntityName entityType, String id, String... args) {
 		String messageTemplate = getMessageTemplate(entityType, id);
 		return appException(messageTemplate, args);
 	}
@@ -56,7 +56,7 @@ public class CheckedException {
 	 * @param args
 	 * @return
 	 */
-	public static CommonAppEx appExceptionWithTemplate(
+	public static AppException appExceptionWithTemplate(
 			EntityName entityType, String id, String... args) {
 		String messageTemplate2 = getMessageTemplate(entityType, id);
 		return appException(messageTemplate2, args);

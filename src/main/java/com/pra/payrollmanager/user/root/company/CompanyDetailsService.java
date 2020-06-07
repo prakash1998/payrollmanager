@@ -9,8 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.pra.payrollmanager.base.services.AuditServiceDTO;
 import com.pra.payrollmanager.exception.AnyThrowable;
-import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
-import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
+import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
+import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.exception.unchecked.NotUseThisMethod;
 import com.pra.payrollmanager.security.authentication.company.SecurityCompany;
 import com.pra.payrollmanager.security.authentication.company.SecurityCompanyService;
@@ -57,7 +57,6 @@ public class CompanyDetailsService
 	}
 
 	@Override
-	@Transactional
 	public CompanyDetailsDTO create(CompanyDetailsDTO company) throws DuplicateDataEx, AnyThrowable {
 		securityCompanyService.create(company);
 		CompanyDetailsDTO savedCompany = super.create(company);

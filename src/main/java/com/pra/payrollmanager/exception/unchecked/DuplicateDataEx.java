@@ -1,6 +1,6 @@
-package com.pra.payrollmanager.exception.checked;
+package com.pra.payrollmanager.exception.unchecked;
 
-public class DuplicateDataEx extends Exception{
+public class DuplicateDataEx extends RuntimeException{
 
   /**
    * 

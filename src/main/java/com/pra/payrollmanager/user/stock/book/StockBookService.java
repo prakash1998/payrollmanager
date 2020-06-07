@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import com.pra.payrollmanager.base.services.AuditRTServiceDTO;
 import com.pra.payrollmanager.constants.KafkaTopics;
 import com.pra.payrollmanager.exception.AnyThrowable;
-import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
-import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
+import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
+import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.user.common.notification.NotificationService;
 import com.pra.payrollmanager.user.common.notification.NotificationType;
 

@@ -15,6 +15,7 @@ import com.pra.payrollmanager.security.authentication.user.SecurityUser;
 import com.pra.payrollmanager.security.authorization.permission.ApiFeatures;
 
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -44,15 +45,19 @@ public class CompanyDetailsDTO extends BaseAuditDTO<CompanyDetailsDAO> {
 	private String address;
 	private String superUserPassword;
 
+	@ApiModelProperty(hidden = true) 
 	@Builder.Default
 	private Set<Integer> endpoints = new HashSet<>();
 
+	@ApiModelProperty(hidden = true) 
 	@Builder.Default
 	private Set<Integer> permissions = new HashSet<>();
 
+	@ApiModelProperty(hidden = true) 
 	@Builder.Default
 	private Map<Integer, Set<ApiFeatures>> resourceFeatures = new HashMap<>();
 
+	@ApiModelProperty(hidden = true) 
 	@Builder.Default
 	private Set<String> screenIds = new HashSet<>();
 	

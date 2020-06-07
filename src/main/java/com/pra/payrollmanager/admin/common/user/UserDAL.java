@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import com.pra.payrollmanager.base.dal.AuditDALWithCompany;
 import com.pra.payrollmanager.entity.CompanyEntityNames;
-import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
+import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.util.CheckedException;
 import com.pra.payrollmanager.security.authorization.ResourceFeaturePermissions;
 import com.pra.payrollmanager.user.root.permissions.feature.FeaturePermission;

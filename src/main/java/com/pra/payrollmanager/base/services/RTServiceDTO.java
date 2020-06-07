@@ -7,8 +7,8 @@ import com.pra.payrollmanager.base.data.BaseDAO;
 import com.pra.payrollmanager.base.data.BaseDTO;
 import com.pra.payrollmanager.base.data.WithDTO;
 import com.pra.payrollmanager.exception.AnyThrowable;
-import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
-import com.pra.payrollmanager.exception.checked.DuplicateDataEx;
+import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
+import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.message.MessageSendingService;
 import com.pra.payrollmanager.security.authorization.AuthorityService;
 

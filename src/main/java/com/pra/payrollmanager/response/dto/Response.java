@@ -67,7 +67,7 @@ public class Response<T> {
 			return this;
 		}
 
-		public TypedResponseBuilder<T> addErrorMsg(String errorMsg, Exception ex) {
+		public TypedResponseBuilder<T> addErrorMsg(String errorMsg, Throwable ex) {
 			if (this.errors == null) {
 				this.errors = new ArrayList<>();
 			}
@@ -130,7 +130,7 @@ public class Response<T> {
 			return new Response.TypedResponseBuilder<>(payload, status, message, errors, pages);
 		}
 
-		public ResponseBuilder addErrorMsg(String errorMsg, Exception ex) {
+		public ResponseBuilder addErrorMsg(String errorMsg, Throwable ex) {
 			if (this.errors == null) {
 				this.errors = new ArrayList<>();
 			}

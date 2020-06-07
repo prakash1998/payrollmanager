@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
 import com.pra.payrollmanager.base.data.BaseAuditDAO;
-import com.pra.payrollmanager.exception.checked.DataNotFoundEx;
+import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 import com.pra.payrollmanager.security.authorization.AuthorityService;
 
 public abstract class AuditDAL<PK, DAO extends BaseAuditDAO<PK>>
