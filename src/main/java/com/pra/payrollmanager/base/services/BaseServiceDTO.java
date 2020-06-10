@@ -4,32 +4,45 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
+
 import com.pra.payrollmanager.base.dal.BaseDAL;
 import com.pra.payrollmanager.base.data.BaseDAO;
 import com.pra.payrollmanager.base.data.BaseDTO;
-import com.pra.payrollmanager.base.data.WithDTO;
 import com.pra.payrollmanager.exception.AnyThrowable;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.utils.BeanUtils;
 
 public interface BaseServiceDTO<PK,
-		DAO extends BaseDAO<PK> & WithDTO<DTO>,
+		DAO extends BaseDAO<PK>,
 		DTO extends BaseDTO<DAO>,
 		DAL extends BaseDAL<PK, DAO>>
 		extends BaseService<PK, DAO, DTO, DAL> {
+
+	ModelMapper modelMapper();
 	
-	default DTO postProcessGet(DAO obj) {
-		return obj.toDTO();
+	Class<DTO> dtoClazz();
+
+	default DTO toDTO(DAO dao) {
+		return modelMapper().map(dao, dtoClazz());
 	}
 	
-	default DTO postProcessSave(DTO dtoToSave,DAO objFromDB) {
-		return BeanUtils.copyFromWhereNullOrEmptyTo(dtoToSave, objFromDB.toDTO());
+	default DAO toDAO(DTO dto) {
+		return modelMapper().map(dto,dataAccessLayer().daoClazz());
+	}
+
+	default DTO postProcessGet(DAO obj) {
+		return toDTO(obj);
+	}
+
+	default DTO postProcessSave(DTO dtoToSave, DAO objFromDB) {
+		return BeanUtils.copyFromWhereNullOrEmptyTo(dtoToSave, toDTO(objFromDB));
 	}
 
 	@Override
 	default boolean exists(DTO obj) {
-		return dataAccessLayer().exists(obj.toDAO());
+		return dataAccessLayer().exists(toDAO(obj));
 	}
 
 	@Override
@@ -53,12 +66,12 @@ public interface BaseServiceDTO<PK,
 
 	@Override
 	default DTO create(DTO obj) throws DuplicateDataEx, AnyThrowable {
-		return postProcessSave(obj, dataAccessLayer().create(obj.toDAO()));
+		return postProcessSave(obj, dataAccessLayer().create(toDAO(obj)));
 	}
 
 	@Override
 	default DTO update(DTO obj) throws DataNotFoundEx, AnyThrowable {
-		return postProcessSave(obj, dataAccessLayer().update(obj.toDAO()));
+		return postProcessSave(obj, dataAccessLayer().update(toDAO(obj)));
 	}
 
 	// @Override
@@ -68,12 +81,12 @@ public interface BaseServiceDTO<PK,
 
 	@Override
 	default DTO delete(DTO obj) throws DataNotFoundEx, AnyThrowable {
-		return dataAccessLayer().delete(obj.toDAO()).toDTO();
+		return toDTO(dataAccessLayer().delete(toDAO(obj)));
 	}
 
 	@Override
 	default DTO deleteById(PK key) throws DataNotFoundEx, AnyThrowable {
-		return dataAccessLayer().deleteById(key).toDTO();
+		return toDTO(dataAccessLayer().deleteById(key));
 	}
 
 }

@@ -1,5 +1,8 @@
 package com.pra.payrollmanager.base.services;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.pra.payrollmanager.base.dal.BaseDAL;
@@ -10,20 +13,22 @@ import com.pra.payrollmanager.exception.AnyThrowable;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.message.MessageSendingService;
-import com.pra.payrollmanager.security.authorization.AuthorityService;
 
 abstract public class RTServiceDTO<PK,
 		DAO extends BaseDAO<PK> & WithDTO<DTO>,
 		DTO extends BaseDTO<DAO>,
 		DAL extends BaseDAL<PK, DAO>>
+		extends ServiceBeans<DAL>
 		implements BaseServiceDTO<PK, DAO, DTO, DAL>, BaseRTService<DTO> {
 
-	@Autowired
-	protected DAL dataAccessLayer;
-
+	@SuppressWarnings("unchecked")
 	@Override
-	public DAL dataAccessLayer() {
-		return dataAccessLayer;
+	public Class<DTO> dtoClazz() {
+		// specified in each class in hierarchy because we can access type parameter
+		// class in immediate parent only
+		Type sooper = getClass().getGenericSuperclass();
+		return (Class<DTO>) ((ParameterizedType) sooper)
+				.getActualTypeArguments()[2];
 	}
 
 	@Autowired
@@ -32,14 +37,6 @@ abstract public class RTServiceDTO<PK,
 	@Override
 	public MessageSendingService messageService() {
 		return messageService;
-	}
-
-	@Autowired
-	protected AuthorityService authorityService;
-
-	@Override
-	public AuthorityService authorityService() {
-		return authorityService;
 	}
 
 	@Override
@@ -83,6 +80,5 @@ abstract public class RTServiceDTO<PK,
 		sendDeleteMessage(deletedObj);
 		return deletedObj;
 	}
-
 
 }

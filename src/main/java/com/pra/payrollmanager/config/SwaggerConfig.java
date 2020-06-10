@@ -86,4 +86,12 @@ public class SwaggerConfig {
 		return swaggerDocket("User", "com.pra.payrollmanager.user");
 	}
 
+	/**
+	 * Group User contains operations used by restaurant
+	 */
+	@Bean
+	public Docket swaggerRestaurantApi() {
+		return swaggerDocket("Restaurant", "com.pra.payrollmanager.restaurant");
+	}
+
 }

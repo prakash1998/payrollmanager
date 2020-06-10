@@ -9,20 +9,12 @@ import com.pra.payrollmanager.base.data.BaseDAO;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.message.MessageSendingService;
-import com.pra.payrollmanager.security.authorization.AuthorityService;
 
 abstract public class RTServiceDAO<PK,
 		DAO extends BaseDAO<PK>,
 		DAL extends BaseDAL<PK, DAO>>
+		extends ServiceBeans<DAL>
 		implements BaseServiceDAO<PK, DAO, DAL>, BaseRTService<DAO> {
-
-	@Autowired
-	protected DAL dataAccessLayer;
-
-	@Override
-	public DAL dataAccessLayer() {
-		return dataAccessLayer;
-	}
 
 	@Autowired
 	protected MessageSendingService messageService;
@@ -30,14 +22,6 @@ abstract public class RTServiceDAO<PK,
 	@Override
 	public MessageSendingService messageService() {
 		return messageService;
-	}
-
-	@Autowired
-	protected AuthorityService authorityService;
-
-	@Override
-	public AuthorityService authorityService() {
-		return authorityService;
 	}
 
 	@Override

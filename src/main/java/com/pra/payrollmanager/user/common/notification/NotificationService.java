@@ -30,7 +30,7 @@ public class NotificationService extends AuditRTServiceDAO<ObjectId, Notificatio
 	}
 
 	List<Notification> getActiveNotifications() throws DataNotFoundEx {
-		List<NotificationAck> ackNotifications = acknowledgeDal.findByReciever(authorityService.getUserId());
+		List<NotificationAck> ackNotifications = acknowledgeDal.findByReciever(authorityService().getUserId());
 		if (ackNotifications.isEmpty()) {
 			return Collections.emptyList();
 		}
@@ -47,7 +47,7 @@ public class NotificationService extends AuditRTServiceDAO<ObjectId, Notificatio
 					Notification.builder()
 							.type(type)
 							.display(display)
-							.sender(authorityService.getUserName())
+							.sender(authorityService().getUserName())
 							.build(),
 					targetedUsers);
 			acknowledgeDal.addUsersForAck(savedNotification.getId(), targetedUsers);
@@ -61,7 +61,7 @@ public class NotificationService extends AuditRTServiceDAO<ObjectId, Notificatio
 	public Notification acknowledge(Notification notification) throws DataNotFoundEx {
 		// Notification dbNotification = super.getById(notification.getId());
 
-		String ackedBy = authorityService.getUserId();
+		String ackedBy = authorityService().getUserId();
 		List<NotificationAck> recieverNotificaiton = acknowledgeDal.findByNotificationId(notification.getId());
 		if (recieverNotificaiton.size() == 1 && recieverNotificaiton.get(0).getReciever().equals(ackedBy)) {
 			super.delete(notification);

@@ -1,4 +1,4 @@
-package com.pra.payrollmanager.user.root.company;
+package com.pra.payrollmanager.restaurant;
 
 import java.util.List;
 
@@ -20,6 +20,8 @@ import com.pra.payrollmanager.exception.AnyThrowable;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.response.dto.Response;
+import com.pra.payrollmanager.user.root.company.CompanyDetailsControl;
+import com.pra.payrollmanager.user.root.company.CompanyDetailsDTO;
 
 import io.swagger.annotations.ApiOperation;
 
