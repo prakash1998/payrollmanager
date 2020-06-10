@@ -14,6 +14,6 @@ public class AppException extends RuntimeException {
   }
 
   public AppException() {
-    this("Common App Exception");
+    this("Application Exception");
   }
 }

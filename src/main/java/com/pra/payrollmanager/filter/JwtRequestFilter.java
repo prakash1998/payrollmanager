@@ -69,7 +69,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			if (userId != null && !authService.haveAuthentication()) {
 				SecurityUser userDetails = userService.loadUserByUsername(userId);
 
-				if (!userDetails.isLoggedIn()) {
+				if (!userDetails.getLoggedIn()) {
 					filterResponse.writeToResponse(response, ResponseStatus.ACCESS_DENIED,
 							"User Session Expired, Please Login Again");
 					return;

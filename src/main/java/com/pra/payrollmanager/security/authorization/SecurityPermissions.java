@@ -6,12 +6,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.security.authorization.permission.DynamicSecurityPermission;
-import com.pra.payrollmanager.user.root.permissions.endpoint.EndpointPermission;
 import com.pra.payrollmanager.user.root.permissions.security.SecurityPermission;
 import com.pra.payrollmanager.user.root.permissions.security.SecurityPermissionDAL;
 
@@ -113,7 +111,7 @@ public class SecurityPermissions {
 		
 		try {
 //			dataAccess.deleteAll();
-			dataAccess.createMultiple(newlyCreatedPermissions);
+			dataAccess.insertMulti(newlyCreatedPermissions);
 			universalSecurityPermissionMap.putAll(allPermisssions);
 		} catch (DuplicateDataEx e) {
 			throw new RuntimeException("Problem while inseting permissions in DB");

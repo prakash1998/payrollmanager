@@ -58,7 +58,7 @@ public class ResourceFeaturePermissions {
 				.map(allPermisssions::get)
 				.collect(Collectors.toList());
 		try {
-			dataAccess.createMultiple(permissionsToPersist);
+			dataAccess.insertMulti(permissionsToPersist);
 		} catch (DuplicateDataEx e) {
 			throw new RuntimeException("Problem while inseting permissions in DB");
 		}

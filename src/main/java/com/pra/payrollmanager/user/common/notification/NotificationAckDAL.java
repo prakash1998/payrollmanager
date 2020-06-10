@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
-import com.pra.payrollmanager.base.dal.AuditDALWithCompany;
+import com.pra.payrollmanager.base.dal.AuditDAL;
 import com.pra.payrollmanager.entity.CompanyEntityNames;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.security.authentication.user.SecurityUserService;
@@ -18,7 +18,7 @@ import com.pra.payrollmanager.security.authorization.ResourceFeaturePermissions;
 import com.pra.payrollmanager.user.root.permissions.feature.FeaturePermission;
 
 @Repository
-public class NotificationAckDAL extends AuditDALWithCompany<ObjectId, NotificationAck> {
+public class NotificationAckDAL extends AuditDAL<ObjectId, NotificationAck> {
 
 	@Autowired
 	SecurityUserService userService;
@@ -34,12 +34,12 @@ public class NotificationAckDAL extends AuditDALWithCompany<ObjectId, Notificati
 	}
 
 	@Override
-	protected NotificationAck injectAuditInfoOnCreate(NotificationAck obj) {
+	public NotificationAck injectAuditInfoOnCreate(NotificationAck obj) {
 		return obj;
 	}
 
 	@Override
-	protected NotificationAck injectAuditInfoOnUpdate(NotificationAck dbObj, NotificationAck obj) {
+	public NotificationAck injectAuditInfoOnUpdate(NotificationAck dbObj, NotificationAck obj) {
 		return obj;
 	}
 
@@ -58,7 +58,7 @@ public class NotificationAckDAL extends AuditDALWithCompany<ObjectId, Notificati
 					.collect(Collectors.toSet());
 		}
 
-		super.createMultiple(
+		super.insertMulti(
 				usersForAck.stream()
 						.map(usr -> NotificationAck.builder()
 								.notificationId(notificationId)

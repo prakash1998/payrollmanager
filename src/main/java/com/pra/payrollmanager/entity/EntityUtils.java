@@ -3,7 +3,7 @@ package com.pra.payrollmanager.entity;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.pra.payrollmanager.base.dal.AuditDAL;
-import com.pra.payrollmanager.base.dal.DALWithCommon;
+import com.pra.payrollmanager.base.dal.BaseDAL;
 
 public class EntityUtils {
 
@@ -25,8 +25,8 @@ public class EntityUtils {
 				CompanyEntityNames.class);
 	}
 
-	public static void createTableForCommonEntities(DALWithCommon<?, ?> dataAccessLayer) {
-		createTableForEntities(dataAccessLayer.mongoTemplate(), dataAccessLayer.commonPrefix(),
+	public static void createTableForCommonEntities(BaseDAL<?, ?> dataAccessLayer) {
+		createTableForEntities(dataAccessLayer.mongoTemplate(), dataAccessLayer.commonTablePrefix(),
 				CommonEntityNames.class);
 	}
 

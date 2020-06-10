@@ -3,13 +3,13 @@ package com.pra.payrollmanager.user.common.notification;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Repository;
 
-import com.pra.payrollmanager.base.dal.AuditDALWithCompany;
+import com.pra.payrollmanager.base.dal.AuditDAL;
 import com.pra.payrollmanager.entity.CompanyEntityNames;
 import com.pra.payrollmanager.security.authorization.ResourceFeaturePermissions;
 import com.pra.payrollmanager.user.root.permissions.feature.FeaturePermission;
 
 @Repository
-public class NotificationDAL extends AuditDALWithCompany<ObjectId, Notification> {
+public class NotificationDAL extends AuditDAL<ObjectId, Notification> {
 
 	@Override
 	public CompanyEntityNames entity() {
@@ -22,12 +22,12 @@ public class NotificationDAL extends AuditDALWithCompany<ObjectId, Notification>
 	}
 
 	@Override
-	protected Notification injectAuditInfoOnCreate(Notification obj) {
+	public Notification injectAuditInfoOnCreate(Notification obj) {
 		return obj;
 	}
 
 	@Override
-	protected Notification injectAuditInfoOnUpdate(Notification dbObj, Notification obj) {
+	public Notification injectAuditInfoOnUpdate(Notification dbObj, Notification obj) {
 		return obj;
 	}
 

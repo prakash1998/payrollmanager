@@ -4,7 +4,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
-import com.pra.payrollmanager.base.dal.AuditDALWithCompany;
+import com.pra.payrollmanager.base.dal.AuditDAL;
 import com.pra.payrollmanager.entity.CompanyEntityNames;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.util.CheckedException;
@@ -12,7 +12,7 @@ import com.pra.payrollmanager.security.authorization.ResourceFeaturePermissions;
 import com.pra.payrollmanager.user.root.permissions.feature.FeaturePermission;
 
 @Repository
-public class UserDAL extends AuditDALWithCompany<String, UserDAO> {
+public class UserDAL extends AuditDAL<String, UserDAO> {
 
 	public UserDAO getByFirstName(String name) throws DataNotFoundEx {
 		UserDAO result = super.findOneWith(Query.query(Criteria.where("firstName").is(name)));

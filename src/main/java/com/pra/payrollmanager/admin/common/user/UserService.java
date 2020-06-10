@@ -1,8 +1,5 @@
 package com.pra.payrollmanager.admin.common.user;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
@@ -27,55 +24,43 @@ public class UserService extends AuditRTServiceDTO<String, UserDAO, UserDTO, Use
 	UserRoleMapDAL userRoleMapDAL;
 
 	@Override
-	public List<UserDTO> getAll() {
-		return super.getAll().stream()
-				.map(dto -> {
-					dto.setRoleIds(userRoleMapDAL.getValuesForKey(dto.getUserName()));
-					return dto;
-				})
-				.collect(Collectors.toList());
-	}
-
-	@Override
-	public UserDTO getById(String userName) throws DataNotFoundEx, AnyThrowable {
-		UserDTO dto = super.getById(userName);
-		dto.setRoleIds(userRoleMapDAL.getValuesForKey(userName));
+	public UserDTO postProcessGet(UserDAO obj) {
+		UserDTO dto = super.postProcessGet(obj);
+		dto.setRoleIds(userRoleMapDAL.getValuesForKey(dto.getUserName()));
 		return dto;
 	}
+
+	// @Override
+	// public UserDTO postProcessSave(UserDTO dtoToSave, UserDAO objFromDB) {
+	// UserDTO savedObj = super.postProcessSave(dtoToSave, objFromDB);
+	// savedObj.setRoleIds(dtoToSave.getRoleIds());
+	// return savedObj;
+	// }
 
 	@Override
 	@Transactional
 	public UserDTO create(UserDTO user) throws DuplicateDataEx, AnyThrowable {
 		securityUserService.create(user.toSecurityUser());
-		UserDTO savedObj = super.create(user);
 		userRoleMapDAL.replaceEntries(user.getUserName(), user.getRoleIds());
-		savedObj.setRoleIds(user.getRoleIds());
-		return savedObj;
+		return super.create(user);
 	}
 
 	@Transactional
 	@CacheEvict(cacheNames = CacheNameStore.SECURITY_USER_PERMISSION_STORE, allEntries = true)
 	@Override
 	public UserDTO update(UserDTO user) throws DataNotFoundEx, AnyThrowable {
-		UserDTO updatedObj = super.update(user);
-		try {
-			userRoleMapDAL.replaceEntries(user.getUserName(), user.getRoleIds());
-		} catch (DuplicateDataEx e) {
-			throw new AnyThrowable(e);
-		}
-		updatedObj.setRoleIds(user.getRoleIds());
-		return updatedObj;
+		userRoleMapDAL.replaceEntries(user.getUserName(), user.getRoleIds());
+		return super.update(user);
 	}
 
 	@Override
 	@Transactional
 	public UserDTO delete(UserDTO user) throws DataNotFoundEx, AnyThrowable {
 		securityUserService.deleteUser(user.toSecurityUser());
-		UserDTO deletedUser = super.delete(user);
 		userRoleMapDAL.deleteEntriesByValue(user.getUserName());
-		return deletedUser;
+		return super.delete(user);
 	}
-	
+
 	public UserDTO findByFirstName(String name) throws DataNotFoundEx {
 		return dataAccessLayer.getByFirstName(name).toDTO();
 	}

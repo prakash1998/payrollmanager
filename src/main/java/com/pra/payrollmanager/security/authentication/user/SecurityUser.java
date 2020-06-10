@@ -34,15 +34,15 @@ public class SecurityUser extends BaseAuditDAO<String> implements UserDetails {
 	private String username;
 	private String password;
 	@Builder.Default
-	private boolean userEnabled = true;
+	private Boolean enabled = true;
 	@Builder.Default
-	private boolean accountLocked = false;
+	private Boolean accountLocked = false;
 	@Builder.Default
-	private boolean accountExpired = false;
+	private Boolean accountExpired = false;
 	@Builder.Default
-	private boolean passwordExpired = false;
+	private Boolean passwordExpired = false;
 	@Builder.Default
-	private boolean loggedIn = false;
+	private Boolean loggedIn = false;
 
 	@Transient
 	private SecurityCompany company;
@@ -71,7 +71,7 @@ public class SecurityUser extends BaseAuditDAO<String> implements UserDetails {
 
 	@Override
 	public boolean isEnabled() {
-		return userEnabled;
+		return enabled;
 	}
 
 	@Override

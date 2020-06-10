@@ -1,8 +1,5 @@
 package com.pra.payrollmanager.user.root.company;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,46 +18,23 @@ public class CompanyDetailsService
 
 	@Autowired
 	SecurityCompanyService securityCompanyService;
-
-	private CompanyDetailsDTO injectPermissions(CompanyDetailsDTO dto) {
-		try {
-			SecurityCompany company = securityCompanyService.getById(dto.getId());
-			dto.setPermissions(company.getPermissions());
-			dto.setResourceFeatures(company.getResourceFeatures());
-			dto.setEndpoints(company.getEndpointPermissions());
-			return dto;
-		} catch (DataNotFoundEx e) {
-			throw new RuntimeException("Inconsistancy in company");
-		}
-	}
-
-	private CompanyDetailsDTO injectPermissionsFromTo(CompanyDetailsDTO from, CompanyDetailsDTO to) {
-		to.setPermissions(from.getPermissions());
-		to.setResourceFeatures(from.getResourceFeatures());
-		to.setEndpoints(from.getEndpoints());
-		return to;
-	}
-
+	
 	@Override
-	public CompanyDetailsDTO getById(String id) throws DataNotFoundEx, AnyThrowable {
-		CompanyDetailsDTO dto = super.getById(id);
-		return injectPermissions(dto);
+	public CompanyDetailsDTO postProcessGet(CompanyDetailsDAO obj) {
+		CompanyDetailsDTO dto= super.postProcessGet(obj);
+		SecurityCompany company = securityCompanyService.getById(dto.getId());
+		dto.setLocked(company.getAccountLocked());
+		dto.setPermissions(company.getPermissions());
+		dto.setResourceFeatures(company.getResourceFeatures());
+		dto.setEndpoints(company.getEndpointPermissions());
+		return dto;
 	}
-
-	@Override
-	public List<CompanyDetailsDTO> getAll() {
-		return super.getAll().stream()
-				.map(dto -> {
-					return injectPermissions(dto);
-				})
-				.collect(Collectors.toList());
-	}
+	
 
 	@Override
 	public CompanyDetailsDTO create(CompanyDetailsDTO company) throws DuplicateDataEx, AnyThrowable {
 		securityCompanyService.create(company);
-		CompanyDetailsDTO savedCompany = super.create(company);
-		return injectPermissionsFromTo(company, savedCompany);
+		return super.create(company);
 	}
 
 	@Override
@@ -68,8 +42,7 @@ public class CompanyDetailsService
 	public CompanyDetailsDTO update(CompanyDetailsDTO company) throws DataNotFoundEx, AnyThrowable {
 		SecurityCompany securityCompany = company.toSecurityCompany();
 		securityCompanyService.update(securityCompany);
-		CompanyDetailsDTO updatedCompany = super.update(company);
-		return injectPermissionsFromTo(company, updatedCompany);
+		return super.update(company);
 	}
 
 	public void lockCompany(CompanyDetailsDTO company) throws DataNotFoundEx, AnyThrowable {

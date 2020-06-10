@@ -42,7 +42,13 @@ public class CompanyDetailsDTO extends BaseAuditDTO<CompanyDetailsDAO> {
 	@Pattern(regexp = "^[^-]*$", message = "company ID should not contain '-'.")
 	private String id;
 	private String name;
+	private String description;
 	private String address;
+	
+	private boolean locked;
+	private Location location;
+	private String category;
+	
 	private String superUserPassword;
 
 	@ApiModelProperty(hidden = true) 
@@ -66,8 +72,11 @@ public class CompanyDetailsDTO extends BaseAuditDTO<CompanyDetailsDAO> {
 		return CompanyDetailsDAO.builder()
 				.id(id)
 				.name(name)
+				.category(category)
+				.desc(description)
 				.address(address)
 				.screenIds(screenIds)
+				.location(location)
 				.build();
 	}
 

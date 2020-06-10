@@ -26,7 +26,14 @@ public class CompanyDetailsDAO extends BaseAuditDAOWithDTO<String, CompanyDetail
 	@Id
 	private String id;
 	private String name;
+	private String desc;
+	
+	private String category;
+	
 	private String address;
+	
+	private Location location;
+	
 	@Builder.Default
 	private Set<String> screenIds = new HashSet<>();
 
@@ -41,8 +48,11 @@ public class CompanyDetailsDAO extends BaseAuditDAOWithDTO<String, CompanyDetail
 		return CompanyDetailsDTO.builder()
 				.id(id)
 				.name(name)
+				.category(category)
+				.description(desc)
 				.address(address)
 				.screenIds(screenIds)
+				.location(location)
 				.build();
 	}
 

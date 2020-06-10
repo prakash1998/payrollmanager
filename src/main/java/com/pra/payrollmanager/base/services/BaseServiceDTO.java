@@ -11,12 +11,21 @@ import com.pra.payrollmanager.base.data.WithDTO;
 import com.pra.payrollmanager.exception.AnyThrowable;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
+import com.pra.payrollmanager.utils.BeanUtils;
 
 public interface BaseServiceDTO<PK,
 		DAO extends BaseDAO<PK> & WithDTO<DTO>,
 		DTO extends BaseDTO<DAO>,
 		DAL extends BaseDAL<PK, DAO>>
 		extends BaseService<PK, DAO, DTO, DAL> {
+	
+	default DTO postProcessGet(DAO obj) {
+		return obj.toDTO();
+	}
+	
+	default DTO postProcessSave(DTO dtoToSave,DAO objFromDB) {
+		return BeanUtils.copyFromWhereNullOrEmptyTo(dtoToSave, objFromDB.toDTO());
+	}
 
 	@Override
 	default boolean exists(DTO obj) {
@@ -25,31 +34,31 @@ public interface BaseServiceDTO<PK,
 
 	@Override
 	default DTO getById(PK id) throws DataNotFoundEx, AnyThrowable {
-		return dataAccessLayer().findById(id).toDTO();
+		return postProcessGet(dataAccessLayer().findById(id));
 	}
 
 	@Override
 	default List<DTO> getByIds(Set<PK> ids) {
 		return dataAccessLayer().findByIds(ids).stream()
-				.map(obj -> obj.toDTO())
+				.map(obj -> postProcessGet(obj))
 				.collect(Collectors.toList());
 	}
 
 	@Override
 	default List<DTO> getAll() {
 		return dataAccessLayer().findAll().stream()
-				.map(item -> item.toDTO())
+				.map(obj -> postProcessGet(obj))
 				.collect(Collectors.toList());
 	}
 
 	@Override
 	default DTO create(DTO obj) throws DuplicateDataEx, AnyThrowable {
-		return dataAccessLayer().create(obj.toDAO()).toDTO();
+		return postProcessSave(obj, dataAccessLayer().create(obj.toDAO()));
 	}
 
 	@Override
 	default DTO update(DTO obj) throws DataNotFoundEx, AnyThrowable {
-		return dataAccessLayer().update(obj.toDAO()).toDTO();
+		return postProcessSave(obj, dataAccessLayer().update(obj.toDAO()));
 	}
 
 	// @Override

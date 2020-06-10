@@ -1,5 +1,6 @@
 package com.pra.payrollmanager.base.dal;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,21 +11,38 @@ import com.pra.payrollmanager.base.data.BaseAuditDAO;
 import com.pra.payrollmanager.base.services.ApiRestriction;
 import com.pra.payrollmanager.security.authorization.permission.ApiFeatures;
 
-public interface AuditingHelper<PK, DAO extends BaseAuditDAO<PK>> extends ApiRestriction {
+public interface AuditSupport<PK, DAO extends BaseAuditDAO<PK>> extends ApiRestriction, WithUser {
 
-	String REPLACED_ID = "_pk";
+	public static final String REPLACED_ID = "_pk";
 
+	public static final String AUDIT_POSTFIX = "_ODT";
+	
 	MongoTemplate mongoTemplate();
-
+	
 	Class<DAO> daoClazz();
-
+	
 	String auditTableName();
-
-	String user();
 
 	default boolean auditingEnabled() {
 		return ApiRestriction.super.isAllowedFor(ApiFeatures.AUDIT);
 	};
+
+	default DAO injectAuditInfoOnUpdate(DAO dbObj, DAO obj) {
+		obj.setCreatedBy(dbObj.getCreatedBy());
+		obj.setCreatedDate(dbObj.getCreatedDate());
+		obj.setModifier(user());
+		obj.setModifiedDate(Instant.now());
+		return obj;
+	}
+
+	default DAO injectAuditInfoOnCreate(DAO obj) {
+		Instant now = Instant.now();
+		obj.setCreatedBy(user());
+		obj.setCreatedDate(now);
+		obj.setModifier(user());
+		obj.setModifiedDate(now);
+		return obj;
+	}
 
 	default void clearCreationInfo(DAO obj) {
 		// set null because else it will store false

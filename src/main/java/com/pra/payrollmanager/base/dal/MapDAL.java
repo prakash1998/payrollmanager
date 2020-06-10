@@ -11,12 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.pra.payrollmanager.base.data.BaseMapDAO;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
-import com.pra.payrollmanager.utils.QueryUtils;
+import com.pra.payrollmanager.utils.DBQueryUtils;
 
-abstract public class MapDALWithCompany<KEY extends Serializable,
+abstract public class MapDAL<KEY extends Serializable,
 		VAL extends Serializable,
 		DAO extends BaseMapDAO<KEY, VAL>>
-		extends DALWithCompany<String, DAO> {
+		extends AbstractDAL<String, DAO> {
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -29,7 +29,7 @@ abstract public class MapDALWithCompany<KEY extends Serializable,
 	}
 
 	public Set<VAL> getValuesForKey(KEY key) {
-		return super.findWith(QueryUtils.startsWith("_id", key.toString() + BaseMapDAO.MAP_PK_JOIN_STR))
+		return super.findWith(DBQueryUtils.startsWith("_id", key.toString() + BaseMapDAO.MAP_PK_JOIN_STR))
 				.stream().map(map -> map.getValue())
 				.collect(Collectors.toSet());
 	}
@@ -45,14 +45,14 @@ abstract public class MapDALWithCompany<KEY extends Serializable,
 		List<DAO> rolePermissionMaps = values.stream()
 				.map(val -> getInstance(key, val))
 				.collect(Collectors.toList());
-		super.createMultiple(rolePermissionMaps);
+		super.insertMulti(rolePermissionMaps);
 	}
 
 	public void deleteEntriesByKey(KEY key) {
-		super.deleteWith(QueryUtils.startsWith("_id", key.toString() + BaseMapDAO.MAP_PK_JOIN_STR));
+		super.deleteWith(DBQueryUtils.startsWith("_id", key.toString() + BaseMapDAO.MAP_PK_JOIN_STR));
 	}
 
 	public void deleteEntriesByValue(VAL value) {
-		super.deleteWith(QueryUtils.endsWith("_id", BaseMapDAO.MAP_PK_JOIN_STR + value.toString()));
+		super.deleteWith(DBQueryUtils.endsWith("_id", BaseMapDAO.MAP_PK_JOIN_STR + value.toString()));
 	}
 }

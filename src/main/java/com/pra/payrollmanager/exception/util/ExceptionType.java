@@ -7,7 +7,8 @@ public enum ExceptionType {
     ENTITY_NOT_FOUND("not.found"),
     DUPLICATE_ENTITY("duplicate"),
     ENTITY_EXCEPTION("exception"),
-    WRONG_CREDENTIAL("wrong.credential");
+    WRONG_CREDENTIAL("wrong.credential"),
+	ACCESS_DENIED("access.denied");
 
     String value;
 

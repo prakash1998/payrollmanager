@@ -79,7 +79,7 @@ public class SecurityUserService extends ServiceDAO<String, SecurityUser, Securi
 	@CacheEvict
 	public void login(String userId) {
 		SecurityUser dbUser = this.loadUserByUsername(userId);
-		if (dbUser.isLoggedIn())
+		if (dbUser.getLoggedIn())
 			return;
 		try {
 			dataAccessLayer.updateLogin(dbUser.withLoggedIn(true));
@@ -95,7 +95,7 @@ public class SecurityUserService extends ServiceDAO<String, SecurityUser, Securi
 	@CacheEvict
 	public void logout(String userId) {
 		SecurityUser dbUser = this.loadUserByUsername(userId);
-		if (dbUser.isLoggedIn()) {
+		if (dbUser.getLoggedIn()) {
 			try {
 				super.update(dbUser.withLoggedIn(false));
 			} catch (DataNotFoundEx e) {

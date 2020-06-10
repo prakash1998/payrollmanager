@@ -47,13 +47,13 @@ public class AuthorityService {
 	}
 	
 	private void validateSecurityCompany(SecurityCompany company) {
-		if(!company.isEnabled()) {
+		if(!company.getEnabled()) {
 			throw new AuthorizationServiceException("Disabled :  " + company.getId() + " is disabled by Admin.");
 		}
-		if(company.isAccountLocked()) {
+		if(company.getAccountLocked()) {
 			throw new AuthorizationServiceException("Locked :  " + company.getId() + " is locked by Admin.");
 		}
-		if(company.isAccountExpired()) {
+		if(company.getAccountExpired()) {
 			throw new AuthorizationServiceException("Expired :  " + company.getId() + " is expired.");
 		}
 	}
@@ -62,10 +62,10 @@ public class AuthorityService {
 		if(!user.isEnabled()) {
 			throw new AuthorizationServiceException("Disabled :  " + user.getUsername() + " is disabled by Admin.");
 		}
-		if(user.isAccountLocked()) {
+		if(user.getAccountLocked()) {
 			throw new AuthorizationServiceException("Locked :  " + user.getUsername() + " is locked by Admin.");
 		}
-		if(user.isAccountExpired()) {
+		if(user.getAccountExpired()) {
 			throw new AuthorizationServiceException("Expired :  " + user.getUsername() + " is expired.");
 		}
 	}

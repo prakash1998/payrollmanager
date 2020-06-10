@@ -2,11 +2,11 @@ package com.pra.payrollmanager.security.authorization.mappings.roleendpoint;
 
 import org.springframework.stereotype.Repository;
 
-import com.pra.payrollmanager.base.dal.MapDALWithCompany;
+import com.pra.payrollmanager.base.dal.MapDAL;
 import com.pra.payrollmanager.entity.CompanyEntityNames;
 
 @Repository
-public class RoleEndpointMapDAL extends MapDALWithCompany<String, Integer, RoleEndpointMap> {
+public class RoleEndpointMapDAL extends MapDAL<String, Integer, RoleEndpointMap> {
 
 	@Override
 	public CompanyEntityNames entity() {

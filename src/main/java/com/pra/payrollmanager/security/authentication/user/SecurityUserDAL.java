@@ -6,13 +6,13 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
-import com.pra.payrollmanager.base.dal.DALWithCompany;
+import com.pra.payrollmanager.base.dal.AbstractDAL;
 import com.pra.payrollmanager.entity.CompanyEntityNames;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.util.CheckedException;
 
 @Repository
-public class SecurityUserDAL extends DALWithCompany<String, SecurityUser> {
+public class SecurityUserDAL extends AbstractDAL<String, SecurityUser> {
 
 	@Autowired
 	private MongoTemplate mongoTemplate;

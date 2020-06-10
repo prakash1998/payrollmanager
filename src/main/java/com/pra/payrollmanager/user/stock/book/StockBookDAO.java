@@ -22,7 +22,7 @@ public class StockBookDAO extends BaseAuditDAOWithDTO<String, StockBookDTO> {
 
 	@Id
 	private String id;
-	private double quantity;
+	private Double quantity;
 
 	private String note;
 

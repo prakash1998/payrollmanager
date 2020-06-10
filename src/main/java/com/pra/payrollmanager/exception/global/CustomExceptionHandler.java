@@ -12,6 +12,7 @@ import com.pra.payrollmanager.exception.AnyThrowable;
 import com.pra.payrollmanager.exception.checked.CredentialNotMatchedEx;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
+import com.pra.payrollmanager.exception.unchecked.UnAuthorizedEx;
 import com.pra.payrollmanager.response.dto.Response;
 
 @Order(1)
@@ -46,6 +47,17 @@ public class CustomExceptionHandler {
 		return new ResponseEntity<>(
 				Response.builder()
 						.wrongCredentials()
+						.addErrorMsg(ex.getMessage(), ex)
+						.build(),
+				new HttpHeaders(),
+				HttpStatus.UNAUTHORIZED);
+	}
+	
+	@ExceptionHandler(UnAuthorizedEx.class)
+	public final ResponseEntity<Object> handleUnAuthorized(Exception ex, WebRequest request) {
+		return new ResponseEntity<>(
+				Response.builder()
+						.unauthorized()
 						.addErrorMsg(ex.getMessage(), ex)
 						.build(),
 				new HttpHeaders(),

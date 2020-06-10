@@ -30,7 +30,7 @@ public class AppConfig {
 	public ObjectMapper objectMapper() {
 		return mapperService.mapper();
 	}
-
+	
 	@Bean
 	public BCryptPasswordEncoder bCryptPasswordEncoder() {
 		return new BCryptPasswordEncoder();

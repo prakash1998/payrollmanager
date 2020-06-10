@@ -29,7 +29,7 @@ public class FeaturePermission extends BaseAuditDAOWithDTO<String, FeaturePermis
 	@Id
 	private String id;
 	@NonNull
-	private int numericId;
+	private Integer numericId;
 	private String display;
 	private String description;
 	@Builder.Default
