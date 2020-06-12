@@ -5,18 +5,22 @@ import java.util.Set;
 
 import org.springframework.data.annotation.Id;
 
-import com.pra.payrollmanager.base.data.BaseAuditDAOWithDTO;
+import com.pra.payrollmanager.base.data.BaseAuditDAO;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Value;
+import lombok.NoArgsConstructor;
 import lombok.With;
 
 @With
-@Value
+@Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class RoleDAO extends BaseAuditDAOWithDTO<String, RoleDTO> {
+public class RoleDAO extends BaseAuditDAO<String> {
 
 	/**
 	 * 
@@ -34,13 +38,13 @@ public class RoleDAO extends BaseAuditDAOWithDTO<String, RoleDTO> {
 		return id;
 	}
 
-	@Override
-	public RoleDTO toPlainDTO() {
-		return RoleDTO.builder()
-				.roleId(id)
-				.roleName(name)
-				 .screenIds(screenIds)
-				.build();
-	}
+//	@Override
+//	public RoleDTO toPlainDTO() {
+//		return RoleDTO.builder()
+//				.roleId(id)
+//				.roleName(name)
+//				 .screenIds(screenIds)
+//				.build();
+//	}
 
 }

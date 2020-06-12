@@ -30,15 +30,15 @@ public class SecurityPermissionDTO extends BaseAuditDTO<SecurityPermission> {
 	private String category;
 	private String description;
 
-	@Override
-	public SecurityPermission toPlainDAO() {
-		return SecurityPermission.builder()
-				.id(id)
-				.numericId(numericId)
-				.display(display)
-				.category(category)
-				.description(description)
-				.build();
-	}
+//	@Override
+//	public SecurityPermission toPlainDAO() {
+//		return SecurityPermission.builder()
+//				.id(id)
+//				.numericId(numericId)
+//				.display(display)
+//				.category(category)
+//				.description(description)
+//				.build();
+//	}
 
 }

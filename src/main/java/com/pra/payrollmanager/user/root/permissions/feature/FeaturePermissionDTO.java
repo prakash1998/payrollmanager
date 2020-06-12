@@ -35,15 +35,15 @@ public class FeaturePermissionDTO extends BaseAuditDTO<FeaturePermission> {
 	@Builder.Default
 	private Set<ApiFeatures> features = new HashSet<>();
 
-	@Override
-	public FeaturePermission toPlainDAO() {
-		return FeaturePermission.builder()
-				.id(id)
-				.numericId(numericId)
-				.display(display)
-				.description(description)
-				.features(features)
-				.build();
-	}
+//	@Override
+//	public FeaturePermission toPlainDAO() {
+//		return FeaturePermission.builder()
+//				.id(id)
+//				.numericId(numericId)
+//				.display(display)
+//				.description(description)
+//				.features(features)
+//				.build();
+//	}
 
 }

@@ -24,7 +24,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pra.payrollmanager.base.data.BaseDTO;
 import com.pra.payrollmanager.base.services.ServiceDTO;
 import com.pra.payrollmanager.config.MockUserDetailService;
 import com.pra.payrollmanager.config.TestingConfig;
@@ -37,8 +36,8 @@ import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 		classes = TestingConfig.class)
 @TestInstance(value = Lifecycle.PER_CLASS)
 abstract public class BaseControlUnitTest<CONTROL extends BaseControl<SERVICE>,
-		SERVICE extends ServiceDTO<?, ?, ?, ?>,
-		DTO extends BaseDTO<?>> {
+		SERVICE extends ServiceDTO<?, ?, DTO, ?>,
+		DTO> {
 
 	protected final static String TESTER = "test-user-pra";
 
@@ -110,7 +109,7 @@ abstract public class BaseControlUnitTest<CONTROL extends BaseControl<SERVICE>,
 				Object key = arguments[0];
 
 				Optional<DTO> item = mockDataStore.stream()
-						.filter(i -> i.toDAO().primaryKeyValue().equals(key))
+						.filter(i -> mockEntityService.toDAO(i).primaryKeyValue().equals(key))
 						.findFirst();
 
 				if (item.isPresent()) {

@@ -5,18 +5,22 @@ import java.util.Set;
 
 import org.springframework.data.annotation.Id;
 
-import com.pra.payrollmanager.base.data.BaseAuditDAOWithDTO;
+import com.pra.payrollmanager.base.data.BaseAuditDAO;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Value;
+import lombok.NoArgsConstructor;
 import lombok.With;
 
 @With
-@Value
+@Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class CompanyDetailsDAO extends BaseAuditDAOWithDTO<String, CompanyDetailsDTO> {
+public class CompanyDetailsDAO extends BaseAuditDAO<String> {
 
 	/**
 	 * 
@@ -43,17 +47,17 @@ public class CompanyDetailsDAO extends BaseAuditDAOWithDTO<String, CompanyDetail
 		return id;
 	}
 
-	@Override
-	public CompanyDetailsDTO toPlainDTO() {
-		return CompanyDetailsDTO.builder()
-				.id(id)
-				.name(name)
-				.category(category)
-				.description(desc)
-				.address(address)
-				.screenIds(screenIds)
-				.location(location)
-				.build();
-	}
+//	@Override
+//	public CompanyDetailsDTO toPlainDTO() {
+//		return CompanyDetailsDTO.builder()
+//				.id(id)
+//				.name(name)
+//				.category(category)
+//				.description(desc)
+//				.address(address)
+//				.screenIds(screenIds)
+//				.location(location)
+//				.build();
+//	}
 
 }

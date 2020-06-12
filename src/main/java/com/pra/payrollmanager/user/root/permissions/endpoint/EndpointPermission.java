@@ -3,18 +3,22 @@ package com.pra.payrollmanager.user.root.permissions.endpoint;
 import org.springframework.data.annotation.Id;
 
 import com.mongodb.lang.NonNull;
-import com.pra.payrollmanager.base.data.BaseAuditDAOWithDTO;
+import com.pra.payrollmanager.base.data.BaseAuditDAO;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Value;
+import lombok.NoArgsConstructor;
 import lombok.With;
 
 @With
-@Value
+@Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class EndpointPermission extends BaseAuditDAOWithDTO<String, EndpointPermissionDTO> {
+public class EndpointPermission extends BaseAuditDAO<String> {
 
 	/**
 	 * 
@@ -51,14 +55,14 @@ public class EndpointPermission extends BaseAuditDAOWithDTO<String, EndpointPerm
 		return id;
 	}
 
-	@Override
-	public EndpointPermissionDTO toPlainDTO() {
-		return EndpointPermissionDTO.builder()
-				.id(id)
-				.numericId(numericId)
-				.display(display)
-				.category(category)
-				.description(description)
-				.build();
-	}
+//	@Override
+//	public EndpointPermissionDTO toPlainDTO() {
+//		return EndpointPermissionDTO.builder()
+//				.id(id)
+//				.numericId(numericId)
+//				.display(display)
+//				.category(category)
+//				.description(description)
+//				.build();
+//	}
 }

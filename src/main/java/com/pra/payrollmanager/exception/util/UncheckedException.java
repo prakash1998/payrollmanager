@@ -84,7 +84,7 @@ public class UncheckedException {
             return new EntityNotFoundException(format(messageTemplate, args));
         } else if (ExceptionType.DUPLICATE_ENTITY.equals(exceptionType)) {
             return new EntityExistsException(format(messageTemplate, args));
-        }
+        } 
         return new RuntimeException(format(messageTemplate, args));
     }
 

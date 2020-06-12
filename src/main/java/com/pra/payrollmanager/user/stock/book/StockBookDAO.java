@@ -2,18 +2,22 @@ package com.pra.payrollmanager.user.stock.book;
 
 import org.springframework.data.annotation.Id;
 
-import com.pra.payrollmanager.base.data.BaseAuditDAOWithDTO;
+import com.pra.payrollmanager.base.data.BaseAuditDAO;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Value;
+import lombok.NoArgsConstructor;
 import lombok.With;
 
 @With
-@Value
+@Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class StockBookDAO extends BaseAuditDAOWithDTO<String, StockBookDTO> {
+public class StockBookDAO extends BaseAuditDAO<String> {
 
 	/**
 	 * 
@@ -31,13 +35,13 @@ public class StockBookDAO extends BaseAuditDAOWithDTO<String, StockBookDTO> {
 		return id;
 	}
 
-	@Override
-	public StockBookDTO toPlainDTO() {
-		return StockBookDTO.builder()
-				.productId(id)
-				.quantity(quantity)
-				.updateNote(note)
-				.build();
-	}
+//	@Override
+//	public StockBookDTO toPlainDTO() {
+//		return StockBookDTO.builder()
+//				.productId(id)
+//				.quantity(quantity)
+//				.updateNote(note)
+//				.build();
+//	}
 
 }

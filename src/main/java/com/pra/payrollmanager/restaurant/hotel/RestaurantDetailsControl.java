@@ -1,4 +1,4 @@
-package com.pra.payrollmanager.restaurant;
+package com.pra.payrollmanager.restaurant.hotel;
 
 import java.util.List;
 

@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.data.mongodb.core.query.Query;
 
 import com.pra.payrollmanager.base.data.BaseAuditDAO;
+import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 
 public interface BaseRestrictedAuditDAL<PK, DAO extends BaseAuditDAO<PK>>
 		extends BaseAuditDAL<PK, DAO>, BaseRestrictedDAL<PK, DAO> {
@@ -26,8 +27,14 @@ public interface BaseRestrictedAuditDAL<PK, DAO extends BaseAuditDAO<PK>>
 	}
 
 	@Override
-	default DAO save(DAO obj) {
+	default DAO update(DAO obj) {
 		validateItemAccess(injectAuditInfoOnUpdate(obj, obj));
+		return BaseAuditDAL.super.update(obj);
+	}
+	
+	@Override
+	default DAO save(DAO obj) throws DataNotFoundEx {
+		// TODO Auto-generated method stub
 		return BaseAuditDAL.super.save(obj);
 	}
 

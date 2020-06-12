@@ -13,7 +13,7 @@ import com.pra.payrollmanager.base.data.BaseDAO;
 import com.pra.payrollmanager.base.data.BulkOp;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
-import com.pra.payrollmanager.exception.util.CheckedException;
+import com.pra.payrollmanager.exception.util.CustomExceptions;
 import com.pra.payrollmanager.utils.DBQueryUtils;
 
 public interface BaseDAL<PK, DAO extends BaseDAO<PK>> extends WithDBTable {
@@ -110,13 +110,13 @@ public interface BaseDAL<PK, DAO extends BaseDAO<PK>> extends WithDBTable {
 		if (dbObj != null) {
 			return dbObj;
 		} else {
-			throw CheckedException.notFoundEx(entity(), String.valueOf(key));
+			throw CustomExceptions.notFoundEx(entity(), String.valueOf(key));
 		}
 	}
 
 	default DAO create(DAO obj) throws DuplicateDataEx {
 		if (this.exists(obj)) {
-			throw CheckedException.duplicateEx(entity(), String.valueOf(obj.primaryKeyValue()));
+			throw CustomExceptions.duplicateEx(entity(), String.valueOf(obj.primaryKeyValue()));
 		} else {
 			return this.insert(obj);
 			// return obj;

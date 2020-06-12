@@ -8,7 +8,6 @@ import org.modelmapper.ModelMapper;
 
 import com.pra.payrollmanager.base.dal.BaseDAL;
 import com.pra.payrollmanager.base.data.BaseDAO;
-import com.pra.payrollmanager.base.data.BaseDTO;
 import com.pra.payrollmanager.exception.AnyThrowable;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
@@ -16,7 +15,7 @@ import com.pra.payrollmanager.utils.BeanUtils;
 
 public interface BaseServiceDTO<PK,
 		DAO extends BaseDAO<PK>,
-		DTO extends BaseDTO<DAO>,
+		DTO,
 		DAL extends BaseDAL<PK, DAO>>
 		extends BaseService<PK, DAO, DTO, DAL> {
 
@@ -37,7 +36,7 @@ public interface BaseServiceDTO<PK,
 	}
 
 	default DTO postProcessSave(DTO dtoToSave, DAO objFromDB) {
-		return BeanUtils.copyFromWhereNullOrEmptyTo(dtoToSave, toDTO(objFromDB));
+		return BeanUtils.copyInNullOrEmpty(dtoToSave, toDTO(objFromDB));
 	}
 
 	@Override

@@ -29,16 +29,16 @@ import springfox.documentation.annotations.ApiIgnore;
 public class EndpointPermissionControl extends BaseControl<EndpointPermissionService> {
 
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<List<EndpointPermissionDTO>> getAllPermissions() {
+	public Response<List<EndpointPermission>> getAllPermissions() {
 		return Response.payload(service.getAll());
 	}
 
 	@PostMapping(path = "/multiple", consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<List<EndpointPermissionDTO>> gePermissions(@RequestBody Set<Integer> numericIds) {
+	public Response<List<EndpointPermission>> gePermissions(@RequestBody Set<Integer> numericIds) {
 		return Response.payload(AuthorizationFilter.universalEndpointsMap.values().stream()
 				.filter(p -> numericIds.contains(p.getNumericId()))
-				.map(p -> EndpointPermissionDTO.builder()
+				.map(p -> EndpointPermission.builder()
 						.numericId(p.getNumericId())
 						.id(p.getId())
 						.build())
@@ -46,12 +46,12 @@ public class EndpointPermissionControl extends BaseControl<EndpointPermissionSer
 	}
 
 	@GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<EndpointPermissionDTO> getPermission(@PathVariable String id) throws DataNotFoundEx, AnyThrowable {
+	public Response<EndpointPermission> getPermission(@PathVariable String id) throws DataNotFoundEx, AnyThrowable {
 		return Response.payload(service.getById(id));
 	}
 
 	@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public Response<EndpointPermissionDTO> updatePermission(@Valid @RequestBody EndpointPermissionDTO permission)
+	public Response<EndpointPermission> updatePermission(@Valid @RequestBody EndpointPermission permission)
 			throws DataNotFoundEx, AnyThrowable {
 		return Response.payload(service.update(permission));
 	}

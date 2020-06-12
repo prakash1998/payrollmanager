@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import com.pra.payrollmanager.base.dal.AuditDAL;
 import com.pra.payrollmanager.entity.CompanyEntityNames;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
-import com.pra.payrollmanager.exception.util.CheckedException;
+import com.pra.payrollmanager.exception.util.CustomExceptions;
 import com.pra.payrollmanager.security.authorization.ResourceFeaturePermissions;
 import com.pra.payrollmanager.user.root.permissions.feature.FeaturePermission;
 
@@ -17,7 +17,7 @@ public class UserDAL extends AuditDAL<String, UserDAO> {
 	public UserDAO getByFirstName(String name) throws DataNotFoundEx {
 		UserDAO result = super.findOneWith(Query.query(Criteria.where("firstName").is(name)));
 		if (result == null)
-			throw CheckedException.notFoundEx(entity(), "name");
+			throw CustomExceptions.notFoundEx(entity(), "name");
 		return result;
 	}
 

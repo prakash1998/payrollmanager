@@ -9,8 +9,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-abstract public class BaseAuditDTO<DAO extends BaseAuditDAOWithDTO<?, ?>>
-		implements BaseDTO<DAO>, WithAuditor {
+abstract public class BaseAuditDTO<DAO extends BaseAuditDAO<?>>
+		implements WithAuditor {
 
 	/**
 	 * 
@@ -30,12 +30,12 @@ abstract public class BaseAuditDTO<DAO extends BaseAuditDAOWithDTO<?, ?>>
 	@ApiModelProperty(hidden = true) 
 	private String deletedBy;
 
-	abstract protected DAO toPlainDAO();
-
-	public final DAO toDAO() {
-		DAO dao = this.toPlainDAO();
-		dao.setModifiedDate(this.modifiedDate);
-		return dao;
-	}
+//	abstract protected DAO toPlainDAO();
+//
+//	public final DAO toDAO() {
+//		DAO dao = this.toPlainDAO();
+//		dao.setModifiedDate(this.modifiedDate);
+//		return dao;
+//	}
 
 }

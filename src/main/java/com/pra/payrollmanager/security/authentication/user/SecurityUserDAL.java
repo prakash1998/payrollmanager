@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.pra.payrollmanager.base.dal.AbstractDAL;
 import com.pra.payrollmanager.entity.CompanyEntityNames;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
-import com.pra.payrollmanager.exception.util.CheckedException;
+import com.pra.payrollmanager.exception.util.CustomExceptions;
 
 @Repository
 public class SecurityUserDAL extends AbstractDAL<String, SecurityUser> {
@@ -31,7 +31,7 @@ public class SecurityUserDAL extends AbstractDAL<String, SecurityUser> {
 		if (this.existsById(key, tablePrefix)) {
 			return mongoTemplate.findById(key, SecurityUser.class, tablePrefix + entity().table());
 		} else {
-			throw CheckedException.notFoundEx(entity(), String.valueOf(key));
+			throw CustomExceptions.notFoundEx(entity(), String.valueOf(key));
 		}
 	}
 
@@ -44,7 +44,7 @@ public class SecurityUserDAL extends AbstractDAL<String, SecurityUser> {
 		if (this.existsById(user.getUsername(), tablePrefix)) {
 			mongoTemplate.save(user, tablePrefix + entity().table());
 		} else {
-			throw CheckedException.notFoundEx(entity(), user.getUserId());
+			throw CustomExceptions.notFoundEx(entity(), user.getUserId());
 		}
 	}
 }

@@ -12,15 +12,16 @@ import com.pra.payrollmanager.exception.checked.CredentialNotMatchedEx;
 import com.pra.payrollmanager.exception.unchecked.AppException;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
+import com.pra.payrollmanager.exception.unchecked.UnAuthorizedEx;
 
 @Component
-public class CheckedException {
+public class CustomExceptions {
 
 	private static ErrorTemplateConfig propertiesConfig;
 
 	@Autowired
-	public CheckedException(ErrorTemplateConfig propertiesConfig) {
-		CheckedException.propertiesConfig = propertiesConfig;
+	public CustomExceptions(ErrorTemplateConfig propertiesConfig) {
+		CustomExceptions.propertiesConfig = propertiesConfig;
 	}
 
 	/**
@@ -70,8 +71,20 @@ public class CheckedException {
 	 * @return
 	 */
 	public static DataNotFoundEx notFoundEx(EntityName entityType, String... args) {
-		String messageTemplate = getMessageTemplate(entityType, "not.found");
+		String messageTemplate = getMessageTemplate(entityType, ExceptionType.ENTITY_NOT_FOUND.getValue());
 		return new DataNotFoundEx(format(messageTemplate, args));
+	}
+	
+	/**
+	 * Returns new DataNotFoundEx based on EntityType and args
+	 *
+	 * @param entityType
+	 * @param args
+	 * @return
+	 */
+	public static UnAuthorizedEx notAuthorizedEx(EntityName entityType, String... args) {
+		String messageTemplate = getMessageTemplate(entityType, ExceptionType.ACCESS_DENIED.getValue());
+		return new UnAuthorizedEx(format(messageTemplate, args));
 	}
 
 	/**
@@ -82,12 +95,12 @@ public class CheckedException {
 	 * @return
 	 */
 	public static DuplicateDataEx duplicateEx(EntityName entityType, String... args) {
-		String messageTemplate = getMessageTemplate(entityType, "duplicate");
+		String messageTemplate = getMessageTemplate(entityType, ExceptionType.DUPLICATE_ENTITY.getValue());
 		return new DuplicateDataEx(format(messageTemplate, args));
 	}
 
 	public static CredentialNotMatchedEx wrongCredentialEx(EntityName entityType, String... args) {
-		String messageTemplate = getMessageTemplate(entityType, "wrong.credential");
+		String messageTemplate = getMessageTemplate(entityType, ExceptionType.WRONG_CREDENTIAL.getValue());
 		return new CredentialNotMatchedEx(format(messageTemplate, args));
 	}
 

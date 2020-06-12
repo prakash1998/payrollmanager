@@ -7,19 +7,23 @@ import java.util.Set;
 import org.springframework.data.annotation.Id;
 
 import com.mongodb.lang.NonNull;
-import com.pra.payrollmanager.base.data.BaseAuditDAOWithDTO;
+import com.pra.payrollmanager.base.data.BaseAuditDAO;
 import com.pra.payrollmanager.security.authorization.permission.ApiFeatures;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Value;
+import lombok.NoArgsConstructor;
 import lombok.With;
 
 @With
-@Value
+@Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class FeaturePermission extends BaseAuditDAOWithDTO<String, FeaturePermissionDTO> {
+public class FeaturePermission extends BaseAuditDAO<String> {
 
 	/**
 	 * 
@@ -61,15 +65,15 @@ public class FeaturePermission extends BaseAuditDAOWithDTO<String, FeaturePermis
 		return id;
 	}
 
-	@Override
-	public FeaturePermissionDTO toPlainDTO() {
-		return FeaturePermissionDTO.builder()
-				.id(id)
-				.numericId(numericId)
-				.display(display)
-				.description(description)
-				.features(features)
-				.build();
-	}
+//	@Override
+//	public FeaturePermissionDTO toPlainDTO() {
+//		return FeaturePermissionDTO.builder()
+//				.id(id)
+//				.numericId(numericId)
+//				.display(display)
+//				.description(description)
+//				.features(features)
+//				.build();
+//	}
 
 }

@@ -1,4 +1,4 @@
-package com.pra.payrollmanager.admin.stock.product;
+package com.pra.payrollmanager.restaurant.hotel.category;
 
 import org.springframework.data.annotation.Id;
 
@@ -19,7 +19,7 @@ import lombok.With;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class ProductDAO extends BaseAuditDAO<String> implements Resource<String> {
+public class HotelCategory extends BaseAuditDAO<String> implements Resource<String> {
 
 	/**
 	 * 

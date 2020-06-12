@@ -10,7 +10,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.With;
 
+@With
 @Data
 @Builder
 @NoArgsConstructor
@@ -28,12 +30,12 @@ public class ProductDTO extends BaseAuditDTO<ProductDAO> {
 	private String productId;
 	private String productName;
 
-	@Override
-	public ProductDAO toPlainDAO() {
-		return ProductDAO.builder()
-				.id(productId)
-				.name(productName)
-				.build();
-	}
+//	@Override
+//	public ProductDAO toPlainDAO() {
+//		return ProductDAO.builder()
+//				.id(productId)
+//				.name(productName)
+//				.build();
+//	}
 
 }

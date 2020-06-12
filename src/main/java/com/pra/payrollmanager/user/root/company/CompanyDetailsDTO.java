@@ -67,18 +67,18 @@ public class CompanyDetailsDTO extends BaseAuditDTO<CompanyDetailsDAO> {
 	@Builder.Default
 	private Set<String> screenIds = new HashSet<>();
 	
-	@Override
-	public CompanyDetailsDAO toPlainDAO() {
-		return CompanyDetailsDAO.builder()
-				.id(id)
-				.name(name)
-				.category(category)
-				.desc(description)
-				.address(address)
-				.screenIds(screenIds)
-				.location(location)
-				.build();
-	}
+//	@Override
+//	public CompanyDetailsDAO toPlainDAO() {
+//		return CompanyDetailsDAO.builder()
+//				.id(id)
+//				.name(name)
+//				.category(category)
+//				.desc(description)
+//				.address(address)
+//				.screenIds(screenIds)
+//				.location(location)
+//				.build();
+//	}
 
 	public SecurityCompany toSecurityCompany() {
 		return SecurityCompany.builder()

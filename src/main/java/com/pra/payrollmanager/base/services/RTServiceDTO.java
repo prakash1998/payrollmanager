@@ -7,16 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.pra.payrollmanager.base.dal.BaseDAL;
 import com.pra.payrollmanager.base.data.BaseDAO;
-import com.pra.payrollmanager.base.data.BaseDTO;
-import com.pra.payrollmanager.base.data.WithDTO;
 import com.pra.payrollmanager.exception.AnyThrowable;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.message.MessageSendingService;
 
 abstract public class RTServiceDTO<PK,
-		DAO extends BaseDAO<PK> & WithDTO<DTO>,
-		DTO extends BaseDTO<DAO>,
+		DAO extends BaseDAO<PK>,
+		DTO,
 		DAL extends BaseDAL<PK, DAO>>
 		extends ServiceBeans<DAL>
 		implements BaseServiceDTO<PK, DAO, DTO, DAL>, BaseRTService<DTO> {

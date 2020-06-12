@@ -29,13 +29,13 @@ public class StockBookDTO extends BaseAuditDTO<StockBookDAO> {
 
 	private String updateNote;
 
-	@Override
-	public StockBookDAO toPlainDAO() {
-		return StockBookDAO.builder()
-				.id(productId)
-				.quantity(quantity)
-				.note(updateNote)
-				.build();
-	}
+//	@Override
+//	public StockBookDAO toPlainDAO() {
+//		return StockBookDAO.builder()
+//				.id(productId)
+//				.quantity(quantity)
+//				.note(updateNote)
+//				.build();
+//	}
 
 }

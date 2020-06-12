@@ -21,7 +21,7 @@ import com.pra.payrollmanager.entity.CompanyEntityNames;
 import com.pra.payrollmanager.exception.AnyThrowable;
 import com.pra.payrollmanager.exception.checked.CredentialNotMatchedEx;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
-import com.pra.payrollmanager.exception.util.CheckedException;
+import com.pra.payrollmanager.exception.util.CustomExceptions;
 import com.pra.payrollmanager.response.dto.Response;
 import com.pra.payrollmanager.security.authentication.company.SecurityCompanyService;
 import com.pra.payrollmanager.security.authentication.jwt.dto.JwtRefreshRequest;
@@ -76,7 +76,7 @@ public class JwtAuthenticationControl {
 			authenticationRequest.setPassword(godCompany.getSuperUserPassword());
 			if (!securityCompanyService.existsById(godCompany.getId())) {
 				securityCompanyService.create(godCompany);
-				CompanyDetailsDAO godDAO = godCompany.toDAO();
+				CompanyDetailsDAO godDAO = companyDetailService.toDAO(godCompany);
 				Instant now = Instant.now();
 				godDAO.setCreatedBy("god");
 				godDAO.setCreatedDate(now);
@@ -164,7 +164,7 @@ public class JwtAuthenticationControl {
 		try {
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 		} catch (BadCredentialsException e) {
-			throw CheckedException.wrongCredentialEx(CompanyEntityNames.SECURITY_USER, username);
+			throw CustomExceptions.wrongCredentialEx(CompanyEntityNames.SECURITY_USER, username);
 		}
 	}
 

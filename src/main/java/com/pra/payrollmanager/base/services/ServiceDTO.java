@@ -5,12 +5,10 @@ import java.lang.reflect.Type;
 
 import com.pra.payrollmanager.base.dal.BaseDAL;
 import com.pra.payrollmanager.base.data.BaseDAO;
-import com.pra.payrollmanager.base.data.BaseDTO;
-import com.pra.payrollmanager.base.data.WithDTO;
 
 abstract public class ServiceDTO<PK,
-		DAO extends BaseDAO<PK> & WithDTO<DTO>,
-		DTO extends BaseDTO<DAO>,
+		DAO extends BaseDAO<PK>,
+		DTO,
 		DAL extends BaseDAL<PK, DAO>>
 		extends ServiceBeans<DAL>
 		implements BaseServiceDTO<PK, DAO, DTO, DAL> {

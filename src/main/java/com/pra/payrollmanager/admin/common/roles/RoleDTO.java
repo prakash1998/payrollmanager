@@ -37,13 +37,13 @@ public class RoleDTO extends BaseAuditDTO<RoleDAO> {
 	@Builder.Default
 	private Set<String> users = new HashSet<>();
 
-	@Override
-	public RoleDAO toPlainDAO() {
-		return RoleDAO.builder()
-				.id(roleId)
-				.name(roleName)
-				.screenIds(screenIds)
-				.build();
-	}
+//	@Override
+//	public RoleDAO toPlainDAO() {
+//		return RoleDAO.builder()
+//				.id(roleId)
+//				.name(roleName)
+//				.screenIds(screenIds)
+//				.build();
+//	}
 
 }

@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.pra.payrollmanager.base.data.BaseAuditDAO;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
+import com.pra.payrollmanager.utils.BeanUtils;
 
 public interface BaseAuditDAL<PK, DAO extends BaseAuditDAO<PK>> extends BaseDAL<PK, DAO>, AuditSupport<PK, DAO> {
 
@@ -29,16 +30,20 @@ public interface BaseAuditDAL<PK, DAO extends BaseAuditDAO<PK>> extends BaseDAL<
 	}
 
 	@Override
-	@Transactional
 	default DAO save(DAO obj) throws DataNotFoundEx {
 		DAO dbObj = this.findById(obj.primaryKeyValue());
 		if (dbObj.getModifiedDate() != null && !dbObj.getModifiedDate().equals(obj.getModifiedDate()))
 			throw new RuntimeException("Data is modified...");
 		if (!obj.equals(dbObj)) {
-			audit(dbObj);
+			audit(BeanUtils.copyOf(dbObj));
 			return BaseDAL.super.save(injectAuditInfoOnUpdate(dbObj, obj));
 		}
 		return dbObj;
+	}
+	
+	@Override
+	default DAO update(DAO obj) throws DataNotFoundEx {
+		return this.save(obj);
 	}
 
 	@Override

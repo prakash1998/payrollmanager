@@ -3,18 +3,22 @@ package com.pra.payrollmanager.user.root.permissions.security;
 import org.springframework.data.annotation.Id;
 
 import com.mongodb.lang.NonNull;
-import com.pra.payrollmanager.base.data.BaseAuditDAOWithDTO;
+import com.pra.payrollmanager.base.data.BaseAuditDAO;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Value;
+import lombok.NoArgsConstructor;
 import lombok.With;
 
 @With
-@Value
+@Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class SecurityPermission extends BaseAuditDAOWithDTO<String, SecurityPermissionDTO> {
+public class SecurityPermission extends BaseAuditDAO<String> {
 
 	/**
 	 * 
@@ -52,14 +56,14 @@ public class SecurityPermission extends BaseAuditDAOWithDTO<String, SecurityPerm
 		return id;
 	}
 
-	@Override
-	public SecurityPermissionDTO toPlainDTO() {
-		return SecurityPermissionDTO.builder()
-				.id(id)
-				.numericId(numericId)
-				.display(display)
-				.category(category)
-				.description(description)
-				.build();
-	}
+//	@Override
+//	public SecurityPermissionDTO toPlainDTO() {
+//		return SecurityPermissionDTO.builder()
+//				.id(id)
+//				.numericId(numericId)
+//				.display(display)
+//				.category(category)
+//				.description(description)
+//				.build();
+//	}
 }

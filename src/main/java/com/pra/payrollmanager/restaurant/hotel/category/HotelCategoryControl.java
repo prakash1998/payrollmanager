@@ -1,4 +1,4 @@
-package com.pra.payrollmanager.admin.stock.product;
+package com.pra.payrollmanager.restaurant.hotel.category;
 
 import java.util.List;
 
@@ -22,37 +22,36 @@ import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.response.dto.Response;
 
 @RestController
-@RequestMapping("products")
-public class ProductControl extends BaseControl<ProductService> {
+@RequestMapping("restaurant/category")
+public class HotelCategoryControl extends BaseControl<HotelCategoryService> {
 
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<List<ProductDTO>> getAllProducts() {
-		List<ProductDTO> products = service.getAll();
-		return Response.payload(products);
+	public Response<List<HotelCategory>> getAllCategorys() {
+		return Response.payload(service.getAll());
 	}
 
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<ProductDTO> getProduct(@PathVariable("id") @NotNull String productId)
+	public Response<HotelCategory> getCategory(@PathVariable("id") @NotNull String categoryId)
 			throws DataNotFoundEx, AnyThrowable {
-		return Response.payload(service.getById(productId));
+		return Response.payload(service.getById(categoryId));
 	}
 
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<ProductDTO> createProduct(@Valid @RequestBody ProductDTO product)
+	public Response<HotelCategory> createCategory(@Valid @RequestBody HotelCategory category)
 			throws DuplicateDataEx, AnyThrowable {
-		return Response.payload(service.create(product));
+		return Response.payload(service.create(category));
 	}
 
 	@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<ProductDTO> updateProduct(@Valid @RequestBody ProductDTO product)
+	public Response<HotelCategory> updateCategory(@Valid @RequestBody HotelCategory category)
 			throws DataNotFoundEx, AnyThrowable {
-		return Response.payload(service.update(product));
+		return Response.payload(service.update(category));
 	}
 
 	@DeleteMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<ProductDTO> deleteProduct(@Valid @RequestBody ProductDTO product)
+	public Response<HotelCategory> deleteCategory(@Valid @RequestBody HotelCategory category)
 			throws AnyThrowable, DataNotFoundEx {
-		return Response.payload(service.delete(product));
+		return Response.payload(service.delete(category));
 	}
 
 }

@@ -7,6 +7,7 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.stereotype.Component;
 
+import com.pra.payrollmanager.exception.unchecked.UnAuthorizedEx;
 import com.pra.payrollmanager.websocket.config.WebSocketConfig;
 
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +35,7 @@ public class AppInChannelInterceptor implements ChannelInterceptor {
 	private void validateOnSubscribe(StompHeaderAccessor accessor) {
 		if (!accessor.getDestination()
 				.startsWith(WebSocketConfig.DIRECT_USER_PREFIX + "/" + accessor.getUser().getName())) {
-			throw new IllegalArgumentException("Tried to access private topic");
+			throw new UnAuthorizedEx("Tried to access unathorized topic");
 		}
 		log.debug("Validate condition on connect excecuted.");
 	}

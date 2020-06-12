@@ -13,14 +13,18 @@ import com.pra.payrollmanager.user.root.permissions.endpoint.EndpointPermission;
 import com.pra.payrollmanager.user.root.permissions.feature.FeaturePermission;
 import com.pra.payrollmanager.user.root.permissions.security.SecurityPermission;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Value;
+import lombok.NoArgsConstructor;
 import lombok.With;
 
 @With
-@Value
+@Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class SecurityCompany extends BaseAuditDAO<String> {
 

@@ -63,7 +63,7 @@ public class UserService extends AuditRTServiceDTO<String, UserDAO, UserDTO, Use
 	}
 
 	public UserDTO findByFirstName(String name) throws DataNotFoundEx {
-		return dataAccessLayer.getByFirstName(name).toDTO();
+		return toDTO(dataAccessLayer.getByFirstName(name));
 	}
 
 	@Override

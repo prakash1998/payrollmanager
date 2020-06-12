@@ -14,7 +14,7 @@ import com.pra.payrollmanager.entity.CompanyEntityNames;
 import com.pra.payrollmanager.exception.checked.CredentialNotMatchedEx;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
-import com.pra.payrollmanager.exception.util.CheckedException;
+import com.pra.payrollmanager.exception.util.CustomExceptions;
 import com.pra.payrollmanager.exception.util.ExceptionType;
 import com.pra.payrollmanager.exception.util.UncheckedException;
 import com.pra.payrollmanager.security.authentication.company.SecurityCompany;
@@ -68,7 +68,7 @@ public class SecurityUserService extends ServiceDAO<String, SecurityUser, Securi
 		try {
 			SecurityUser dbUser = super.getById(user.getUserName());
 			if (!dbUser.getPassword().equals(user.getOldPassword()))
-				throw CheckedException.wrongCredentialEx(CompanyEntityNames.SECURITY_USER, user.getUserName());
+				throw CustomExceptions.wrongCredentialEx(CompanyEntityNames.SECURITY_USER, user.getUserName());
 			super.update(this.withEncodedPassword(dbUser));
 		} catch (DataNotFoundEx e) {
 			throw UncheckedException.appException(CompanyEntityNames.SECURITY_USER, ExceptionType.ENTITY_NOT_FOUND,

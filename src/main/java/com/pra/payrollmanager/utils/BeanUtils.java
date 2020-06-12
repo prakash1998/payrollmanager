@@ -1,14 +1,22 @@
 package com.pra.payrollmanager.utils;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Collection;
+
+import com.google.common.io.Closeables;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class BeanUtils {
 
-	public static <T extends Object> T copyFromWhereNullOrEmptyTo(T from, T to) {
+	public static <T extends Object> T copyInNullOrEmpty(T from, T to) {
 
 		Class<?> clazz = to.getClass();
 		for (Field field : clazz.getDeclaredFields()) {
@@ -28,7 +36,7 @@ public class BeanUtils {
 		return to;
 	}
 
-	public static <T extends Object> T copyFromWhereNullTo(T from, T to) {
+	public static <T extends Object> T copyInNull(T from, T to) {
 		Class<?> clazz = to.getClass();
 		for (Field field : clazz.getDeclaredFields()) {
 			field.setAccessible(true);
@@ -43,5 +51,38 @@ public class BeanUtils {
 			}
 		}
 		return to;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T extends Serializable> T copyOf(T input) {
+	    ByteArrayOutputStream baos = null;
+	    ObjectOutputStream oos = null;
+	    ByteArrayInputStream bis = null;
+	    ObjectInputStream ois = null;
+	    try {
+	        baos = new ByteArrayOutputStream();
+	        oos = new ObjectOutputStream(baos);
+	        oos.writeObject(input);
+	        oos.flush();
+
+	        byte[] bytes = baos.toByteArray();
+	        bis = new ByteArrayInputStream(bytes);
+	        ois = new ObjectInputStream(bis);
+	        Object result = ois.readObject();
+	        return (T) result;
+	    } catch (IOException e) {
+	        throw new IllegalArgumentException("Object can't be copied", e);
+	    } catch (ClassNotFoundException e) {
+	        throw new IllegalArgumentException("Unable to reconstruct serialized object due to invalid class definition", e);
+	    } finally {
+	        try {
+	        	Closeables.close(oos,true);
+				Closeables.close(baos,true);
+		        Closeables.close(bis,true);
+		        Closeables.close(ois,true);
+			} catch (IOException e) {
+				log.error("Error when tried to close stream",e);
+			}
+	    }
 	}
 }

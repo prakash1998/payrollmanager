@@ -3,14 +3,14 @@ package com.pra.payrollmanager.base.services;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-import com.pra.payrollmanager.base.dal.AuditDAL;
-import com.pra.payrollmanager.base.data.BaseAuditDAOWithDTO;
+import com.pra.payrollmanager.base.dal.BaseAuditDAL;
+import com.pra.payrollmanager.base.data.BaseAuditDAO;
 import com.pra.payrollmanager.base.data.BaseAuditDTO;
 
 abstract public class AuditServiceDTO<PK,
-		DAO extends BaseAuditDAOWithDTO<PK, DTO>,
+		DAO extends BaseAuditDAO<PK>,
 		DTO extends BaseAuditDTO<DAO>,
-		DAL extends AuditDAL<PK, DAO>>
+		DAL extends BaseAuditDAL<PK, DAO>>
 		extends ServiceDTO<PK, DAO, DTO, DAL> implements BaseAuditServiceDTO<PK, DAO, DTO, DAL> {
 
 	@SuppressWarnings("unchecked")

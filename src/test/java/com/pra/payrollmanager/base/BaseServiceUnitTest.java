@@ -16,16 +16,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.pra.payrollmanager.base.dal.AbstractDAL;
 import com.pra.payrollmanager.base.data.BaseDAO;
-import com.pra.payrollmanager.base.data.BaseDTO;
-import com.pra.payrollmanager.base.data.WithDTO;
 import com.pra.payrollmanager.base.services.ServiceDTO;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 
 @SpringBootTest
 @TestInstance(value = Lifecycle.PER_CLASS)
-public abstract class BaseServiceUnitTest<DAO extends BaseDAO<?> & WithDTO<DTO>,
-		DTO extends BaseDTO<DAO>,
+public abstract class BaseServiceUnitTest<DAO extends BaseDAO<?>,
+		DTO,
 		DAL extends AbstractDAL<?, DAO>,
 		SERVICE extends ServiceDTO<?, ?, ?, DAL>> {
 

@@ -2,18 +2,22 @@ package com.pra.payrollmanager.user.root.permissions.screen;
 
 import org.springframework.data.annotation.Id;
 
-import com.pra.payrollmanager.base.data.BaseAuditDAOWithDTO;
+import com.pra.payrollmanager.base.data.BaseAuditDAO;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Value;
+import lombok.NoArgsConstructor;
 import lombok.With;
 
 @With
-@Value
+@Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class ScreenPermission extends BaseAuditDAOWithDTO<String, ScreenPermissionDTO> {
+public class ScreenPermission extends BaseAuditDAO<String> {
 
 	/**
 	 * 
@@ -44,13 +48,13 @@ public class ScreenPermission extends BaseAuditDAOWithDTO<String, ScreenPermissi
 		return id;
 	}
 
-	@Override
-	public ScreenPermissionDTO toPlainDTO() {
-		return ScreenPermissionDTO.builder()
-				.id(id)
-				.display(display)
-				.category(category)
-				.description(description)
-				.build();
-	}
+//	@Override
+//	public ScreenPermissionDTO toPlainDTO() {
+//		return ScreenPermissionDTO.builder()
+//				.id(id)
+//				.display(display)
+//				.category(category)
+//				.description(description)
+//				.build();
+//	}
 }

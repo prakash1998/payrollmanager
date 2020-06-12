@@ -1,14 +1,18 @@
 package com.pra.payrollmanager.user.root.company;
 
+import java.util.function.Predicate;
+
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Repository;
 
-import com.pra.payrollmanager.base.dal.AuditDAL;
+import com.pra.payrollmanager.base.dal.RestrictedAuditDAL;
 import com.pra.payrollmanager.entity.CommonEntityNames;
 import com.pra.payrollmanager.security.authorization.ResourceFeaturePermissions;
 import com.pra.payrollmanager.user.root.permissions.feature.FeaturePermission;
+import com.pra.payrollmanager.utils.DBQueryUtils;
 
 @Repository
-public class CompanyDetailsDAL extends AuditDAL<String, CompanyDetailsDAO> {
+public class CompanyDetailsDAL extends RestrictedAuditDAL<String, CompanyDetailsDAO> {
 
 	@Override
 	public CommonEntityNames entity() {
@@ -20,14 +24,15 @@ public class CompanyDetailsDAL extends AuditDAL<String, CompanyDetailsDAO> {
 		return ResourceFeaturePermissions.ROOT__COMPANY;
 	}
 
-//	@Override
-//	public Criteria findAccessCriteria() {
-//		return DBQueryUtils.startsWithCriteria("createdBy", authorityService.getSecurityCompany().getId() + "-");
-//	}
-//
-//	@Override
-//	public Predicate<CompanyDetailsDAO> hasAccessToItem() {
-//		return company -> company.getCreatedBy().startsWith(authorityService.getSecurityCompany().getId()+"-");
-//	}
+	@Override
+	public Criteria findAllAccessCriteria() {
+		return DBQueryUtils.startsWithCriteria("createdBy", authorityService.getSecurityCompany().getId() + "-");
+	}
+
+	@Override
+	public Predicate<CompanyDetailsDAO> hasAccessToItem() {
+		String companyId = authorityService.getSecurityCompany().getId();
+		return company -> company.getId().equals(companyId) || company.getCreatedBy().startsWith(companyId+"-");
+	}
 
 }

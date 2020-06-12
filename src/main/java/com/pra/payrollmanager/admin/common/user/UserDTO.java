@@ -51,16 +51,16 @@ public class UserDTO extends BaseAuditDTO<UserDAO> {
 	@Pattern(regexp = "(^$|[0-9]{10})", message = "please enter valid phone Number")
 	private String phone;
 
-	@Override
-	public UserDAO toPlainDAO() {
-		return UserDAO.builder()
-				.userName(userName)
-				.firstName(firstName)
-				.lastName(lastName)
-				.email(email)
-				.phone(phone)
-				.build();
-	}
+//	@Override
+//	public UserDAO toPlainDAO() {
+//		return UserDAO.builder()
+//				.userName(userName)
+//				.firstName(firstName)
+//				.lastName(lastName)
+//				.email(email)
+//				.phone(phone)
+//				.build();
+//	}
 
 	public SecurityUser toSecurityUser() {
 		return SecurityUser.builder()

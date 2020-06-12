@@ -10,12 +10,13 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import com.pra.payrollmanager.base.data.BaseDAO;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
+import com.pra.payrollmanager.exception.util.CustomExceptions;
 import com.pra.payrollmanager.exception.util.ExceptionType;
 import com.pra.payrollmanager.exception.util.UncheckedException;
 
 public interface BaseRestrictedDAL<PK, DAO extends BaseDAO<PK>> extends BaseDAL<PK, DAO>, DataRestrictionSupport {
 
-	default Criteria findAccessCriteria() {
+	default Criteria findAllAccessCriteria() {
 		return null;
 	}
 
@@ -29,7 +30,7 @@ public interface BaseRestrictedDAL<PK, DAO extends BaseDAO<PK>> extends BaseDAL<
 			return;
 
 		if (!hasAccessToItem.test(item))
-			throw UncheckedException.appException(entity(), ExceptionType.ACCESS_DENIED,
+			throw CustomExceptions.notAuthorizedEx(entity(),
 					item.primaryKeyValue().toString());
 	}
 
@@ -44,7 +45,7 @@ public interface BaseRestrictedDAL<PK, DAO extends BaseDAO<PK>> extends BaseDAL<
 						item.primaryKeyValue().toString());
 		}
 	}
-	
+
 	default void validateDelete(Query query) {
 		List<DAO> dbObjs = BaseDAL.super.findWith(query);
 		validateItemAccess(dbObjs);
@@ -53,7 +54,7 @@ public interface BaseRestrictedDAL<PK, DAO extends BaseDAO<PK>> extends BaseDAL<
 	@Override
 	default List<DAO> findAll() {
 
-		Criteria findAccessCriteria = findAccessCriteria();
+		Criteria findAccessCriteria = findAllAccessCriteria();
 		Predicate<DAO> hasAccessToItem = hasAccessToItem();
 
 		if (findAccessCriteria == null) {
@@ -78,7 +79,7 @@ public interface BaseRestrictedDAL<PK, DAO extends BaseDAO<PK>> extends BaseDAL<
 
 	@Override
 	default List<DAO> findWith(Query query) {
-		Criteria findAccessCriteria = findAccessCriteria();
+		Criteria findAccessCriteria = findAllAccessCriteria();
 		Predicate<DAO> hasAccessToItem = hasAccessToItem();
 
 		if (findAccessCriteria != null)
@@ -97,13 +98,7 @@ public interface BaseRestrictedDAL<PK, DAO extends BaseDAO<PK>> extends BaseDAL<
 
 	@Override
 	default DAO findOneWith(Query query) {
-		Criteria findAccessCriteria = findAccessCriteria();
-
-		if (findAccessCriteria != null)
-			query = query.addCriteria(findAccessCriteria);
-
 		DAO dbObj = BaseDAL.super.findOneWith(query);
-
 		validateItemAccess(dbObj);
 		return dbObj;
 	}

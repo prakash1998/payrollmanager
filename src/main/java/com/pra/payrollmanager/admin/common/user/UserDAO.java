@@ -2,18 +2,22 @@ package com.pra.payrollmanager.admin.common.user;
 
 import org.springframework.data.annotation.Id;
 
-import com.pra.payrollmanager.base.data.BaseAuditDAOWithDTO;
+import com.pra.payrollmanager.base.data.BaseAuditDAO;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Value;
+import lombok.NoArgsConstructor;
 import lombok.With;
 
 @With
-@Value
+@Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = false )
-public class UserDAO extends BaseAuditDAOWithDTO<String, UserDTO> {
+public class UserDAO extends BaseAuditDAO<String> {
 
 	/**
 	 * 
@@ -32,15 +36,15 @@ public class UserDAO extends BaseAuditDAOWithDTO<String, UserDTO> {
 		return this.userName;
 	}
 
-	@Override
-	public UserDTO toPlainDTO() {
-		return UserDTO.builder()
-				.userName(userName)
-				.password(null)
-				.firstName(firstName)
-				.lastName(lastName)
-				.phone(phone)
-				.email(email)
-				.build();
-	}
+//	@Override
+//	public UserDTO toPlainDTO() {
+//		return UserDTO.builder()
+//				.userName(userName)
+//				.password(null)
+//				.firstName(firstName)
+//				.lastName(lastName)
+//				.phone(phone)
+//				.email(email)
+//				.build();
+//	}
 }

@@ -28,14 +28,14 @@ public class ScreenPermissionDTO extends BaseAuditDTO<ScreenPermission> {
 	private String category;
 	private String description;
 
-	@Override
-	public ScreenPermission toPlainDAO() {
-		return ScreenPermission.builder()
-				.id(id)
-				.display(display)
-				.category(category)
-				.description(description)
-				.build();
-	}
+//	@Override
+//	public ScreenPermission toPlainDAO() {
+//		return ScreenPermission.builder()
+//				.id(id)
+//				.display(display)
+//				.category(category)
+//				.description(description)
+//				.build();
+//	}
 
 }
