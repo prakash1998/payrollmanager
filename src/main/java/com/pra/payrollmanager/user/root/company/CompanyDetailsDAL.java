@@ -24,35 +24,35 @@ public class CompanyDetailsDAL extends RestrictedAuditDAL<String, CompanyDetails
 	public FeaturePermission apiPermission() {
 		return ResourceFeaturePermissions.ROOT__COMPANY;
 	}
-	
+
 	@Override
 	public CompanyDetailsDAO injectAuditInfoOnCreate(CompanyDetailsDAO obj) {
-		if(authorityService.inGodMode() && !authorityService.hasAuthentication()) {
-//			Instant now = Instant.now();
-//			obj.setCreatedBy("god");
-//			obj.setCreatedDate(now);
-//			obj.setModifier("god");
-//			obj.setModifiedDate(now);
+		if (authorityService.inGodMode() && !authorityService.hasAuthentication()) {
+			// Instant now = Instant.now();
+			// obj.setCreatedBy("god");
+			// obj.setCreatedDate(now);
+			// obj.setModifier("god");
+			// obj.setModifiedDate(now);
 			return obj;
 		}
 		return super.injectAuditInfoOnCreate(obj);
 	}
-	
+
 	@Override
 	public Criteria findAllAccessCriteria() {
-		if(authorityService.inGodMode()) {
+		if (authorityService.inGodMode() || !authorityService.hasAuthentication()) {
 			return null;
 		}
 		return DBQueryUtils.startsWithCriteria("createdBy", authorityService.getSecurityCompany().getId() + "-");
 	}
-	
+
 	@Override
 	public Predicate<CompanyDetailsDAO> hasAccessToItem() {
-		if(authorityService.inGodMode()) {
+		if (authorityService.inGodMode() || !authorityService.hasAuthentication()) {
 			return null;
 		}
 		String companyId = authorityService.getSecurityCompany().getId();
-		return company -> company.getId().equals(companyId) || company.getCreatedBy().startsWith(companyId+"-");
+		return company -> company.getId().equals(companyId) || company.getCreatedBy().startsWith(companyId + "-");
 	}
 
 }

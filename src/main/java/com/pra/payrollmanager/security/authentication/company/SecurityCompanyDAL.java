@@ -21,32 +21,31 @@ public class SecurityCompanyDAL extends RestrictedAuditDAL<String, SecurityCompa
 	public FeaturePermission apiPermission() {
 		return ResourceFeaturePermissions.ROOT__COMPANY;
 	}
-	
+
 	@Override
 	public void validateModification(SecurityCompany dbObj, SecurityCompany objToSave) {
-		
+
 	}
-	
+
 	@Override
 	public SecurityCompany injectAuditInfoOnCreate(SecurityCompany obj) {
 		return obj;
 	}
-	
+
 	@Override
 	public SecurityCompany injectAuditInfoOnUpdate(SecurityCompany dbObj, SecurityCompany obj) {
 		return obj;
 	}
-	
+
 	@Override
 	public Predicate<SecurityCompany> hasAccessToItem() {
-		
-		if(authorityService.inGodMode()) {
+
+		if (authorityService.inGodMode() || !authorityService.hasAuthentication()) {
 			return null;
 		}
-		
-		String companyId = authorityService.getSecurityCompany().getId();
-		return company -> company.getCreatedBy().startsWith(companyId+"-");
-	}
 
+		String companyId = authorityService.getSecurityCompany().getId();
+		return company -> company.getCreatedBy().startsWith(companyId + "-");
+	}
 
 }
