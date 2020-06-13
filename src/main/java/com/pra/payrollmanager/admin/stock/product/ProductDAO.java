@@ -11,13 +11,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.With;
+import lombok.experimental.Accessors;
 
-@With
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Accessors(chain=true)
 @EqualsAndHashCode(callSuper = false)
 public class ProductDAO extends BaseAuditDAO<String> implements Resource<String> {
 

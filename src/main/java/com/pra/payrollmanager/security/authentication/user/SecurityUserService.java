@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.pra.payrollmanager.base.services.ServiceDAO;
+import com.pra.payrollmanager.base.services.AuditServiceDAO;
 import com.pra.payrollmanager.constants.CacheNameStore;
 import com.pra.payrollmanager.entity.CompanyEntityNames;
 import com.pra.payrollmanager.exception.checked.CredentialNotMatchedEx;
@@ -22,7 +22,7 @@ import com.pra.payrollmanager.security.authentication.company.SecurityCompanySer
 
 @Service
 @CacheConfig(cacheNames = CacheNameStore.SECURITY_USER_STORE)
-public class SecurityUserService extends ServiceDAO<String, SecurityUser, SecurityUserDAL>
+public class SecurityUserService extends AuditServiceDAO<String, SecurityUser, SecurityUserDAL>
 		implements UserDetailsService {
 
 	@Autowired
@@ -39,15 +39,17 @@ public class SecurityUserService extends ServiceDAO<String, SecurityUser, Securi
 		SecurityCompany company = securityCompanyService.loadCompanyById(companyId);
 		try {
 			System.out.println("fetching user from db. .......");
-			return dataAccessLayer.findById(userName, company.getTablePrefix()).withUserId(userId)
-					.withCompany(company);
+			return dataAccessLayer.findById(userName, company.getTablePrefix())
+					.setUserId(userId)
+					.setCompany(company);
 		} catch (DataNotFoundEx e) {
-			throw UncheckedException.appException(CompanyEntityNames.SECURITY_USER, ExceptionType.ENTITY_NOT_FOUND, userName);
+			throw UncheckedException.appException(CompanyEntityNames.SECURITY_USER, ExceptionType.ENTITY_NOT_FOUND,
+					userName);
 		}
 	}
 
 	private SecurityUser withEncodedPassword(SecurityUser user) {
-		return user.withPassword(bcryptEncoder.encode(user.getPassword()));
+		return user.setPassword(bcryptEncoder.encode(user.getPassword()));
 	}
 
 	@Override
@@ -65,15 +67,13 @@ public class SecurityUserService extends ServiceDAO<String, SecurityUser, Securi
 	}
 
 	public void updateUserPassword(UserPasswordResetDTO user) throws CredentialNotMatchedEx {
-		try {
-			SecurityUser dbUser = super.getById(user.getUserName());
-			if (!dbUser.getPassword().equals(user.getOldPassword()))
-				throw CustomExceptions.wrongCredentialEx(CompanyEntityNames.SECURITY_USER, user.getUserName());
-			super.update(this.withEncodedPassword(dbUser));
-		} catch (DataNotFoundEx e) {
-			throw UncheckedException.appException(CompanyEntityNames.SECURITY_USER, ExceptionType.ENTITY_NOT_FOUND,
-					user.getUserName());
-		}
+		SecurityUser dbUser = super.getById(user.getUserName());
+
+		if (!bcryptEncoder.matches(user.getOldPassword(), dbUser.getPassword()))
+			throw CustomExceptions.wrongCredentialEx(CompanyEntityNames.SECURITY_USER, user.getUserName());
+
+		dbUser.setPassword(user.getNewPassword());
+		super.update(this.withEncodedPassword(dbUser));
 	}
 
 	@CacheEvict
@@ -81,11 +81,8 @@ public class SecurityUserService extends ServiceDAO<String, SecurityUser, Securi
 		SecurityUser dbUser = this.loadUserByUsername(userId);
 		if (dbUser.getLoggedIn())
 			return;
-		try {
-			dataAccessLayer.updateLogin(dbUser.withLoggedIn(true));
-		} catch (DataNotFoundEx e) {
-			throw UncheckedException.appException(CompanyEntityNames.SECURITY_USER, ExceptionType.ENTITY_NOT_FOUND, userId);
-		}
+		dataAccessLayer.updateLogin(dbUser.setLoggedIn(true));
+
 	}
 
 	public void loginUser(SecurityUser user) {
@@ -97,7 +94,7 @@ public class SecurityUserService extends ServiceDAO<String, SecurityUser, Securi
 		SecurityUser dbUser = this.loadUserByUsername(userId);
 		if (dbUser.getLoggedIn()) {
 			try {
-				super.update(dbUser.withLoggedIn(false));
+				super.update(dbUser.setLoggedIn(false));
 			} catch (DataNotFoundEx e) {
 				throw UncheckedException.appException(CompanyEntityNames.SECURITY_USER, ExceptionType.ENTITY_NOT_FOUND,
 						userId);

@@ -1,7 +1,6 @@
 package com.pra.payrollmanager.user.root.company;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import org.springframework.data.annotation.Id;
 
@@ -12,13 +11,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.With;
+import lombok.experimental.Accessors;
 
-@With
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Accessors(chain=true)
 @EqualsAndHashCode(callSuper = false)
 public class CompanyDetailsDAO extends BaseAuditDAO<String> {
 
@@ -32,15 +31,11 @@ public class CompanyDetailsDAO extends BaseAuditDAO<String> {
 	private String name;
 	private String desc;
 	
-	private String category;
+	private List<String> categories;
 	
 	private String address;
 	
 	private Location location;
-	
-	@Builder.Default
-	private Set<String> screenIds = new HashSet<>();
-
 
 	@Override
 	public String primaryKeyValue() {

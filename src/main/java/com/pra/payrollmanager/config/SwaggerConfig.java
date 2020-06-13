@@ -70,28 +70,33 @@ public class SwaggerConfig {
 		return swaggerDocket("Security", "com.pra.payrollmanager.security");
 	}
 
-	/**
-	 * Group Admin contains operations related to administration
-	 */
-	@Bean
-	public Docket swaggerAdminApi() {
-		return swaggerDocket("Admin", "com.pra.payrollmanager.admin");
-	}
+//	/**
+//	 * Group Admin contains operations related to administration
+//	 */
+//	@Bean
+//	public Docket swaggerAdminApi() {
+//		return swaggerDocket("Admin", "com.pra.payrollmanager.admin");
+//	}
 
-	/**
-	 * Group User contains operations used by users
-	 */
-	@Bean
-	public Docket swaggerUserApi() {
-		return swaggerDocket("User", "com.pra.payrollmanager.user");
-	}
+//	/**
+//	 * Group User contains operations used by users
+//	 */
+//	@Bean
+//	public Docket swaggerUserApi() {
+//		return swaggerDocket("User", "com.pra.payrollmanager.user");
+//	}
 
 	/**
 	 * Group User contains operations used by restaurant
 	 */
 	@Bean
 	public Docket swaggerRestaurantApi() {
-		return swaggerDocket("Restaurant", "com.pra.payrollmanager.restaurant");
+		return swaggerDocket("Restaurant", "com.pra.payrollmanager.restaurant.hotel");
+	}
+	
+	@Bean
+	public Docket swaggerRestaurantAdmimApi() {
+		return swaggerDocket("Admin", "com.pra.payrollmanager.restaurant.admin");
 	}
 
 }

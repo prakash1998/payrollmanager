@@ -27,21 +27,30 @@ public class CompanyDetailsService
 		dto.setPermissions(company.getPermissions());
 		dto.setResourceFeatures(company.getResourceFeatures());
 		dto.setEndpoints(company.getEndpointPermissions());
+		dto.setScreenIds(company.getScreenIds());
 		return dto;
 	}
 	
 
 	@Override
 	public CompanyDetailsDTO create(CompanyDetailsDTO company) throws DuplicateDataEx, AnyThrowable {
-		securityCompanyService.create(company);
-		return super.create(company);
+		CompanyDetailsDTO createdCompany =   super.create(company);
+		// create security company after for copy audit info
+		securityCompanyService.createFrom(createdCompany);
+		return createdCompany;
 	}
 
 	@Override
 	@Transactional
 	public CompanyDetailsDTO update(CompanyDetailsDTO company) throws DataNotFoundEx, AnyThrowable {
-		SecurityCompany securityCompany = company.toSecurityCompany();
+		CompanyDetailsDTO updatedCompany =  super.update(company);
+		// update security company after for copy audit info
+		SecurityCompany securityCompany = updatedCompany.toSecurityCompany();
 		securityCompanyService.update(securityCompany);
+		return updatedCompany;
+	}
+	
+	public CompanyDetailsDTO updateSelf(CompanyDetailsDTO company) throws DataNotFoundEx, AnyThrowable {
 		return super.update(company);
 	}
 

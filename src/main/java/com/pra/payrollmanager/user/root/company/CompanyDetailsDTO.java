@@ -2,6 +2,7 @@ package com.pra.payrollmanager.user.root.company;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,6 +14,7 @@ import com.pra.payrollmanager.base.data.BaseAuditDTO;
 import com.pra.payrollmanager.security.authentication.company.SecurityCompany;
 import com.pra.payrollmanager.security.authentication.user.SecurityUser;
 import com.pra.payrollmanager.security.authorization.permission.ApiFeatures;
+import com.pra.payrollmanager.validation.ValidationGroups;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -21,12 +23,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 @ApiModel(value = "Restaurant")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Accessors(chain=true)
 @EqualsAndHashCode(callSuper = false)
 public class CompanyDetailsDTO extends BaseAuditDTO<CompanyDetailsDAO> {
 
@@ -47,8 +51,10 @@ public class CompanyDetailsDTO extends BaseAuditDTO<CompanyDetailsDAO> {
 	
 	private boolean locked;
 	private Location location;
-	private String category;
+
+	private List<String> categories;
 	
+	@NotNull(groups = {ValidationGroups.onCreate.class})
 	private String superUserPassword;
 
 	@ApiModelProperty(hidden = true) 
@@ -85,15 +91,18 @@ public class CompanyDetailsDTO extends BaseAuditDTO<CompanyDetailsDAO> {
 				.id(id)
 				.permissions(permissions)
 				.endpointPermissions(endpoints)
+				.screenIds(screenIds)
 				.resourceFeatures(resourceFeatures)
-				.build();
+				.build()
+				.copyAuditInfoFrom(this,SecurityCompany.class);
 	}
 
 	public SecurityUser toSuperUser() {
 		return SecurityUser.builder()
 				.username(SUPER_USER_NAME)
 				.password(superUserPassword)
-				.build();
+				.build()
+				.copyAuditInfoFrom(this,SecurityUser.class);
 	}
 
 }

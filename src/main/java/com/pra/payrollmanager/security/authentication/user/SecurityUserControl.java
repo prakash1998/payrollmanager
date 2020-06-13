@@ -24,7 +24,7 @@ public class SecurityUserControl {
 	@Autowired
 	SecurityUserService service;
 
-	@PostMapping(path = "password/update", consumes = MediaType.APPLICATION_JSON_VALUE,
+	@PostMapping(path = "update-password", consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response<Void> updatePassword(@Valid @RequestBody UserPasswordResetDTO user) throws CredentialNotMatchedEx {
 		service.updateUserPassword(user);

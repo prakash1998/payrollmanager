@@ -12,11 +12,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Accessors(chain=true)
 @EqualsAndHashCode(callSuper = false)
 public class RoleDTO extends BaseAuditDTO<RoleDAO> {
 

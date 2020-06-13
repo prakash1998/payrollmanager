@@ -207,6 +207,11 @@ public class Response<T> {
 			this.status = ResponseStatus.DUPLICATE_ENTITY;
 			return this;
 		}
+		
+		public ResponseBuilder staleEntity() {
+			this.status = ResponseStatus.CONFLICT;
+			return this;
+		}
 
 		public Response<Void> build() {
 			if (status == null)

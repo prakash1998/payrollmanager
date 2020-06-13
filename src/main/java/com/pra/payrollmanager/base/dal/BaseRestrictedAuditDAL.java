@@ -25,17 +25,16 @@ public interface BaseRestrictedAuditDAL<PK, DAO extends BaseAuditDAO<PK>>
 				.collect(Collectors.toList()));
 		return BaseAuditDAL.super.insertMulti(objList);
 	}
-
-	@Override
-	default DAO update(DAO obj) {
-		validateItemAccess(injectAuditInfoOnUpdate(obj, obj));
-		return BaseAuditDAL.super.update(obj);
-	}
 	
 	@Override
 	default DAO save(DAO obj) throws DataNotFoundEx {
-		// TODO Auto-generated method stub
+//		validateItemAccess(injectAuditInfoOnUpdate(obj, obj));
 		return BaseAuditDAL.super.save(obj);
+	}
+
+	@Override
+	default DAO update(DAO obj) {
+		return this.save(obj);
 	}
 
 	@Override
@@ -43,5 +42,7 @@ public interface BaseRestrictedAuditDAL<PK, DAO extends BaseAuditDAO<PK>>
 		validateDelete(query);
 		return BaseAuditDAL.super.deleteWith(query);
 	}
+
+
 
 }

@@ -7,7 +7,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.pra.payrollmanager.base.services.ServiceDAO;
+import com.pra.payrollmanager.base.services.AuditServiceDAO;
 import com.pra.payrollmanager.constants.CacheNameStore;
 import com.pra.payrollmanager.entity.CommonEntityNames;
 import com.pra.payrollmanager.entity.EntityUtils;
@@ -22,7 +22,7 @@ import com.pra.payrollmanager.user.root.company.CompanyDetailsDTO;
 
 @Service
 @CacheConfig(cacheNames = CacheNameStore.SECURITY_COMPANY_STORE)
-public class SecurityCompanyService extends ServiceDAO<String, SecurityCompany, SecurityCompanyDAL> {
+public class SecurityCompanyService extends AuditServiceDAO<String, SecurityCompany, SecurityCompanyDAL> {
 
 	@Autowired
 	SecurityUserService securityUserService;
@@ -42,7 +42,7 @@ public class SecurityCompanyService extends ServiceDAO<String, SecurityCompany, 
 		throw new NotUseThisMethod();
 	}
 
-	public void create(CompanyDetailsDTO company) throws DuplicateDataEx {
+	public void createFrom(CompanyDetailsDTO company) throws DuplicateDataEx {
 		SecurityCompany securityCompany = company.toSecurityCompany();
 		
 		// creating company specific tables when company got created.
@@ -65,11 +65,11 @@ public class SecurityCompanyService extends ServiceDAO<String, SecurityCompany, 
 	}
 
 	public void lockCompany(SecurityCompany company) throws DataNotFoundEx {
-		super.update(company.withAccountLocked(true));
+		super.update(company.setAccountLocked(true));
 	}
 
 	public void unlockCompany(SecurityCompany company) throws DataNotFoundEx {
-		super.update(company.withAccountLocked(false));
+		super.update(company.setAccountLocked(false));
 	}
 
 }

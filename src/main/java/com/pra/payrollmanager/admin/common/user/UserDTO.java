@@ -17,11 +17,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Accessors(chain=true)
 @EqualsAndHashCode(callSuper = false)
 public class UserDTO extends BaseAuditDTO<UserDAO> {
 
@@ -29,7 +31,7 @@ public class UserDTO extends BaseAuditDTO<UserDAO> {
 	 * 
 	 */
 	private static final long serialVersionUID = 4497545622349208285L;
-	
+
 	@NotNull(message = "userName must not be null")
 	@Size(min = 5, max = 50, message = "userName should have atleast {min} characters.")
 	@Pattern(regexp = "^[^-]*$", message = "User Name should not contain '-'.")
@@ -51,21 +53,22 @@ public class UserDTO extends BaseAuditDTO<UserDAO> {
 	@Pattern(regexp = "(^$|[0-9]{10})", message = "please enter valid phone Number")
 	private String phone;
 
-//	@Override
-//	public UserDAO toPlainDAO() {
-//		return UserDAO.builder()
-//				.userName(userName)
-//				.firstName(firstName)
-//				.lastName(lastName)
-//				.email(email)
-//				.phone(phone)
-//				.build();
-//	}
+	// @Override
+	// public UserDAO toPlainDAO() {
+	// return UserDAO.builder()
+	// .userName(userName)
+	// .firstName(firstName)
+	// .lastName(lastName)
+	// .email(email)
+	// .phone(phone)
+	// .build();
+	// }
 
 	public SecurityUser toSecurityUser() {
 		return SecurityUser.builder()
 				.username(userName)
 				.password(password)
-				.build();
+				.build()
+				.copyAuditInfoFrom(this, SecurityUser.class);
 	}
 }

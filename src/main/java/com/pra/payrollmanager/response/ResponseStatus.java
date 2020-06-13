@@ -15,7 +15,8 @@ public enum ResponseStatus {
 	WRONG_CREDENTIALS(607),
 	ACCESS_DENIED(608),
 	NOT_FOUND(HttpStatus.NOT_FOUND.value()),
-	DUPLICATE_ENTITY(609);
+	DUPLICATE_ENTITY(609),
+	CONFLICT(HttpStatus.CONFLICT.value());
 	
 	ResponseStatus(int code) {
 		this.code = code;

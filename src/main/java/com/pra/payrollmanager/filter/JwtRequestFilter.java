@@ -66,7 +66,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 				return;
 			}
 			// Once we get the token validate it.
-			if (userId != null && !authService.haveAuthentication()) {
+			if (userId != null && !authService.hasAuthentication()) {
 				SecurityUser userDetails = userService.loadUserByUsername(userId);
 
 				if (!userDetails.getLoggedIn()) {

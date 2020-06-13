@@ -1,4 +1,4 @@
-package com.pra.payrollmanager.restaurant.hotel;
+package com.pra.payrollmanager.restaurant.admin.hotel;
 
 import java.util.List;
 
@@ -27,21 +27,11 @@ import io.swagger.annotations.ApiOperation;
 
 @ApiOperation("Manage Restaurants")
 @RestController
-@RequestMapping("restaurant")
-public class RestaurantDetailsControl  {
+@RequestMapping("hotel")
+public class HotelAdminControl  {
 	
 	@Autowired
 	CompanyDetailsControl companyDetailsControl;
-
-	@GetMapping(value = "self", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<CompanyDetailsDTO> getSelf() throws DataNotFoundEx, AnyThrowable {
-		return companyDetailsControl.getSelf();
-	}
-
-	@PutMapping(value = "self",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<CompanyDetailsDTO> updateSelf(@Valid @RequestBody CompanyDetailsDTO restaurant) throws DataNotFoundEx, AnyThrowable {
-		return companyDetailsControl.updateSelf(restaurant);
-	}
 
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response<List<CompanyDetailsDTO>> getRestaurantDetails() {

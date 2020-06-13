@@ -41,7 +41,7 @@ public interface BaseRestrictedDAL<PK, DAO extends BaseDAO<PK>> extends BaseDAL<
 
 		for (DAO item : items) {
 			if (!hasAccessToItem.test(item))
-				throw UncheckedException.appException(entity(), ExceptionType.ACCESS_DENIED,
+				throw CustomExceptions.notAuthorizedEx(entity(),
 						item.primaryKeyValue().toString());
 		}
 	}

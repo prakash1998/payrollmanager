@@ -32,7 +32,7 @@ public class AuthorityService {
 	@Autowired
 	SecurityUserPermissionService securityUserPermissionService;
 
-	public boolean haveAuthentication() {
+	public boolean hasAuthentication() {
 		return SecurityContextHolder.getContext()
 				.getAuthentication() != null;
 	}

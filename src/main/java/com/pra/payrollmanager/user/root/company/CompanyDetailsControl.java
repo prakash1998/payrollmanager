@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,11 +26,13 @@ import com.pra.payrollmanager.exception.unchecked.UnAuthorizedEx;
 import com.pra.payrollmanager.response.dto.Response;
 import com.pra.payrollmanager.security.authentication.company.SecurityCompany;
 import com.pra.payrollmanager.validation.FieldValidator;
+import com.pra.payrollmanager.validation.ValidationGroups;
 
 import springfox.documentation.annotations.ApiIgnore;
 
 @ApiIgnore
 @RestController
+@Validated
 @RequestMapping("company")
 public class CompanyDetailsControl extends BaseControl<CompanyDetailsService> {
 
@@ -47,7 +50,7 @@ public class CompanyDetailsControl extends BaseControl<CompanyDetailsService> {
 		if (!userCompany.getId().equals(company.getId())) {
 			throw new UnAuthorizedEx("Unauthorized Operation");
 		}
-		return Response.payload(service.update(company));
+		return Response.payload(service.updateSelf(company));
 	}
 
 	@PostMapping(value = "bulk", consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -59,10 +62,7 @@ public class CompanyDetailsControl extends BaseControl<CompanyDetailsService> {
 
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response<List<CompanyDetailsDTO>> getCompanyDetails() {
-		return Response.payload(service.getAll()
-				.stream().filter(company -> !company.getCreatedBy().equals("god"))
-				.collect(Collectors.toList())
-				);
+		return Response.payload(service.getAll());
 	}
 
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -70,14 +70,15 @@ public class CompanyDetailsControl extends BaseControl<CompanyDetailsService> {
 			throws DataNotFoundEx, AnyThrowable {
 		return Response.payload(service.getById(companyId));
 	}
-
+	
+	@Validated(ValidationGroups.onCreate.class)
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response<CompanyDetailsDTO> createCompanyDetails(@Valid @RequestBody CompanyDetailsDTO company)
 			throws DuplicateDataEx, MethodArgumentNotValidException, NoSuchMethodException,
 			AnyThrowable {
-
-		FieldValidator.validateNotNull(company, "getSuperUserPassword",
-				"Super user Password must be provided");
+//
+//		FieldValidator.validateNotNull(company, "getSuperUserPassword",
+//				"Super user Password must be provided");
 		return Response.payload(service.create(company));
 	}
 

@@ -18,13 +18,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.With;
+import lombok.experimental.Accessors;
 
-@With
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Accessors(chain=true)
 @EqualsAndHashCode(callSuper = false)
 public class SecurityCompany extends BaseAuditDAO<String> {
 
@@ -46,6 +46,8 @@ public class SecurityCompany extends BaseAuditDAO<String> {
 	private Set<Integer> permissions = new HashSet<>();
 	@Builder.Default
 	private Set<Integer> endpointPermissions = new HashSet<>();
+	@Builder.Default
+	private Set<String> screenIds = new HashSet<>();
 	@Builder.Default
 	private Map<Integer, Set<ApiFeatures>> resourceFeatures = new HashMap<>();
 

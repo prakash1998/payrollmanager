@@ -103,9 +103,18 @@ public class SpringEvents {
 
 				if (existingEndpoints.stream().noneMatch(ep -> ep.getId().equals(endpointId))) {
 
-					int indexOfBackslash = endpointPattern.indexOf('/', 1);
-					String category = indexOfBackslash == -1 ? endpointPattern.substring(1)
-							: endpointPattern.substring(1, indexOfBackslash);
+					String[] uriParts = endpointPattern.split("/");
+					String category = endpointPattern;
+					for (int i = uriParts.length - 1; i > 0; i--) {
+						if(!uriParts[i].contains("{")) {
+							category = uriParts[i];
+							break;
+						}
+					}
+
+//					int indexOfBackslash = endpointPattern.indexOf('/', 1);
+//					String category = indexOfBackslash == -1 ? endpointPattern.substring(1)
+//							: endpointPattern.substring(1, indexOfBackslash);
 
 					String methodPhrase = httpMethod.toLowerCase();
 					if (httpMethod.equals(HttpMethod.POST.name()))

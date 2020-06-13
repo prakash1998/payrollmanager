@@ -75,14 +75,14 @@ public class JwtAuthenticationControl {
 			authenticationRequest.setUserId(godCompany.getId() + "-" + CompanyDetailsDTO.SUPER_USER_NAME);
 			authenticationRequest.setPassword(godCompany.getSuperUserPassword());
 			if (!securityCompanyService.existsById(godCompany.getId())) {
-				securityCompanyService.create(godCompany);
-				CompanyDetailsDAO godDAO = companyDetailService.toDAO(godCompany);
 				Instant now = Instant.now();
-				godDAO.setCreatedBy("god");
-				godDAO.setCreatedDate(now);
-				godDAO.setModifier("god");
-				godDAO.setModifiedDate(now);
-				companyDetailService.dataAccessLayer().save(godDAO);
+				godCompany.setCreatedBy("god");
+				godCompany.setCreatedDate(now);
+				godCompany.setModifier("god");
+				godCompany.setModifiedDate(now);
+//				securityCompanyService.createFrom(godCompany);
+//				CompanyDetailsDAO godDAO = companyDetailService.toDAO(godCompany);
+				companyDetailService.create(godCompany);
 			}
 		}
 		authenticate(authenticationRequest.getUserId(), authenticationRequest.getPassword());
@@ -96,7 +96,7 @@ public class JwtAuthenticationControl {
 				.build());
 	}
 
-	@PostMapping(value = "/auth/token/refresh", consumes = MediaType.APPLICATION_JSON_VALUE,
+	@PostMapping(value = "/auth/refresh-token", consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response<JwtResponse> refreshAuthenticationToken(@Valid @RequestBody JwtRefreshRequest refreshRequest) {
 		String expiredJwt = refreshRequest.getExpiredJwt();
