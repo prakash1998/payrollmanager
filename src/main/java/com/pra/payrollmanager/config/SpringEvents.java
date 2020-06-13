@@ -22,6 +22,8 @@ import com.pra.payrollmanager.entity.EntityUtils;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.filter.AuthorizationFilter;
 import com.pra.payrollmanager.security.WebSecurityConfig;
+import com.pra.payrollmanager.security.authentication.company.SecurityCompany;
+import com.pra.payrollmanager.security.authentication.company.SecurityCompanyDAL;
 import com.pra.payrollmanager.security.authentication.company.SecurityCompanyService;
 import com.pra.payrollmanager.security.authorization.ResourceFeaturePermissions;
 import com.pra.payrollmanager.security.authorization.ScreenPermissions;
@@ -61,9 +63,12 @@ public class SpringEvents {
 		// creating all common tables on boot if not exists
 		EntityUtils.createTableForCommonEntities(securityPermissionDAL);
 		// creating all tables for existing companies if not exists
-		securityCompanyService.getAll().stream().forEach(company -> {
-			EntityUtils.createTableForCompanyEntities(securityPermissionDAL.mongoTemplate(), company.getTablePrefix());
-		});
+		SecurityCompanyDAL dal = securityCompanyService.dataAccessLayer();
+		dal.mongoTemplate().findAll(SecurityCompany.class, dal.tableName()).stream()
+				.forEach(company -> {
+					EntityUtils.createTableForCompanyEntities(securityPermissionDAL.mongoTemplate(),
+							company.getTablePrefix());
+				});
 
 		SecurityPermissions.persistPermissionsIfNot(securityPermissionDAL);
 		ResourceFeaturePermissions.persistApiPermissionsIfNot(apiPermissionDAL);
@@ -106,15 +111,15 @@ public class SpringEvents {
 					String[] uriParts = endpointPattern.split("/");
 					String category = endpointPattern;
 					for (int i = uriParts.length - 1; i > 0; i--) {
-						if(!uriParts[i].contains("{")) {
+						if (!uriParts[i].contains("{")) {
 							category = uriParts[i];
 							break;
 						}
 					}
 
-//					int indexOfBackslash = endpointPattern.indexOf('/', 1);
-//					String category = indexOfBackslash == -1 ? endpointPattern.substring(1)
-//							: endpointPattern.substring(1, indexOfBackslash);
+					// int indexOfBackslash = endpointPattern.indexOf('/', 1);
+					// String category = indexOfBackslash == -1 ? endpointPattern.substring(1)
+					// : endpointPattern.substring(1, indexOfBackslash);
 
 					String methodPhrase = httpMethod.toLowerCase();
 					if (httpMethod.equals(HttpMethod.POST.name()))
