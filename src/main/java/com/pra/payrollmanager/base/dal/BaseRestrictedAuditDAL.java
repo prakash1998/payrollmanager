@@ -1,7 +1,6 @@
 package com.pra.payrollmanager.base.dal;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.data.mongodb.core.query.Query;
@@ -13,36 +12,34 @@ public interface BaseRestrictedAuditDAL<PK, DAO extends BaseAuditDAO<PK>>
 		extends BaseAuditDAL<PK, DAO>, BaseRestrictedDAL<PK, DAO> {
 
 	@Override
-	default DAO insert(DAO obj) {
-		validateItemAccess(injectAuditInfoOnCreate(obj));
-		return BaseAuditDAL.super.insert(obj);
+	default DAO create(DAO obj) {
+		validateItemAccess(setAuditInfoOnCreate(obj));
+		return BaseAuditDAL.super.create(obj);
 	}
 
 	@Override
-	default Collection<DAO> insertMulti(Collection<DAO> objList) {
+	default Collection<DAO> insert(Collection<DAO> objList) {
 		validateItemAccess(objList.stream()
-				.map(obj -> injectAuditInfoOnCreate(obj))
+				.map(obj -> setAuditInfoOnCreate(obj))
 				.collect(Collectors.toList()));
-		return BaseAuditDAL.super.insertMulti(objList);
-	}
-	
-	@Override
-	default DAO save(DAO obj) throws DataNotFoundEx {
-//		validateItemAccess(injectAuditInfoOnUpdate(obj, obj));
-		return BaseAuditDAL.super.save(obj);
+		return BaseAuditDAL.super.insert(objList);
 	}
 
 	@Override
-	default DAO update(DAO obj) {
-		return this.save(obj);
+	default void validateOnUpdate(DAO dbObj, DAO obj) {
+		validateItemAccess(obj);
+		BaseAuditDAL.super.validateOnUpdate(dbObj, obj);
 	}
 
 	@Override
-	default List<DAO> deleteWith(Query query) {
+	default DAO update(DAO obj) throws DataNotFoundEx {
+		return BaseAuditDAL.super.update(obj);
+	}
+
+	@Override
+	default Collection<DAO> deleteWith(Query query) {
 		validateDelete(query);
 		return BaseAuditDAL.super.deleteWith(query);
 	}
-
-
 
 }

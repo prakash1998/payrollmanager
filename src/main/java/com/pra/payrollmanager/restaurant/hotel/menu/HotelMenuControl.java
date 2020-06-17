@@ -28,7 +28,7 @@ import com.pra.payrollmanager.validation.ValidationGroups;
 @RestController
 @RequestMapping("hotel/menu")
 public class HotelMenuControl extends BaseControl<HotelMenuService> {
-
+	
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response<List<HotelMenu>> getAllCategorys() {
 		return Response.payload(service.getAll());
@@ -42,7 +42,7 @@ public class HotelMenuControl extends BaseControl<HotelMenuService> {
 
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response<HotelMenu> createCategory(@Valid @RequestBody HotelMenu category)
-			throws DuplicateDataEx, AnyThrowable {
+			throws DuplicateDataEx, AnyThrowable {	
 		return Response.payload(service.create(category));
 	}
 

@@ -1,16 +1,14 @@
 package com.pra.payrollmanager.security.authentication.company;
 
-import java.util.function.Predicate;
-
 import org.springframework.stereotype.Repository;
 
-import com.pra.payrollmanager.base.dal.RestrictedAuditDAL;
+import com.pra.payrollmanager.base.dal.AuditDAL;
 import com.pra.payrollmanager.entity.CommonEntityNames;
-import com.pra.payrollmanager.security.authorization.ResourceFeaturePermissions;
+import com.pra.payrollmanager.security.authorization.FeaturePermissions;
 import com.pra.payrollmanager.user.root.permissions.feature.FeaturePermission;
 
 @Repository
-public class SecurityCompanyDAL extends RestrictedAuditDAL<String, SecurityCompany> {
+public class SecurityCompanyDAL extends AuditDAL<String, SecurityCompany> {
 
 	@Override
 	public CommonEntityNames entity() {
@@ -19,33 +17,20 @@ public class SecurityCompanyDAL extends RestrictedAuditDAL<String, SecurityCompa
 
 	@Override
 	public FeaturePermission apiPermission() {
-		return ResourceFeaturePermissions.ROOT__COMPANY;
+		return FeaturePermissions.ROOT__COMPANY;
 	}
-
+	
 	@Override
-	public void validateModification(SecurityCompany dbObj, SecurityCompany objToSave) {
-
+	public boolean modificationValid(SecurityCompany dbObj, SecurityCompany objToSave) {
+		return dbObj.getModifiedDate().isBefore(objToSave.getModifiedDate());
 	}
-
+	
 	@Override
-	public SecurityCompany injectAuditInfoOnCreate(SecurityCompany obj) {
-		return obj;
-	}
-
-	@Override
-	public SecurityCompany injectAuditInfoOnUpdate(SecurityCompany dbObj, SecurityCompany obj) {
-		return obj;
-	}
-
-	@Override
-	public Predicate<SecurityCompany> hasAccessToItem() {
-
-		if (authorityService.inGodMode() || !authorityService.hasAuthentication()) {
-			return null;
+	public String user() {
+		if(authorityService.inGodMode()) {
+			return "god";
 		}
-
-		String companyId = authorityService.getSecurityCompany().getId();
-		return company -> company.getCreatedBy().startsWith(companyId + "-");
+		return super.user();
 	}
 
 }

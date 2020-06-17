@@ -1,6 +1,7 @@
 package com.pra.payrollmanager.base.dal;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +28,7 @@ public interface AuditSupport<PK, DAO extends BaseAuditDAO<PK>> extends ApiRestr
 		return ApiRestriction.super.isAllowedFor(ApiFeatures.AUDIT);
 	};
 
-	default DAO injectAuditInfoOnUpdate(DAO dbObj, DAO obj) {
+	default DAO setAuditInfoOnUpdate(DAO dbObj, DAO obj) {
 		obj.setCreatedBy(dbObj.getCreatedBy());
 		obj.setCreatedDate(dbObj.getCreatedDate());
 		obj.setModifier(user());
@@ -35,7 +36,7 @@ public interface AuditSupport<PK, DAO extends BaseAuditDAO<PK>> extends ApiRestr
 		return obj;
 	}
 
-	default DAO injectAuditInfoOnCreate(DAO obj) {
+	default DAO setAuditInfoOnCreate(DAO obj) {
 		Instant now = Instant.now();
 		obj.setCreatedBy(user());
 		obj.setCreatedDate(now);
@@ -53,7 +54,7 @@ public interface AuditSupport<PK, DAO extends BaseAuditDAO<PK>> extends ApiRestr
 		obj.setCreatedDate(null);
 	}
 
-	default DAO injectAuditInfoOnDelete(DAO obj) {
+	default DAO setAuditInfoOnDelete(DAO obj) {
 		obj.setDeleted(true);
 		obj.setDeletedBy(user());
 		return obj;
@@ -62,16 +63,16 @@ public interface AuditSupport<PK, DAO extends BaseAuditDAO<PK>> extends ApiRestr
 	default void auditDeleted(DAO obj) {
 		if (auditingEnabled()) {
 			clearCreationInfo(obj);
-			injectAuditInfoOnDelete(obj);
+			setAuditInfoOnDelete(obj);
 			audit(obj);
 		}
 	}
 
-	default void auditDeleted(List<DAO> objList) {
+	default void auditDeleted(Collection<DAO> objList) {
 		if (auditingEnabled()) {
 			objList.forEach(obj -> {
 				clearCreationInfo(obj);
-				injectAuditInfoOnDelete(obj);
+				setAuditInfoOnDelete(obj);
 			});
 			audit(objList);
 		}
@@ -85,7 +86,7 @@ public interface AuditSupport<PK, DAO extends BaseAuditDAO<PK>> extends ApiRestr
 		}
 	}
 
-	default void audit(List<DAO> objList) {
+	default void audit(Collection<DAO> objList) {
 		if (auditingEnabled()) {
 			List<Document> docs = objList.stream()
 					.map(obj -> {

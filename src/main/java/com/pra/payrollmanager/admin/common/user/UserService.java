@@ -24,8 +24,8 @@ public class UserService extends AuditRTServiceDTO<String, UserDAO, UserDTO, Use
 	UserRoleMapDAL userRoleMapDAL;
 
 	@Override
-	public UserDTO postProcessGet(UserDAO obj) {
-		UserDTO dto = super.postProcessGet(obj);
+	public UserDTO postProcessGet(UserDAO obj,boolean multi) {
+		UserDTO dto = super.postProcessGet(obj,multi);
 		dto.setRoleIds(userRoleMapDAL.getValuesForKey(dto.getUserName()));
 		return dto;
 	}

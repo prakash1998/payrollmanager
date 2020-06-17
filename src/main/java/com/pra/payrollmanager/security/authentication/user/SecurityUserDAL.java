@@ -8,7 +8,7 @@ import com.pra.payrollmanager.base.dal.AuditDAL;
 import com.pra.payrollmanager.entity.CompanyEntityNames;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.util.CustomExceptions;
-import com.pra.payrollmanager.security.authorization.ResourceFeaturePermissions;
+import com.pra.payrollmanager.security.authorization.FeaturePermissions;
 import com.pra.payrollmanager.user.root.permissions.feature.FeaturePermission;
 
 @Repository
@@ -21,25 +21,14 @@ public class SecurityUserDAL extends AuditDAL<String, SecurityUser> {
 	
 	@Override
 	public FeaturePermission apiPermission() {
-		return ResourceFeaturePermissions.ADMIN__USERS;
+		return FeaturePermissions.ADMIN__USERS;
 	}
 	
 	@Override
-	public void validateModification(SecurityUser dbObj, SecurityUser objToSave) {
-		
+	public boolean modificationValid(SecurityUser dbObj, SecurityUser objToSave) {
+		return dbObj.getModifiedDate().isBefore(objToSave.getModifiedDate());
 	}
 	
-	@Override
-	public SecurityUser injectAuditInfoOnCreate(SecurityUser obj) {
-		return obj;
-	}
-	
-	@Override
-	public SecurityUser injectAuditInfoOnUpdate(SecurityUser dbObj, SecurityUser obj) {
-		return obj;
-	}
-	
-
 	public boolean existsById(String key, String tablePrefix) {
 		return mongoTemplate().exists(Query.query(Criteria.where("_id").is(key)), SecurityUser.class,
 				tablePrefix + entity().table());

@@ -51,7 +51,7 @@ public class ScreenPermissions {
 				.map(allPermisssions::get)
 				.collect(Collectors.toList());
 		try {
-			dataAccess.insertMulti(permissionsToPersist);
+			dataAccess.insert(permissionsToPersist);
 		} catch (DuplicateDataEx e) {
 			throw new RuntimeException("Problem while inseting permissions in DB");
 		}

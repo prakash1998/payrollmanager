@@ -14,7 +14,7 @@ import com.pra.payrollmanager.base.dal.AuditDAL;
 import com.pra.payrollmanager.entity.CompanyEntityNames;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.security.authentication.user.SecurityUserService;
-import com.pra.payrollmanager.security.authorization.ResourceFeaturePermissions;
+import com.pra.payrollmanager.security.authorization.FeaturePermissions;
 import com.pra.payrollmanager.user.root.permissions.feature.FeaturePermission;
 
 @Repository
@@ -30,21 +30,21 @@ public class NotificationAckDAL extends AuditDAL<ObjectId, NotificationAck> {
 
 	@Override
 	public FeaturePermission apiPermission() {
-		return ResourceFeaturePermissions.USER__NOTIFICATIONS;
+		return FeaturePermissions.USER__NOTIFICATIONS;
 	}
 
 	@Override
-	public NotificationAck injectAuditInfoOnCreate(NotificationAck obj) {
+	public NotificationAck setAuditInfoOnCreate(NotificationAck obj) {
 		return obj;
 	}
 
 	@Override
-	public NotificationAck injectAuditInfoOnUpdate(NotificationAck dbObj, NotificationAck obj) {
+	public NotificationAck setAuditInfoOnUpdate(NotificationAck dbObj, NotificationAck obj) {
 		return obj;
 	}
 
 	@Override
-	public NotificationAck injectAuditInfoOnDelete(NotificationAck obj) {
+	public NotificationAck setAuditInfoOnDelete(NotificationAck obj) {
 		obj.setDeleted(null);
 		return obj;
 	}
@@ -58,7 +58,7 @@ public class NotificationAckDAL extends AuditDAL<ObjectId, NotificationAck> {
 					.collect(Collectors.toSet());
 		}
 
-		super.insertMulti(
+		super.insert(
 				usersForAck.stream()
 						.map(usr -> NotificationAck.builder()
 								.notificationId(notificationId)

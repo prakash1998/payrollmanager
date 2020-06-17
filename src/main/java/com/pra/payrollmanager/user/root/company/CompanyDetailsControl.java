@@ -53,7 +53,7 @@ public class CompanyDetailsControl extends BaseControl<CompanyDetailsService> {
 		return Response.payload(service.updateSelf(company));
 	}
 
-	@PostMapping(value = "bulk", consumes = MediaType.APPLICATION_JSON_VALUE,
+	@PostMapping(value = "bulk/test", consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response<Void> bulkOp(@Valid @RequestBody BulkOp<CompanyDetailsDTO> company)
 			throws DataNotFoundEx, AnyThrowable {

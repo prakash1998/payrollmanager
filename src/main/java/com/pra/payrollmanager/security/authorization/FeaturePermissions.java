@@ -14,7 +14,7 @@ import com.pra.payrollmanager.user.root.permissions.feature.FeaturePermissionDAL
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ResourceFeaturePermissions {
+public class FeaturePermissions {
 
 	public static final FeaturePermission ADMIN__USERS = FeaturePermission.of(1);
 
@@ -23,10 +23,12 @@ public class ResourceFeaturePermissions {
 	public static final FeaturePermission PRODUCT__STOCKBOOK = FeaturePermission.of(3);
 
 	public static final FeaturePermission USER__NOTIFICATIONS = FeaturePermission.of(4);
+	
+	public static final FeaturePermission HOTEL__TABLES = FeaturePermission.of(5);
 
 	public static void persistApiPermissionsIfNot(FeaturePermissionDAL dataAccess) {
 		Map<Integer, FeaturePermission> allPermisssions = new HashMap<>();
-		Field[] allFields = ResourceFeaturePermissions.class.getDeclaredFields();
+		Field[] allFields = FeaturePermissions.class.getDeclaredFields();
 
 		try {
 			for (Field field : allFields) {
@@ -58,7 +60,7 @@ public class ResourceFeaturePermissions {
 				.map(allPermisssions::get)
 				.collect(Collectors.toList());
 		try {
-			dataAccess.insertMulti(permissionsToPersist);
+			dataAccess.insert(permissionsToPersist);
 		} catch (DuplicateDataEx e) {
 			throw new RuntimeException("Problem while inseting permissions in DB");
 		}

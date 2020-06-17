@@ -11,8 +11,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import com.pra.payrollmanager.base.data.BaseDAO;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.util.CustomExceptions;
-import com.pra.payrollmanager.exception.util.ExceptionType;
-import com.pra.payrollmanager.exception.util.UncheckedException;
 
 public interface BaseRestrictedDAL<PK, DAO extends BaseDAO<PK>> extends BaseDAL<PK, DAO>, DataRestrictionSupport {
 
@@ -111,27 +109,27 @@ public interface BaseRestrictedDAL<PK, DAO extends BaseDAO<PK>> extends BaseDAL<
 	}
 
 	@Override
-	default DAO insert(DAO obj) {
+	default DAO create(DAO obj) {
 		validateItemAccess(obj);
-		return BaseDAL.super.insert(obj);
+		return BaseDAL.super.create(obj);
 	}
 
 	@Override
-	default DAO save(DAO obj) {
+	default DAO update(DAO obj) {
 		validateItemAccess(obj);
-		return BaseDAL.super.save(obj);
+		return BaseDAL.super.update(obj);
 	}
 
 	@Override
-	default List<DAO> deleteWith(Query query) {
+	default Collection<DAO> deleteWith(Query query) {
 		validateDelete(query);
 		return BaseDAL.super.deleteWith(query);
 	}
 
 	@Override
-	default Collection<DAO> insertMulti(Collection<DAO> objList) {
+	default Collection<DAO> insert(Collection<DAO> objList) {
 		validateItemAccess(objList);
-		return BaseDAL.super.insertMulti(objList);
+		return BaseDAL.super.insert(objList);
 	}
 
 }

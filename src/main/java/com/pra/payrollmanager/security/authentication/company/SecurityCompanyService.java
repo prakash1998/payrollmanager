@@ -42,17 +42,8 @@ public class SecurityCompanyService extends AuditServiceDAO<String, SecurityComp
 		throw new NotUseThisMethod();
 	}
 
-	public void createFrom(CompanyDetailsDTO company) throws DuplicateDataEx {
-		SecurityCompany securityCompany = company.toSecurityCompany();
-		
-		// creating company specific tables when company got created.
-		EntityUtils.createTableForCompanyEntities(dataAccessLayer.mongoTemplate(),
-				securityCompany.getTablePrefix());
-		this.createSecurityCompany(securityCompany, company.toSuperUser());
-	}
-
 	@Transactional
-	private void createSecurityCompany(SecurityCompany securityCompany, SecurityUser superUser) throws DuplicateDataEx {
+	public void createSecurityCompany(SecurityCompany securityCompany, SecurityUser superUser) throws DuplicateDataEx {
 		super.create(securityCompany);
 		securityUserService.createSuperUser(superUser, securityCompany.getTablePrefix());
 	}

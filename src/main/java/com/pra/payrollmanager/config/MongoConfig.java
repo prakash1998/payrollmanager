@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.MongoTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
+//@EnableMongoAuditing
 @EnableTransactionManagement
 public class MongoConfig {
 
@@ -15,4 +16,12 @@ public class MongoConfig {
 		return new MongoTransactionManager(dbFactory);
 	}
 
+	// auditing injection
+//	@Bean
+//	public AuditorAware<String> myAuditorProvider() {
+//		return () -> Optional.ofNullable(SecurityContextHolder.getContext())
+//				.map(SecurityContext::getAuthentication)
+//				.filter(Authentication::isAuthenticated)
+//				.map(Authentication::getName);
+//	}
 }

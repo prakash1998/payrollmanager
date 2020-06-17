@@ -26,6 +26,20 @@ public class StockBookService
 	private void sendNotification(StockBookDTO obj) {
 		notificationService.sendNotification(NotificationType.STOCKS, obj.getProductId(), targetedUserIds(obj));
 	}
+	
+	@Override
+	public StockBookDAO toDAO(StockBookDTO dto) {
+		return super.toDAO(dto)
+				.setId(dto.getProductId())
+				.setNote(dto.getUpdateNote());
+	}
+	
+	@Override
+	public StockBookDTO toDTO(StockBookDAO dao) {
+		return super.toDTO(dao)
+				.setProductId(dao.getId())
+				.setUpdateNote(dao.getNote());
+	}
 
 	@Override
 	public StockBookDTO create(StockBookDTO obj) throws DuplicateDataEx, AnyThrowable {

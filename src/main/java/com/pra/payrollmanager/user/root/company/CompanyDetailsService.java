@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.pra.payrollmanager.base.services.AuditServiceDTO;
+import com.pra.payrollmanager.entity.EntityUtils;
 import com.pra.payrollmanager.exception.AnyThrowable;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
@@ -18,10 +19,10 @@ public class CompanyDetailsService
 
 	@Autowired
 	SecurityCompanyService securityCompanyService;
-	
+
 	@Override
-	public CompanyDetailsDTO postProcessGet(CompanyDetailsDAO obj) {
-		CompanyDetailsDTO dto= super.postProcessGet(obj);
+	public CompanyDetailsDTO postProcessGet(CompanyDetailsDAO obj, boolean multi) {
+		CompanyDetailsDTO dto = super.postProcessGet(obj, multi);
 		SecurityCompany company = securityCompanyService.getById(dto.getId());
 		dto.setLocked(company.getAccountLocked());
 		dto.setPermissions(company.getPermissions());
@@ -30,38 +31,47 @@ public class CompanyDetailsService
 		dto.setScreenIds(company.getScreenIds());
 		return dto;
 	}
-	
 
 	@Override
 	public CompanyDetailsDTO create(CompanyDetailsDTO company) throws DuplicateDataEx, AnyThrowable {
-		CompanyDetailsDTO createdCompany =   super.create(company);
+		SecurityCompany securityCompany = company.toSecurityCompany();
+		// create tables for company
+		EntityUtils.createTableForCompanyEntities(dataAccessLayer.mongoTemplate(),
+				securityCompany.getTablePrefix());
+		return createCompany(company);
+	}
+	
+	@Transactional
+	private CompanyDetailsDTO createCompany(CompanyDetailsDTO company) throws DuplicateDataEx, AnyThrowable {
+		CompanyDetailsDTO createdCompany = super.create(company);
 		// create security company after for copy audit info
-		securityCompanyService.createFrom(createdCompany);
+		SecurityCompany securityCompany = company.toSecurityCompany();
+		securityCompanyService.createSecurityCompany(securityCompany, company.toSuperUser());
 		return createdCompany;
 	}
 
 	@Override
 	@Transactional
 	public CompanyDetailsDTO update(CompanyDetailsDTO company) throws DataNotFoundEx, AnyThrowable {
-		CompanyDetailsDTO updatedCompany =  super.update(company);
+		CompanyDetailsDTO updatedCompany = super.update(company);
 		// update security company after for copy audit info
 		SecurityCompany securityCompany = updatedCompany.toSecurityCompany();
 		securityCompanyService.update(securityCompany);
 		return updatedCompany;
 	}
-	
+
 	public CompanyDetailsDTO updateSelf(CompanyDetailsDTO company) throws DataNotFoundEx, AnyThrowable {
 		return super.update(company);
 	}
 
 	public void lockCompany(CompanyDetailsDTO company) throws DataNotFoundEx, AnyThrowable {
 		securityCompanyService.lockCompany(company.toSecurityCompany());
-//		super.delete(company);
+		// super.delete(company);
 	}
-	
+
 	public void activateCompany(CompanyDetailsDTO company) throws DataNotFoundEx, AnyThrowable {
 		securityCompanyService.unlockCompany(company.toSecurityCompany());
-//		super.delete(company);
+		// super.delete(company);
 	}
 
 	@Override

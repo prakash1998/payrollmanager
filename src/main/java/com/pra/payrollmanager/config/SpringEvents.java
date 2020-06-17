@@ -25,7 +25,7 @@ import com.pra.payrollmanager.security.WebSecurityConfig;
 import com.pra.payrollmanager.security.authentication.company.SecurityCompany;
 import com.pra.payrollmanager.security.authentication.company.SecurityCompanyDAL;
 import com.pra.payrollmanager.security.authentication.company.SecurityCompanyService;
-import com.pra.payrollmanager.security.authorization.ResourceFeaturePermissions;
+import com.pra.payrollmanager.security.authorization.FeaturePermissions;
 import com.pra.payrollmanager.security.authorization.ScreenPermissions;
 import com.pra.payrollmanager.security.authorization.SecurityPermissions;
 import com.pra.payrollmanager.user.root.permissions.endpoint.EndpointPermission;
@@ -63,15 +63,14 @@ public class SpringEvents {
 		// creating all common tables on boot if not exists
 		EntityUtils.createTableForCommonEntities(securityPermissionDAL);
 		// creating all tables for existing companies if not exists
-		SecurityCompanyDAL dal = securityCompanyService.dataAccessLayer();
-		dal.mongoTemplate().findAll(SecurityCompany.class, dal.tableName()).stream()
+		securityCompanyService.getAll().stream()
 				.forEach(company -> {
 					EntityUtils.createTableForCompanyEntities(securityPermissionDAL.mongoTemplate(),
 							company.getTablePrefix());
 				});
 
 		SecurityPermissions.persistPermissionsIfNot(securityPermissionDAL);
-		ResourceFeaturePermissions.persistApiPermissionsIfNot(apiPermissionDAL);
+		FeaturePermissions.persistApiPermissionsIfNot(apiPermissionDAL);
 		ScreenPermissions.persistScreenPermissionsIfNot(screenPermissionDAL);
 		persistEndpointsIfNot();
 	}
@@ -109,11 +108,23 @@ public class SpringEvents {
 				if (existingEndpoints.stream().noneMatch(ep -> ep.getId().equals(endpointId))) {
 
 					String[] uriParts = endpointPattern.split("/");
+					String categoryPhrase = endpointPattern;
 					String category = endpointPattern;
+
+					boolean includeInCategoryPhrase = true;
 					for (int i = uriParts.length - 1; i > 0; i--) {
 						if (!uriParts[i].contains("{")) {
-							category = uriParts[i];
-							break;
+							if (includeInCategoryPhrase) {
+								categoryPhrase = uriParts[i];
+								category = uriParts[i];
+								includeInCategoryPhrase = false;
+							} else {
+								if (category == categoryPhrase) {
+									category = uriParts[i];
+								} else {
+									category = uriParts[i] + " " + category;
+								}
+							}
 						}
 					}
 
@@ -130,7 +141,7 @@ public class SpringEvents {
 					EndpointPermission newEndpoint = EndpointPermission.builder()
 							.numericId(nextPossibleId++)
 							.id(endpointId)
-							.display(methodPhrase + " " + category)
+							.display(methodPhrase + " " + categoryPhrase)
 							.category(category)
 							.description("-")
 							.build();

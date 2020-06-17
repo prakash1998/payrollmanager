@@ -6,6 +6,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,43 +23,59 @@ import com.pra.payrollmanager.exception.AnyThrowable;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.response.dto.Response;
+import com.pra.payrollmanager.restaurant.hotel.tables.allocation.HotelTableAllocDAO;
+import com.pra.payrollmanager.restaurant.hotel.tables.allocation.HotelTableAllocService;
 import com.pra.payrollmanager.validation.ValidationGroups;
 
 @Validated
 @RestController
 @RequestMapping("hotel/table")
 public class HotelTableControl extends BaseControl<HotelTableService> {
+	
+	@Autowired
+	HotelTableAllocService tableAllocService;
 
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<List<HotelTableDTO>> getAllCategorys() {
+	public Response<List<HotelTableDAO>> getAllTables() {
 		return Response.payload(service.getAll());
 	}
 
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<HotelTableDTO> getCategory(@PathVariable("id") @NotNull ObjectId categoryId)
+	public Response<HotelTableDAO> getTable(@PathVariable("id") @NotNull ObjectId tableId)
 			throws DataNotFoundEx, AnyThrowable {
-		return Response.payload(service.getById(categoryId));
+		return Response.payload(service.getById(tableId));
+	}
+	
+	@GetMapping(value = "allocate/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Response<HotelTableAllocDAO> allocateTable(@PathVariable("id") @NotNull ObjectId tableId)
+			throws DataNotFoundEx, AnyThrowable {
+		return Response.payload(tableAllocService.allocateTable(tableId));
+	}
+	
+	@GetMapping(value = "clear/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Response<HotelTableAllocDAO> clearTable(@PathVariable("id") @NotNull ObjectId tableId)
+			throws DataNotFoundEx, AnyThrowable {
+		return Response.payload(tableAllocService.clearTable(tableId));
 	}
 
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<HotelTableDTO> createCategory(@Valid @RequestBody HotelTableDTO category)
+	public Response<HotelTableDAO> createTable(@Valid @RequestBody HotelTableDAO table)
 			throws DuplicateDataEx, AnyThrowable {
-		return Response.payload(service.create(category));
+		return Response.payload(service.create(table));
 	}
-
 
 	@Validated(ValidationGroups.onUpdate.class)
 	@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<HotelTableDTO> updateCategory(@Valid @RequestBody HotelTableDTO category)
+	public Response<HotelTableDAO> updateTable(@Valid @RequestBody HotelTableDAO table)
 			throws DataNotFoundEx, AnyThrowable {
-		return Response.payload(service.update(category));
+		return Response.payload(service.update(table));
 	}
 
 	@Validated(ValidationGroups.onUpdate.class)
 	@DeleteMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<HotelTableDTO> deleteCategory(@Valid @RequestBody HotelTableDTO category)
+	public Response<HotelTableDAO> deleteTable(@Valid @RequestBody HotelTableDAO table)
 			throws AnyThrowable, DataNotFoundEx {
-		return Response.payload(service.delete(category));
+		return Response.payload(service.delete(table));
 	}
 
 }

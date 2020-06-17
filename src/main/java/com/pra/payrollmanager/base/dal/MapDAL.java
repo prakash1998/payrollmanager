@@ -45,7 +45,7 @@ abstract public class MapDAL<KEY extends Serializable,
 		List<DAO> rolePermissionMaps = values.stream()
 				.map(val -> getInstance(key, val))
 				.collect(Collectors.toList());
-		super.insertMulti(rolePermissionMaps);
+		super.insert(rolePermissionMaps);
 	}
 
 	public void deleteEntriesByKey(KEY key) {

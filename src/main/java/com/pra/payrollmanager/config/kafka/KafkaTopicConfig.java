@@ -33,5 +33,11 @@ public class KafkaTopicConfig {
 	public NewTopic notificationsTopic() {
 		return getTopic(KafkaTopics.NOTIFICATIONS);
 	}
+	
+	@Bean
+	public NewTopic hotelTablesTopic() {
+		return getTopic(KafkaTopics.HOTEL_TABLES);
+	}
+
 
 }

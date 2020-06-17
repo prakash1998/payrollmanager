@@ -20,18 +20,18 @@ public interface BaseServiceDTO<PK,
 		extends BaseService<PK, DAO, DTO, DAL> {
 
 	ModelMapper modelMapper();
-	
+
 	Class<DTO> dtoClazz();
 
 	default DTO toDTO(DAO dao) {
 		return modelMapper().map(dao, dtoClazz());
 	}
-	
+
 	default DAO toDAO(DTO dto) {
-		return modelMapper().map(dto,dataAccessLayer().daoClazz());
+		return modelMapper().map(dto, dataAccessLayer().daoClazz());
 	}
 
-	default DTO postProcessGet(DAO obj) {
+	default DTO postProcessGet(DAO obj, boolean multi) {
 		return toDTO(obj);
 	}
 
@@ -46,20 +46,20 @@ public interface BaseServiceDTO<PK,
 
 	@Override
 	default DTO getById(PK id) throws DataNotFoundEx, AnyThrowable {
-		return postProcessGet(dataAccessLayer().findById(id));
+		return postProcessGet(dataAccessLayer().findById(id),false);
 	}
 
 	@Override
 	default List<DTO> getByIds(Set<PK> ids) {
 		return dataAccessLayer().findByIds(ids).stream()
-				.map(obj -> postProcessGet(obj))
+				.map(obj -> postProcessGet(obj,true))
 				.collect(Collectors.toList());
 	}
 
 	@Override
 	default List<DTO> getAll() {
 		return dataAccessLayer().findAll().stream()
-				.map(obj -> postProcessGet(obj))
+				.map(obj -> postProcessGet(obj,true))
 				.collect(Collectors.toList());
 	}
 

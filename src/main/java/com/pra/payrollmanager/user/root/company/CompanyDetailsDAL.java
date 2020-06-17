@@ -1,6 +1,5 @@
 package com.pra.payrollmanager.user.root.company;
 
-import java.time.Instant;
 import java.util.function.Predicate;
 
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -8,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import com.pra.payrollmanager.base.dal.RestrictedAuditDAL;
 import com.pra.payrollmanager.entity.CommonEntityNames;
-import com.pra.payrollmanager.security.authorization.ResourceFeaturePermissions;
+import com.pra.payrollmanager.security.authorization.FeaturePermissions;
 import com.pra.payrollmanager.user.root.permissions.feature.FeaturePermission;
 import com.pra.payrollmanager.utils.DBQueryUtils;
 
@@ -22,25 +21,20 @@ public class CompanyDetailsDAL extends RestrictedAuditDAL<String, CompanyDetails
 
 	@Override
 	public FeaturePermission apiPermission() {
-		return ResourceFeaturePermissions.ROOT__COMPANY;
+		return FeaturePermissions.ROOT__COMPANY;
 	}
 
 	@Override
-	public CompanyDetailsDAO injectAuditInfoOnCreate(CompanyDetailsDAO obj) {
+	public CompanyDetailsDAO setAuditInfoOnCreate(CompanyDetailsDAO obj) {
 		if (authorityService.inGodMode() && !authorityService.hasAuthentication()) {
-			// Instant now = Instant.now();
-			// obj.setCreatedBy("god");
-			// obj.setCreatedDate(now);
-			// obj.setModifier("god");
-			// obj.setModifiedDate(now);
 			return obj;
 		}
-		return super.injectAuditInfoOnCreate(obj);
+		return super.setAuditInfoOnCreate(obj);
 	}
 
 	@Override
 	public Criteria findAllAccessCriteria() {
-		if (authorityService.inGodMode() || !authorityService.hasAuthentication()) {
+		if (authorityService.inGodMode()) {
 			return null;
 		}
 		return DBQueryUtils.startsWithCriteria("createdBy", authorityService.getSecurityCompany().getId() + "-");
@@ -48,7 +42,7 @@ public class CompanyDetailsDAL extends RestrictedAuditDAL<String, CompanyDetails
 
 	@Override
 	public Predicate<CompanyDetailsDAO> hasAccessToItem() {
-		if (authorityService.inGodMode() || !authorityService.hasAuthentication()) {
+		if (authorityService.inGodMode()) {
 			return null;
 		}
 		String companyId = authorityService.getSecurityCompany().getId();

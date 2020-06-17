@@ -1,0 +1,22 @@
+package com.pra.payrollmanager.websocket.consumers;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.stereotype.Service;
+
+import com.pra.payrollmanager.constants.KafkaTopics;
+import com.pra.payrollmanager.message.MessageProxy;
+import com.pra.payrollmanager.websocket.WebSocketMessageSendingService;
+
+@Service
+public class HotelConsumers {
+
+	@Autowired
+	WebSocketMessageSendingService messageSenderService;
+
+	@KafkaListener(topics = KafkaTopics.HOTEL_TABLES , autoStartup = "${spring.kafka.enabled}")
+	public void sendToStockBook(MessageProxy message) {
+		messageSenderService.send(KafkaTopics.HOTEL_TABLES, message);
+	}
+
+}

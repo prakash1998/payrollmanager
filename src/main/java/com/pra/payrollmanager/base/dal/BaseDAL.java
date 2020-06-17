@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,55 +15,15 @@ import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.exception.util.CustomExceptions;
 import com.pra.payrollmanager.utils.DBQueryUtils;
 
-public interface BaseDAL<PK, DAO extends BaseDAO<PK>> extends WithDBTable {
-
-	MongoTemplate mongoTemplate();
-
-	Class<DAO> daoClazz();
-
-	// primary
-	default boolean existsById(PK key) {
-		return mongoTemplate().exists(DBQueryUtils.idEqualsQuery(key),
-				daoClazz(), this.tableName());
-	}
-
-	// primary
-	default List<DAO> findAll() {
-		return mongoTemplate().findAll(daoClazz(), this.tableName());
-	}
-
-	// primary
+public interface BaseDAL<PK, DAO extends BaseDAO<PK>> extends MongoTableOps<PK, DAO> {
+	
+	
 	default List<DAO> findWith(Query query) {
-		return mongoTemplate().find(query, daoClazz(), this.tableName());
+		return this.find(query);
 	}
 
-	// primary
 	default DAO findOneWith(Query query) {
-		return mongoTemplate().findOne(query, daoClazz(), this.tableName());
-	}
-
-	// primary
-	default DAO insert(DAO obj) {
-		return mongoTemplate().insert(obj, this.tableName());
-		// return obj;
-	}
-
-	// primary
-	default DAO save(DAO obj) {
-		return mongoTemplate().save(obj, this.tableName());
-		// return obj;
-	}
-
-	// primary
-	@Transactional
-	default List<DAO> deleteWith(Query query) {
-		return mongoTemplate().findAllAndRemove(query, this.tableName());
-	}
-
-	// primary
-	@Transactional
-	default Collection<DAO> insertMulti(Collection<DAO> objList) {
-		return mongoTemplate().insert(objList, this.tableName());
+		return this.findOne(query);
 	}
 
 	@Transactional
@@ -80,13 +39,13 @@ public interface BaseDAL<PK, DAO extends BaseDAO<PK>> extends WithDBTable {
 
 		Collection<DAO> updatedItems = bulkOp.getUpdated();
 		if (updatedItems.isEmpty()) {
-			Collection<DAO> updated = this.insertMulti(updatedItems);
+			Collection<DAO> updated = this.insert(updatedItems);
 			dataBuilder = dataBuilder.removed(updated);
 		}
 
 		Collection<DAO> addedItems = bulkOp.getAdded();
 		if (addedItems.isEmpty()) {
-			Collection<DAO> added = this.insertMulti(addedItems);
+			Collection<DAO> added = this.insert(addedItems);
 			dataBuilder = dataBuilder.added(added);
 		}
 
@@ -104,7 +63,7 @@ public interface BaseDAL<PK, DAO extends BaseDAO<PK>> extends WithDBTable {
 	default DAO findByIdUnchecked(PK key) {
 		return this.findOneWith(DBQueryUtils.idEqualsQuery(key));
 	}
-
+	
 	default DAO findById(PK key) throws DataNotFoundEx {
 		DAO dbObj = this.findByIdUnchecked(key);
 		if (dbObj != null) {
@@ -135,9 +94,14 @@ public interface BaseDAL<PK, DAO extends BaseDAO<PK>> extends WithDBTable {
 	// entity()), e);
 	// }
 	// }
+	
+	default void validateOnUpdate(DAO dbObj,DAO obj) {
+		
+	}
 
 	default DAO update(DAO obj) throws DataNotFoundEx {
 		DAO dbObj = this.findById(obj.primaryKeyValue());
+		validateOnUpdate(dbObj,obj);
 		if (!obj.equals(dbObj)) {
 			return this.save(obj);
 		}
@@ -157,18 +121,17 @@ public interface BaseDAL<PK, DAO extends BaseDAO<PK>> extends WithDBTable {
 	}
 
 	default DAO deleteById(PK key) throws DataNotFoundEx {
-		DAO obj = this.findById(key);
-		this.deleteWith(DBQueryUtils.idEqualsQuery(key));
-		return obj;
+		Collection<DAO> deleted = this.deleteWith(DBQueryUtils.idEqualsQuery(key));
+		return deleted.stream().findFirst()
+				.orElseThrow(() -> CustomExceptions.notFoundEx(entity(), String.valueOf(key)));
 	}
 
 	default Collection<DAO> deleteByIds(Collection<PK> keys) {
 		return this.deleteWith(DBQueryUtils.idInQuery(keys));
 	}
 
-	// default void deleteAll() {
-	// mongoTemplate().dropCollection(this.tableName());
-	// mongoTemplate().createCollection(this.tableName());
-	// }
+	default Collection<DAO> deleteWith(Query query) {
+		return this.findAllAndRemove(query);
+	}
 
 }

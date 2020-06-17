@@ -1,15 +1,14 @@
 package com.pra.payrollmanager.base.dal;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.pra.payrollmanager.base.data.BaseAuditDAO;
-import com.pra.payrollmanager.exception.unchecked.StaleDataEx;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
+import com.pra.payrollmanager.exception.unchecked.StaleDataEx;
 import com.pra.payrollmanager.utils.BeanUtils;
 
 public interface BaseAuditDAL<PK, DAO extends BaseAuditDAO<PK>> extends BaseDAL<PK, DAO>, AuditSupport<PK, DAO> {
@@ -19,42 +18,46 @@ public interface BaseAuditDAL<PK, DAO extends BaseAuditDAO<PK>> extends BaseDAL<
 	}
 
 	@Override
-	default DAO insert(DAO obj) {
-		return BaseDAL.super.insert(injectAuditInfoOnCreate(obj));
-	}
-	
-	@Override
-	default Collection<DAO> insertMulti(Collection<DAO> objList) {
-		return BaseDAL.super.insertMulti(objList.stream()
-				.map(obj -> injectAuditInfoOnCreate(obj))
-				.collect(Collectors.toList()));
-	}
-	
-	default void validateModification(DAO dbObj,DAO objToSave) {
-		if (dbObj.getModifiedDate() != null && !dbObj.getModifiedDate().equals(objToSave.getModifiedDate()))
-			throw new StaleDataEx();
+	default DAO create(DAO obj) {
+		return BaseDAL.super.create(setAuditInfoOnCreate(obj));
 	}
 
 	@Override
-	default DAO save(DAO obj) throws DataNotFoundEx {
-		DAO dbObj = this.findById(obj.primaryKeyValue());
-		validateModification(dbObj, obj);
-		if (!obj.equals(dbObj)) {
-			audit(BeanUtils.copyOf(dbObj));
-			return BaseDAL.super.save(injectAuditInfoOnUpdate(dbObj, obj));
-		}
-		return dbObj;
+	default Collection<DAO> insert(Collection<DAO> objList) {
+		return BaseDAL.super.insert(objList.stream()
+				.map(obj -> setAuditInfoOnCreate(obj))
+				.collect(Collectors.toList()));
+	}
+
+	default boolean modificationValid(DAO dbObj, DAO objToSave) {
+		return dbObj.getModifiedDate().equals(objToSave.getModifiedDate());
 	}
 	
 	@Override
+	default void validateOnUpdate(DAO dbObj, DAO obj) {
+		if (obj.getModifiedDate() == null || (dbObj.getModifiedDate() == null || !modificationValid(dbObj, obj))) {
+			throw new StaleDataEx(String.format("Data became stale for : %s , Please refresh data", entity().name()));
+		}
+		BaseDAL.super.validateOnUpdate(dbObj, obj);
+	}
+
+	@Override
 	default DAO update(DAO obj) throws DataNotFoundEx {
-		return this.save(obj);
+		DAO dbObj = this.findById(obj.primaryKeyValue());
+		obj = setAuditInfoOnUpdate(dbObj, obj);
+
+		validateOnUpdate(dbObj, obj);
+		if (!obj.equals(dbObj)) {
+			audit(BeanUtils.copyOf(dbObj));
+			return BaseDAL.super.update(obj);
+		}
+		return dbObj;
 	}
 
 	@Override
 	@Transactional
-	default List<DAO> deleteWith(Query query) {
-		List<DAO> deletedObjs = BaseDAL.super.deleteWith(query);
+	default Collection<DAO> deleteWith(Query query) {
+		Collection<DAO> deletedObjs = BaseDAL.super.deleteWith(query);
 		auditDeleted(deletedObjs);
 		return deletedObjs;
 	}

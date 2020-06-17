@@ -111,7 +111,7 @@ public class SecurityPermissions {
 		
 		try {
 //			dataAccess.deleteAll();
-			dataAccess.insertMulti(newlyCreatedPermissions);
+			dataAccess.insert(newlyCreatedPermissions);
 			universalSecurityPermissionMap.putAll(allPermisssions);
 		} catch (DuplicateDataEx e) {
 			throw new RuntimeException("Problem while inseting permissions in DB");
