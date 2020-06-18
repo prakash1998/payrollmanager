@@ -2,11 +2,11 @@ package com.pra.payrollmanager.user.root.permissions.security;
 
 import org.springframework.stereotype.Service;
 
-import com.pra.payrollmanager.base.services.ServiceDTO;
+import com.pra.payrollmanager.base.services.ServiceDAO;
 
 @Service
 public class SecurityPermissionService
-		extends ServiceDTO<String, SecurityPermission, SecurityPermissionDTO, SecurityPermissionDAL> {
+		extends ServiceDAO<String, SecurityPermission, SecurityPermissionDAL> {
 
 
 }

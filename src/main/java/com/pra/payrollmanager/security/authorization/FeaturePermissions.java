@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
+import com.pra.payrollmanager.security.authorization.permission.ApiFeatures;
 import com.pra.payrollmanager.user.root.permissions.feature.FeaturePermission;
 import com.pra.payrollmanager.user.root.permissions.feature.FeaturePermissionDAL;
 
@@ -25,6 +26,10 @@ public class FeaturePermissions {
 	public static final FeaturePermission USER__NOTIFICATIONS = FeaturePermission.of(4);
 	
 	public static final FeaturePermission HOTEL__TABLES = FeaturePermission.of(5);
+	
+	public static final FeaturePermission HOTEL__ORDERS = FeaturePermission.of(6).exclude(ApiFeatures.AUDIT_LOG);
+	
+	public static final FeaturePermission HOTEL__ORDER_DETAIL = FeaturePermission.of(7).exclude(ApiFeatures.AUDIT_LOG);
 
 	public static void persistApiPermissionsIfNot(FeaturePermissionDAL dataAccess) {
 		Map<Integer, FeaturePermission> allPermisssions = new HashMap<>();

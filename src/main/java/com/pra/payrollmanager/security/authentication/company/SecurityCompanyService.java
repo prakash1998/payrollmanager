@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.pra.payrollmanager.base.services.AuditServiceDAO;
 import com.pra.payrollmanager.constants.CacheNameStore;
 import com.pra.payrollmanager.entity.CommonEntityNames;
-import com.pra.payrollmanager.entity.EntityUtils;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.exception.unchecked.NotUseThisMethod;
@@ -18,7 +17,6 @@ import com.pra.payrollmanager.exception.util.ExceptionType;
 import com.pra.payrollmanager.exception.util.UncheckedException;
 import com.pra.payrollmanager.security.authentication.user.SecurityUser;
 import com.pra.payrollmanager.security.authentication.user.SecurityUserService;
-import com.pra.payrollmanager.user.root.company.CompanyDetailsDTO;
 
 @Service
 @CacheConfig(cacheNames = CacheNameStore.SECURITY_COMPANY_STORE)

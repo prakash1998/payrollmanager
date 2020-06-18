@@ -2,11 +2,11 @@ package com.pra.payrollmanager.user.root.permissions.screen;
 
 import org.springframework.stereotype.Service;
 
-import com.pra.payrollmanager.base.services.ServiceDTO;
+import com.pra.payrollmanager.base.services.ServiceDAO;
 
 @Service
 public class ScreenPermissionService
-		extends ServiceDTO<String, ScreenPermission, ScreenPermissionDTO, ScreenPermissionDAL> {
+		extends ServiceDAO<String, ScreenPermission, ScreenPermissionDAL> {
 
 
 }

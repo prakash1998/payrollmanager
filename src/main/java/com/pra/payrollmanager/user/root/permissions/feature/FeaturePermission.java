@@ -38,6 +38,13 @@ public class FeaturePermission extends BaseAuditDAO<String> {
 	private String description;
 	@Builder.Default
 	private Set<ApiFeatures> features = new HashSet<>();
+	
+	public FeaturePermission exclude(ApiFeatures... excludeList) {
+		Arrays.stream(excludeList).forEach(item -> {
+			this.features.remove(item);
+		});
+		return this;
+	}
 
 	public static FeaturePermission of(int numericId, String id, Set<ApiFeatures> features) {
 		return FeaturePermission.builder()
@@ -55,9 +62,10 @@ public class FeaturePermission extends BaseAuditDAO<String> {
 				.features(new HashSet<>(Arrays.asList(features)))
 				.build();
 	}
+	
 
 	public static FeaturePermission of(int numericId) {
-		return of(numericId, ApiFeatures.AUDIT, ApiFeatures.REALTIME);
+		return of(numericId, ApiFeatures.AUDIT_LOG, ApiFeatures.REALTIME);
 	}
 
 	@Override

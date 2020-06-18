@@ -25,17 +25,17 @@ import springfox.documentation.annotations.ApiIgnore;
 public class ScreenPermissionControl extends BaseControl<ScreenPermissionService> {
 
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<List<ScreenPermissionDTO>> getAllPermissions() {
+	public Response<List<ScreenPermission>> getAllPermissions() {
 		return Response.payload(service.getAll());
 	}
 
 	@GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<ScreenPermissionDTO> getPermission(@PathVariable String id) throws DataNotFoundEx, AnyThrowable {
+	public Response<ScreenPermission> getPermission(@PathVariable String id) throws DataNotFoundEx, AnyThrowable {
 		return Response.payload(service.getById(id));
 	}
 
 	@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public Response<ScreenPermissionDTO> updatePermission(@Valid @RequestBody ScreenPermissionDTO permission)
+	public Response<ScreenPermission> updatePermission(@Valid @RequestBody ScreenPermission permission)
 			throws DataNotFoundEx, AnyThrowable {
 		return Response.payload(service.update(permission));
 	}

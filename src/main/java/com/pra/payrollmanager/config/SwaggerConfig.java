@@ -2,6 +2,7 @@ package com.pra.payrollmanager.config;
 
 import java.util.Arrays;
 
+import org.bson.types.ObjectId;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -52,6 +53,7 @@ public class SwaggerConfig {
 
 	private Docket swaggerDocket(String groupName, String basePackage) {
 		return new Docket(DocumentationType.SWAGGER_2)
+				.directModelSubstitute(ObjectId.class, String.class)
 				.groupName(groupName)
 				.select()
 				.apis(RequestHandlerSelectors.basePackage(basePackage))
@@ -70,21 +72,21 @@ public class SwaggerConfig {
 		return swaggerDocket("Security", "com.pra.payrollmanager.security");
 	}
 
-//	/**
-//	 * Group Admin contains operations related to administration
-//	 */
-//	@Bean
-//	public Docket swaggerAdminApi() {
-//		return swaggerDocket("Admin", "com.pra.payrollmanager.admin");
-//	}
+	// /**
+	// * Group Admin contains operations related to administration
+	// */
+	// @Bean
+	// public Docket swaggerAdminApi() {
+	// return swaggerDocket("Admin", "com.pra.payrollmanager.admin");
+	// }
 
-//	/**
-//	 * Group User contains operations used by users
-//	 */
-//	@Bean
-//	public Docket swaggerUserApi() {
-//		return swaggerDocket("User", "com.pra.payrollmanager.user");
-//	}
+	// /**
+	// * Group User contains operations used by users
+	// */
+	// @Bean
+	// public Docket swaggerUserApi() {
+	// return swaggerDocket("User", "com.pra.payrollmanager.user");
+	// }
 
 	/**
 	 * Group User contains operations used by restaurant
@@ -93,7 +95,7 @@ public class SwaggerConfig {
 	public Docket swaggerRestaurantApi() {
 		return swaggerDocket("Restaurant", "com.pra.payrollmanager.restaurant.hotel");
 	}
-	
+
 	@Bean
 	public Docket swaggerRestaurantAdmimApi() {
 		return swaggerDocket("Admin", "com.pra.payrollmanager.restaurant.admin");

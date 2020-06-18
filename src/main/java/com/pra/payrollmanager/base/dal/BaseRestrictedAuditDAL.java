@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import com.pra.payrollmanager.base.data.BaseAuditDAO;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
+import com.pra.payrollmanager.utils.BeanUtils;
 
 public interface BaseRestrictedAuditDAL<PK, DAO extends BaseAuditDAO<PK>>
 		extends BaseAuditDAL<PK, DAO>, BaseRestrictedDAL<PK, DAO> {
@@ -27,7 +28,7 @@ public interface BaseRestrictedAuditDAL<PK, DAO extends BaseAuditDAO<PK>>
 
 	@Override
 	default void validateOnUpdate(DAO dbObj, DAO obj) {
-		validateItemAccess(obj);
+		validateItemAccess(setAuditInfoOnUpdate(dbObj, BeanUtils.copyOf(obj)));
 		BaseAuditDAL.super.validateOnUpdate(dbObj, obj);
 	}
 

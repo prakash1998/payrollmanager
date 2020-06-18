@@ -9,4 +9,8 @@ public class KafkaTopics {
 	public static final String NOTIFICATIONS = "ws-notifications";
 	
 	public static final String HOTEL_TABLES = "ws-hotel-tables";
+	
+	public static final String HOTEL_ORDERS = "ws-hotel-orders";
+	
+	public static final String HOTEL_ORDER_DETAIL = "ws-hotel-order-detail";
 }

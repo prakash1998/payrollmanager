@@ -24,8 +24,8 @@ public interface AuditSupport<PK, DAO extends BaseAuditDAO<PK>> extends ApiRestr
 	
 	String auditTableName();
 
-	default boolean auditingEnabled() {
-		return ApiRestriction.super.isAllowedFor(ApiFeatures.AUDIT);
+	default boolean auditLogEnabled() {
+		return ApiRestriction.super.isAllowedFor(ApiFeatures.AUDIT_LOG);
 	};
 
 	default DAO setAuditInfoOnUpdate(DAO dbObj, DAO obj) {
@@ -61,7 +61,7 @@ public interface AuditSupport<PK, DAO extends BaseAuditDAO<PK>> extends ApiRestr
 	}
 
 	default void auditDeleted(DAO obj) {
-		if (auditingEnabled()) {
+		if (auditLogEnabled()) {
 			clearCreationInfo(obj);
 			setAuditInfoOnDelete(obj);
 			audit(obj);
@@ -69,7 +69,7 @@ public interface AuditSupport<PK, DAO extends BaseAuditDAO<PK>> extends ApiRestr
 	}
 
 	default void auditDeleted(Collection<DAO> objList) {
-		if (auditingEnabled()) {
+		if (auditLogEnabled()) {
 			objList.forEach(obj -> {
 				clearCreationInfo(obj);
 				setAuditInfoOnDelete(obj);
@@ -79,7 +79,7 @@ public interface AuditSupport<PK, DAO extends BaseAuditDAO<PK>> extends ApiRestr
 	}
 
 	default void audit(DAO obj) {
-		if (auditingEnabled()) {
+		if (auditLogEnabled()) {
 			clearCreationInfo(obj);
 			Document doc = objectToAuditDocument(obj);
 			mongoTemplate().insert(doc, auditTableName());
@@ -87,7 +87,7 @@ public interface AuditSupport<PK, DAO extends BaseAuditDAO<PK>> extends ApiRestr
 	}
 
 	default void audit(Collection<DAO> objList) {
-		if (auditingEnabled()) {
+		if (auditLogEnabled()) {
 			List<Document> docs = objList.stream()
 					.map(obj -> {
 						clearCreationInfo(obj);

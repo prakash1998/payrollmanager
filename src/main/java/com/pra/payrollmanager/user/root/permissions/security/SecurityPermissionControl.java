@@ -25,18 +25,18 @@ import springfox.documentation.annotations.ApiIgnore;
 public class SecurityPermissionControl extends BaseControl<SecurityPermissionService> {
 
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<List<SecurityPermissionDTO>> getAllPermissions() {
+	public Response<List<SecurityPermission>> getAllPermissions() {
 		return Response
 				.payload(service.getAll());
 	}
 
 	@GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<SecurityPermissionDTO> getPermission(@PathVariable String id) throws DataNotFoundEx, AnyThrowable {
+	public Response<SecurityPermission> getPermission(@PathVariable String id) throws DataNotFoundEx, AnyThrowable {
 		return Response.payload(service.getById(id));
 	}
 
 	@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public Response<SecurityPermissionDTO> updatePermission(@Valid @RequestBody SecurityPermissionDTO permission)
+	public Response<SecurityPermission> updatePermission(@Valid @RequestBody SecurityPermission permission)
 			throws DataNotFoundEx, AnyThrowable {
 		return Response.payload(service.update(permission));
 	}

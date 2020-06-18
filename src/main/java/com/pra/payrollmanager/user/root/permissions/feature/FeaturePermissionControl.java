@@ -25,19 +25,19 @@ import springfox.documentation.annotations.ApiIgnore;
 public class FeaturePermissionControl extends BaseControl<FeaturePermissionService> {
 
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<List<FeaturePermissionDTO>> getAllPermissions() {
+	public Response<List<FeaturePermission>> getAllPermissions() {
 		return Response
 				.payload(service.getAll());
 	}
 
 	@GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<FeaturePermissionDTO> getPermission(@PathVariable String id) throws DataNotFoundEx, AnyThrowable {
+	public Response<FeaturePermission> getPermission(@PathVariable String id) throws DataNotFoundEx, AnyThrowable {
 		return Response
 				.payload(service.getById(id));
 	}
 
 	@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public Response<FeaturePermissionDTO> updatePermission(@Valid @RequestBody FeaturePermissionDTO permission)
+	public Response<FeaturePermission> updatePermission(@Valid @RequestBody FeaturePermission permission)
 			throws DataNotFoundEx, AnyThrowable {
 		return Response.payload(service.update(permission));
 	}

@@ -44,12 +44,11 @@ public interface BaseAuditDAL<PK, DAO extends BaseAuditDAO<PK>> extends BaseDAL<
 	@Override
 	default DAO update(DAO obj) throws DataNotFoundEx {
 		DAO dbObj = this.findById(obj.primaryKeyValue());
-		obj = setAuditInfoOnUpdate(dbObj, obj);
-
+		
 		validateOnUpdate(dbObj, obj);
 		if (!obj.equals(dbObj)) {
 			audit(BeanUtils.copyOf(dbObj));
-			return BaseDAL.super.update(obj);
+			return BaseDAL.super.update(setAuditInfoOnUpdate(dbObj, obj));
 		}
 		return dbObj;
 	}

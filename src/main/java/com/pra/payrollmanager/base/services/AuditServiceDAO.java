@@ -1,6 +1,5 @@
 package com.pra.payrollmanager.base.services;
 
-import com.pra.payrollmanager.base.dal.AuditDAL;
 import com.pra.payrollmanager.base.dal.BaseAuditDAL;
 import com.pra.payrollmanager.base.data.BaseAuditDAO;
 

@@ -30,7 +30,6 @@ import com.pra.payrollmanager.security.authentication.jwt.dto.JwtResponse;
 import com.pra.payrollmanager.security.authentication.user.SecurityUser;
 import com.pra.payrollmanager.security.authentication.user.SecurityUserService;
 import com.pra.payrollmanager.security.authorization.AuthorityService;
-import com.pra.payrollmanager.user.root.company.CompanyDetailsDAO;
 import com.pra.payrollmanager.user.root.company.CompanyDetailsDTO;
 import com.pra.payrollmanager.user.root.company.CompanyDetailsService;
 
@@ -85,9 +84,11 @@ public class JwtAuthenticationControl {
 				companyDetailService.create(godCompany);
 			}
 		}
-		authenticate(authenticationRequest.getUserId(), authenticationRequest.getPassword());
+		if(!authService.inGodMode())
+			authenticate(authenticationRequest.getUserId(), authenticationRequest.getPassword());
+		
 		final SecurityUser userDetails = userService.loadUserByUsername(authenticationRequest.getUserId());
-		userService.login(authenticationRequest.getUserId());
+		userService.login(userDetails.getUserId());
 		final String token = jwtTokenService.generateToken(userDetails);
 		return Response.payload(JwtResponse.builder()
 				.jwt(token)

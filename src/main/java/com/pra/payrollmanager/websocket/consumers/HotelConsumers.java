@@ -15,8 +15,18 @@ public class HotelConsumers {
 	WebSocketMessageSendingService messageSenderService;
 
 	@KafkaListener(topics = KafkaTopics.HOTEL_TABLES , autoStartup = "${spring.kafka.enabled}")
-	public void sendToStockBook(MessageProxy message) {
+	public void sendToHotelTables(MessageProxy message) {
 		messageSenderService.send(KafkaTopics.HOTEL_TABLES, message);
+	}
+
+	@KafkaListener(topics = KafkaTopics.HOTEL_ORDERS , autoStartup = "${spring.kafka.enabled}")
+	public void sendToHotelOrders(MessageProxy message) {
+		messageSenderService.send(KafkaTopics.HOTEL_ORDERS, message);
+	}
+
+	@KafkaListener(topics = KafkaTopics.HOTEL_ORDER_DETAIL , autoStartup = "${spring.kafka.enabled}")
+	public void sendToHotelOrderDetail(MessageProxy message) {
+		messageSenderService.send(KafkaTopics.HOTEL_ORDER_DETAIL, message);
 	}
 
 }
