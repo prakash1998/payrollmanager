@@ -6,8 +6,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mongodb.client.result.UpdateResult;
 import com.pra.payrollmanager.base.data.BaseDAO;
 import com.pra.payrollmanager.base.data.BulkOp;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
@@ -16,8 +18,7 @@ import com.pra.payrollmanager.exception.util.CustomExceptions;
 import com.pra.payrollmanager.utils.DBQueryUtils;
 
 public interface BaseDAL<PK, DAO extends BaseDAO<PK>> extends MongoTableOps<PK, DAO> {
-	
-	
+
 	default List<DAO> findWith(Query query) {
 		return this.find(query);
 	}
@@ -63,7 +64,7 @@ public interface BaseDAL<PK, DAO extends BaseDAO<PK>> extends MongoTableOps<PK, 
 	default DAO findByIdUnchecked(PK key) {
 		return this.findOneWith(DBQueryUtils.idEqualsQuery(key));
 	}
-	
+
 	default DAO findById(PK key) throws DataNotFoundEx {
 		DAO dbObj = this.findByIdUnchecked(key);
 		if (dbObj != null) {
@@ -94,18 +95,27 @@ public interface BaseDAL<PK, DAO extends BaseDAO<PK>> extends MongoTableOps<PK, 
 	// entity()), e);
 	// }
 	// }
-	
-	default void validateBeforeUpdate(DAO dbObj,DAO obj) {
-		
+
+	default void validateBeforeUpdate(DAO dbObj, DAO obj) {
+
 	}
 
 	default DAO update(DAO obj) throws DataNotFoundEx {
 		DAO dbObj = this.findById(obj.primaryKeyValue());
-		validateBeforeUpdate(dbObj,obj);
+		validateBeforeUpdate(dbObj, obj);
 		if (!obj.equals(dbObj)) {
 			return this.save(obj);
 		}
 		return dbObj;
+	}
+
+	default DAO applyPatchAndGet(PK key, Update update) throws DataNotFoundEx {
+		this.updateFirst(DBQueryUtils.idEqualsQuery(key), update);
+		return findById(key);
+	}
+	
+	default UpdateResult applyPatch(PK key, Update update) throws DataNotFoundEx {
+		return this.updateFirst(DBQueryUtils.idEqualsQuery(key), update);
 	}
 
 	// default DAO upsert(DAO obj) {

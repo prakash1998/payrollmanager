@@ -3,8 +3,11 @@ package com.pra.payrollmanager.base.services;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.data.mongodb.core.query.Update;
+
 import com.pra.payrollmanager.base.dal.BaseDAL;
 import com.pra.payrollmanager.base.data.BaseDAO;
+import com.pra.payrollmanager.exception.AnyThrowable;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 
@@ -42,6 +45,11 @@ public interface BaseServiceDAO<PK,
 	default DAO update(DAO obj) throws DataNotFoundEx {
 		return dataAccessLayer().update(obj);
 	}
+	
+//	@Override
+//	default DAO applyPatch(PK id, Update update) throws DataNotFoundEx, AnyThrowable {
+//		return dataAccessLayer().applyPatchAndGet(id, update);
+//	}
 
 //	@Override
 //	default DAO upsert(DAO obj) throws AnyThrowable {

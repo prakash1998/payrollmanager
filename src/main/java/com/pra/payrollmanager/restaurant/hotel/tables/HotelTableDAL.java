@@ -10,6 +10,7 @@ import com.pra.payrollmanager.entity.CompanyEntityNames;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.restaurant.hotel.tables.allocation.HotelTableAllocDAL;
+import com.pra.payrollmanager.restaurant.hotel.tables.allocation.HotelTableAllocDAO;
 
 @Repository
 public class HotelTableDAL extends AbstractDAL<ObjectId, HotelTableDAO> {
@@ -27,7 +28,7 @@ public class HotelTableDAL extends AbstractDAL<ObjectId, HotelTableDAO> {
 	@Transactional
 	public HotelTableDAO create(HotelTableDAO obj) throws DuplicateDataEx {
 		HotelTableDAO created = super.create(obj);
-		tableAlloationDAL.create(created.toAllocation());
+		tableAlloationDAL.create(HotelTableAllocDAO.builder().id(created.getId()).build());
 		return created;
 	}
 	
@@ -35,7 +36,7 @@ public class HotelTableDAL extends AbstractDAL<ObjectId, HotelTableDAO> {
 	@Transactional
 	public HotelTableDAO delete(HotelTableDAO obj) throws DataNotFoundEx {
 		HotelTableDAO deleted = super.delete(obj);
-		tableAlloationDAL.delete(deleted.toAllocation());
+		tableAlloationDAL.deleteById(deleted.getId());
 		return deleted;
 	}
 

@@ -3,6 +3,8 @@ package com.pra.payrollmanager.base.services;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.data.mongodb.core.query.Update;
+
 import com.pra.payrollmanager.base.dal.BaseDAL;
 import com.pra.payrollmanager.base.data.BaseDAO;
 import com.pra.payrollmanager.exception.AnyThrowable;
@@ -24,7 +26,9 @@ public interface BaseService<PK,
 
 	DATA update(DATA obj) throws DataNotFoundEx, AnyThrowable;
 
-//	DATA upsert(DATA obj) throws AnyThrowable;
+//	DATA applyPatch(PK id, Update update) throws DataNotFoundEx, AnyThrowable;
+
+	// DATA upsert(DATA obj) throws AnyThrowable;
 
 	DATA delete(DATA obj) throws DataNotFoundEx, AnyThrowable;
 

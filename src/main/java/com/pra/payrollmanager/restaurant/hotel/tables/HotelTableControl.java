@@ -36,12 +36,12 @@ public class HotelTableControl extends BaseControl<HotelTableService> {
 	HotelTableAllocService tableAllocService;
 
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<List<HotelTableDAO>> getAllTables() {
+	public Response<List<HotelTableDTO>> getAllTables() {
 		return Response.payload(service.getAll());
 	}
 
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<HotelTableDAO> getTable(@PathVariable("id") @NotNull ObjectId tableId)
+	public Response<HotelTableDTO> getTable(@PathVariable("id") @NotNull ObjectId tableId)
 			throws DataNotFoundEx, AnyThrowable {
 		return Response.payload(service.getById(tableId));
 	}
@@ -59,21 +59,21 @@ public class HotelTableControl extends BaseControl<HotelTableService> {
 	}
 
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<HotelTableDAO> createTable(@Valid @RequestBody HotelTableDAO table)
+	public Response<HotelTableDTO> createTable(@Valid @RequestBody HotelTableDTO table)
 			throws DuplicateDataEx, AnyThrowable {
 		return Response.payload(service.create(table));
 	}
 
 	@Validated(ValidationGroups.onUpdate.class)
 	@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<HotelTableDAO> updateTable(@Valid @RequestBody HotelTableDAO table)
+	public Response<HotelTableDTO> updateTable(@Valid @RequestBody HotelTableDTO table)
 			throws DataNotFoundEx, AnyThrowable {
 		return Response.payload(service.update(table));
 	}
 
 	@Validated(ValidationGroups.onUpdate.class)
 	@DeleteMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<HotelTableDAO> deleteTable(@Valid @RequestBody HotelTableDAO table)
+	public Response<HotelTableDTO> deleteTable(@Valid @RequestBody HotelTableDTO table)
 			throws AnyThrowable, DataNotFoundEx {
 		return Response.payload(service.delete(table));
 	}

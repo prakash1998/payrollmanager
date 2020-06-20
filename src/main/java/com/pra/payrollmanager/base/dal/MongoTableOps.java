@@ -5,8 +5,10 @@ import java.util.List;
 
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mongodb.client.result.UpdateResult;
 import com.pra.payrollmanager.base.data.BaseDAO;
 import com.pra.payrollmanager.utils.DBQueryUtils;
 
@@ -44,6 +46,15 @@ public interface MongoTableOps<PK, DAO extends BaseDAO<PK>> extends WithDBTable 
 
 	default DAO save(DAO obj) {
 		return mongoTemplate().save(obj, this.tableName());
+	}
+
+	default UpdateResult updateFirst(Query query, Update update) {
+		return mongoTemplate().updateFirst(query, update, this.tableName());
+	}
+
+	@Transactional
+	default UpdateResult updateMulti(Query query, Update update) {
+		return mongoTemplate().updateMulti(query, update, this.tableName());
 	}
 
 	@Transactional

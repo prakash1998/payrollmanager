@@ -32,7 +32,7 @@ public class HotelTableAllocService
 	public HotelTableAllocDAO clearTable(ObjectId tableId) {
 		return super.update(HotelTableAllocDAO.builder()
 				.id(tableId)
-				.allocated(true)
+				.allocated(false)
 				.build());
 	}
 

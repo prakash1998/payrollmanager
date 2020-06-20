@@ -1,9 +1,11 @@
 package com.pra.payrollmanager.restaurant.hotel.tables;
 
-import org.bson.types.ObjectId;
-import org.springframework.data.annotation.Id;
+import javax.validation.constraints.NotNull;
 
-import com.pra.payrollmanager.base.data.BaseDAO;
+import org.bson.types.ObjectId;
+
+import com.pra.payrollmanager.base.data.BaseDTO;
+import com.pra.payrollmanager.validation.ValidationGroups;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +20,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @Accessors(chain=true)
 @EqualsAndHashCode(callSuper = false)
-public class HotelTableDAO implements BaseDAO<ObjectId> {
+public class HotelTableDTO implements BaseDTO<HotelTableDAO> {
 
 	/**
 	 * 
@@ -26,15 +28,14 @@ public class HotelTableDAO implements BaseDAO<ObjectId> {
 	private static final long serialVersionUID = 403084656361695436L;
 
 
-	@Id
+	@NotNull(groups = {ValidationGroups.onUpdate.class})
 	private ObjectId id;
 	
 	private String display;
 	
 	private Double capacity;
 	
-	@Override
-	public ObjectId primaryKeyValue() {
-		return id;
-	}
+	@Builder.Default
+	private Boolean allocated = false;
+	
 }
