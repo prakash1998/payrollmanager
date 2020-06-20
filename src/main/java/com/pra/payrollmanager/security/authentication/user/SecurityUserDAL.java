@@ -26,7 +26,7 @@ public class SecurityUserDAL extends AuditDAL<String, SecurityUser> {
 	
 	@Override
 	public boolean modificationValid(SecurityUser dbObj, SecurityUser objToSave) {
-		return dbObj.getModifiedDate().isBefore(objToSave.getModifiedDate());
+		return true;
 	}
 	
 	public boolean existsById(String key, String tablePrefix) {
@@ -43,7 +43,7 @@ public class SecurityUserDAL extends AuditDAL<String, SecurityUser> {
 	}
 
 	public void createSuperUser(SecurityUser superUser, String tablePrefix) {
-		mongoTemplate().insert(superUser, tablePrefix + entity().table());
+		mongoTemplate().insert(setAuditInfoOnCreate(superUser), tablePrefix + entity().table());
 	}
 
 	public void updateLogin(SecurityUser user) throws DataNotFoundEx {

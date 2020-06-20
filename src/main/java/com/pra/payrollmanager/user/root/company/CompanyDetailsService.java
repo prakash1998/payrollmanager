@@ -21,8 +21,8 @@ public class CompanyDetailsService
 	SecurityCompanyService securityCompanyService;
 
 	@Override
-	public CompanyDetailsDTO postProcessGet(CompanyDetailsDAO obj, boolean multi) {
-		CompanyDetailsDTO dto = super.postProcessGet(obj, multi);
+	public CompanyDetailsDTO postProcessGet(CompanyDetailsDAO obj) {
+		CompanyDetailsDTO dto = super.postProcessGet(obj);
 		SecurityCompany company = securityCompanyService.getById(dto.getId());
 		dto.setLocked(company.getAccountLocked());
 		dto.setPermissions(company.getPermissions());
@@ -40,24 +40,20 @@ public class CompanyDetailsService
 				securityCompany.getTablePrefix());
 		return createCompany(company);
 	}
-	
+
 	@Transactional
 	private CompanyDetailsDTO createCompany(CompanyDetailsDTO company) throws DuplicateDataEx, AnyThrowable {
-		CompanyDetailsDTO createdCompany = super.create(company);
-		// create security company after for copy audit info
 		SecurityCompany securityCompany = company.toSecurityCompany();
 		securityCompanyService.createSecurityCompany(securityCompany, company.toSuperUser());
-		return createdCompany;
+		return super.create(company);
 	}
 
 	@Override
 	@Transactional
 	public CompanyDetailsDTO update(CompanyDetailsDTO company) throws DataNotFoundEx, AnyThrowable {
-		CompanyDetailsDTO updatedCompany = super.update(company);
-		// update security company after for copy audit info
-		SecurityCompany securityCompany = updatedCompany.toSecurityCompany();
+		SecurityCompany securityCompany = company.toSecurityCompany();
 		securityCompanyService.update(securityCompany);
-		return updatedCompany;
+		return super.update(company);
 	}
 
 	public CompanyDetailsDTO updateSelf(CompanyDetailsDTO company) throws DataNotFoundEx, AnyThrowable {

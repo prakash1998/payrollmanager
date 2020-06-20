@@ -30,7 +30,7 @@ import com.pra.payrollmanager.validation.ValidationGroups;
 public class HotelCategoryControl extends BaseControl<HotelCategoryService> {
 
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<List<HotelCategory>> getAllCategorys() {
+	public Response<List<HotelCategory>> getAllCategories() {
 		return Response.payload(service.getAll());
 	}
 

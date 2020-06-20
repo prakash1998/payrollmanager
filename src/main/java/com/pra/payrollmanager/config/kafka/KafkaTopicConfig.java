@@ -76,7 +76,7 @@ public class KafkaTopicConfig {
 	
 	@Bean
 	public NewTopic hotelOrderDetailTopic() {
-		return getTopic(KafkaTopics.HOTEL_ORDER_DETAIL);
+		return getTopic(KafkaTopics.HOTEL_ORDER_ITEMS);
 	}
 
 }

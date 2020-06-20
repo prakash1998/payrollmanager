@@ -27,10 +27,10 @@ public interface BaseDAL<PK, DAO extends BaseDAO<PK>> extends MongoTableOps<PK, 
 	}
 
 	@Transactional
-	default BulkOp<DAO> bulkOperation(BulkOp<DAO> bulkOp) {
+	default BulkOp<DAO> bulkOp(BulkOp<DAO> bulkOp) {
 		Collection<DAO> removedItems = bulkOp.getRemoved();
 		BulkOp.BulkOpBuilder<DAO> dataBuilder = BulkOp.builder();
-		if (removedItems.isEmpty()) {
+		if (!removedItems.isEmpty()) {
 			Collection<DAO> removed = this.deleteByIds(removedItems.stream()
 					.map(item -> item.primaryKeyValue())
 					.collect(Collectors.toList()));
@@ -38,13 +38,13 @@ public interface BaseDAL<PK, DAO extends BaseDAO<PK>> extends MongoTableOps<PK, 
 		}
 
 		Collection<DAO> updatedItems = bulkOp.getUpdated();
-		if (updatedItems.isEmpty()) {
+		if (!updatedItems.isEmpty()) {
 			Collection<DAO> updated = this.insert(updatedItems);
 			dataBuilder = dataBuilder.removed(updated);
 		}
 
 		Collection<DAO> addedItems = bulkOp.getAdded();
-		if (addedItems.isEmpty()) {
+		if (!addedItems.isEmpty()) {
 			Collection<DAO> added = this.insert(addedItems);
 			dataBuilder = dataBuilder.added(added);
 		}
@@ -95,13 +95,13 @@ public interface BaseDAL<PK, DAO extends BaseDAO<PK>> extends MongoTableOps<PK, 
 	// }
 	// }
 	
-	default void validateOnUpdate(DAO dbObj,DAO obj) {
+	default void validateBeforeUpdate(DAO dbObj,DAO obj) {
 		
 	}
 
 	default DAO update(DAO obj) throws DataNotFoundEx {
 		DAO dbObj = this.findById(obj.primaryKeyValue());
-		validateOnUpdate(dbObj,obj);
+		validateBeforeUpdate(dbObj,obj);
 		if (!obj.equals(dbObj)) {
 			return this.save(obj);
 		}

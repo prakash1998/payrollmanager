@@ -24,9 +24,9 @@ public class HotelConsumers {
 		messageSenderService.send(KafkaTopics.HOTEL_ORDERS, message);
 	}
 
-	@KafkaListener(topics = KafkaTopics.HOTEL_ORDER_DETAIL , autoStartup = "${spring.kafka.enabled}")
+	@KafkaListener(topics = KafkaTopics.HOTEL_ORDER_ITEMS , autoStartup = "${spring.kafka.enabled}")
 	public void sendToHotelOrderDetail(MessageProxy message) {
-		messageSenderService.send(KafkaTopics.HOTEL_ORDER_DETAIL, message);
+		messageSenderService.send(KafkaTopics.HOTEL_ORDER_ITEMS, message);
 	}
 
 }

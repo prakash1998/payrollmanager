@@ -2,7 +2,7 @@ package com.pra.payrollmanager.user.root.permissions.screen;
 
 import org.springframework.data.annotation.Id;
 
-import com.pra.payrollmanager.base.data.BaseAuditDAO;
+import com.pra.payrollmanager.base.data.BaseDAO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +17,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @Accessors(chain=true)
 @EqualsAndHashCode(callSuper = false)
-public class ScreenPermission extends BaseAuditDAO<String> {
+public class ScreenPermission implements BaseDAO<String> {
 
 	/**
 	 * 

@@ -7,7 +7,7 @@ import java.util.Set;
 import org.springframework.data.annotation.Id;
 
 import com.mongodb.lang.NonNull;
-import com.pra.payrollmanager.base.data.BaseAuditDAO;
+import com.pra.payrollmanager.base.data.BaseDAO;
 import com.pra.payrollmanager.security.authorization.permission.ApiFeatures;
 
 import lombok.AllArgsConstructor;
@@ -23,7 +23,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @Accessors(chain=true)
 @EqualsAndHashCode(callSuper = false)
-public class FeaturePermission extends BaseAuditDAO<String> {
+public class FeaturePermission implements BaseDAO<String> {
 
 	/**
 	 * 

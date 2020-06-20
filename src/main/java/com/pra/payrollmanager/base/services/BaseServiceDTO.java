@@ -31,8 +31,14 @@ public interface BaseServiceDTO<PK,
 		return modelMapper().map(dto, dataAccessLayer().daoClazz());
 	}
 
-	default DTO postProcessGet(DAO obj, boolean multi) {
+	default DTO postProcessGet(DAO obj) {
 		return toDTO(obj);
+	}
+
+	default List<DTO> postProcessMultiGet(List<DAO> objList) {
+		return objList.stream()
+				.map(obj -> postProcessGet(obj))
+				.collect(Collectors.toList());
 	}
 
 	default DTO postProcessSave(DTO dtoToSave, DAO objFromDB) {
@@ -46,21 +52,17 @@ public interface BaseServiceDTO<PK,
 
 	@Override
 	default DTO getById(PK id) throws DataNotFoundEx, AnyThrowable {
-		return postProcessGet(dataAccessLayer().findById(id),false);
+		return postProcessGet(dataAccessLayer().findById(id));
 	}
 
 	@Override
 	default List<DTO> getByIds(Set<PK> ids) {
-		return dataAccessLayer().findByIds(ids).stream()
-				.map(obj -> postProcessGet(obj,true))
-				.collect(Collectors.toList());
+		return postProcessMultiGet(dataAccessLayer().findByIds(ids));
 	}
 
 	@Override
 	default List<DTO> getAll() {
-		return dataAccessLayer().findAll().stream()
-				.map(obj -> postProcessGet(obj,true))
-				.collect(Collectors.toList());
+		return postProcessMultiGet(dataAccessLayer().findAll());
 	}
 
 	@Override

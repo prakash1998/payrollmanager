@@ -9,17 +9,17 @@ import com.pra.payrollmanager.security.authorization.FeaturePermissions;
 import com.pra.payrollmanager.user.root.permissions.feature.FeaturePermission;
 
 @Service
-public class HotelOrderDetailService
-		extends RTServiceDAO<ObjectId, HotelOrderDetailDAO, HotelOrderDetailDAL> {
+public class HotelOrderItemService
+		extends RTServiceDAO<ObjectId, HotelOrderItemDAO, HotelOrderItemDAL> {
 
 	@Override
 	public String mqTopic() {
-		return KafkaTopics.HOTEL_ORDER_DETAIL;
+		return KafkaTopics.HOTEL_ORDER_ITEMS;
 	}
 
 	@Override
 	public FeaturePermission apiPermission() {
-		return FeaturePermissions.HOTEL__ORDER_DETAIL;
+		return FeaturePermissions.HOTEL__ORDER_ITEMS;
 	}
 	
 

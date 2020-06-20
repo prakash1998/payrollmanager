@@ -22,6 +22,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import com.pra.payrollmanager.response.dto.Response;
 import com.pra.payrollmanager.response.dto.Response.ResponseBuilder;
@@ -70,6 +71,26 @@ public class OverridenExceptionHandler {
 				builder.build(),
 				new HttpHeaders(),
 				HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
+	public final ResponseEntity<Object> handleEntityNotFound(MethodArgumentTypeMismatchException ex,
+			WebRequest request) {
+		exceptionInterceptor.intercept(ex);
+
+		String name = ex.getName();
+		String type = ex.getRequiredType().getSimpleName();
+		Object value = ex.getValue();
+		String message = String.format("'%s' should be a valid '%s', but '%s' is invalid",
+				name, type, value);
+		return new ResponseEntity<>(
+				Response.builder()
+						.validationException()
+						.message(message)
+						.addErrorMsg(ex.getMessage(), ex)
+						.build(),
+				new HttpHeaders(),
+				HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler(EntityNotFoundException.class)

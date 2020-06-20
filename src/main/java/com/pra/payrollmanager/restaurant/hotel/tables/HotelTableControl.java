@@ -46,13 +46,13 @@ public class HotelTableControl extends BaseControl<HotelTableService> {
 		return Response.payload(service.getById(tableId));
 	}
 	
-	@GetMapping(value = "allocate/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(value = "allocate/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response<HotelTableAllocDAO> allocateTable(@PathVariable("id") @NotNull ObjectId tableId)
 			throws DataNotFoundEx, AnyThrowable {
 		return Response.payload(tableAllocService.allocateTable(tableId));
 	}
 	
-	@GetMapping(value = "clear/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(value = "clear/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response<HotelTableAllocDAO> clearTable(@PathVariable("id") @NotNull ObjectId tableId)
 			throws DataNotFoundEx, AnyThrowable {
 		return Response.payload(tableAllocService.clearTable(tableId));

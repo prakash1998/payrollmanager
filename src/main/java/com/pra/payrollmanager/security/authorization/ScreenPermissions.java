@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.pra.payrollmanager.base.data.BulkOp;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.user.root.permissions.screen.ScreenPermission;
 import com.pra.payrollmanager.user.root.permissions.screen.ScreenPermissionDAL;
@@ -51,7 +52,7 @@ public class ScreenPermissions {
 				.map(allPermisssions::get)
 				.collect(Collectors.toList());
 		try {
-			dataAccess.insert(permissionsToPersist);
+			dataAccess.bulkOp(BulkOp.fromAdded(permissionsToPersist));
 		} catch (DuplicateDataEx e) {
 			throw new RuntimeException("Problem while inseting permissions in DB");
 		}

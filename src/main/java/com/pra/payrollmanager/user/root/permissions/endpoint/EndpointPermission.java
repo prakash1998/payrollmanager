@@ -3,7 +3,7 @@ package com.pra.payrollmanager.user.root.permissions.endpoint;
 import org.springframework.data.annotation.Id;
 
 import com.mongodb.lang.NonNull;
-import com.pra.payrollmanager.base.data.BaseAuditDAO;
+import com.pra.payrollmanager.base.data.BaseDAO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +18,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @Accessors(chain=true)
 @EqualsAndHashCode(callSuper = false)
-public class EndpointPermission extends BaseAuditDAO<String> {
+public class EndpointPermission implements BaseDAO<String> {
 
 	/**
 	 * 

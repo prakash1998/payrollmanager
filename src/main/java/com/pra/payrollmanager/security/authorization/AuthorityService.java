@@ -158,10 +158,19 @@ public class AuthorityService {
 	}
 
 	public String getUserId() {
+		if(this.inGodMode() && !this.hasAuthentication()) {
+			return "god-su";
+		}
+		
 		return this.getSecurityUser().getUserId();
 	}
 
 	public String getUserName() {
+		
+		if(this.inGodMode() && !this.hasAuthentication()) {
+			return "god";
+		}
+		
 		return this.getSecurityUser().getUsername();
 	}
 

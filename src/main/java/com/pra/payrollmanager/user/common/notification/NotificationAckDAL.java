@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import com.pra.payrollmanager.base.dal.AuditDAL;
+import com.pra.payrollmanager.base.data.BulkOp;
 import com.pra.payrollmanager.entity.CompanyEntityNames;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.security.authentication.user.SecurityUserService;
@@ -58,13 +59,13 @@ public class NotificationAckDAL extends AuditDAL<ObjectId, NotificationAck> {
 					.collect(Collectors.toSet());
 		}
 
-		super.insert(
+		super.bulkOp(BulkOp.fromAdded(
 				usersForAck.stream()
 						.map(usr -> NotificationAck.builder()
 								.notificationId(notificationId)
 								.reciever(usr)
 								.build())
-						.collect(Collectors.toList()));
+						.collect(Collectors.toList())));
 	}
 
 	List<NotificationAck> findByReciever(String user) {

@@ -1,5 +1,6 @@
 package com.pra.payrollmanager.config;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -18,12 +19,11 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
+import com.pra.payrollmanager.base.data.BulkOp;
 import com.pra.payrollmanager.entity.EntityUtils;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.filter.AuthorizationFilter;
 import com.pra.payrollmanager.security.WebSecurityConfig;
-import com.pra.payrollmanager.security.authentication.company.SecurityCompany;
-import com.pra.payrollmanager.security.authentication.company.SecurityCompanyDAL;
 import com.pra.payrollmanager.security.authentication.company.SecurityCompanyService;
 import com.pra.payrollmanager.security.authorization.FeaturePermissions;
 import com.pra.payrollmanager.security.authorization.ScreenPermissions;
@@ -79,14 +79,15 @@ public class SpringEvents {
 
 		List<EndpointPermission> existingEndpoints = endpointPermissionDAL.findAll();
 
-		AuthorizationFilter.universalEndpointsMap.putAll(
-				existingEndpoints.stream()
-						.collect(Collectors.toMap(EndpointPermission::getId, Function.identity())));
+		Map<String, EndpointPermission> existingEndpointsMap = existingEndpoints.stream()
+				.collect(Collectors.toMap(EndpointPermission::getId, Function.identity()));
 
 		int nextPossibleId = existingEndpoints.stream()
 				.reduce(BinaryOperator.maxBy(Comparator.comparingInt(EndpointPermission::getNumericId)))
 				.map(EndpointPermission::getNumericId)
-				.orElse(1);
+				.orElse(0);
+
+		List<EndpointPermission> finalEndpoints = new ArrayList<>();
 
 		Map<RequestMappingInfo, HandlerMethod> requestHandlerMap = requestHandlerMapping
 				.getHandlerMethods();
@@ -105,7 +106,7 @@ public class SpringEvents {
 
 				String endpointId = AuthorizationFilter.endpointId(endpointPattern, httpMethod);
 
-				if (existingEndpoints.stream().noneMatch(ep -> ep.getId().equals(endpointId))) {
+				if (!existingEndpointsMap.containsKey(endpointId)) {
 
 					String[] uriParts = endpointPattern.split("/");
 					String categoryPhrase = endpointPattern;
@@ -116,13 +117,13 @@ public class SpringEvents {
 						if (!uriParts[i].contains("{")) {
 							if (includeInCategoryPhrase) {
 								categoryPhrase = uriParts[i];
-								category = uriParts[i];
+								category = categoryPhrase;
 								includeInCategoryPhrase = false;
 							} else {
-								if (category == categoryPhrase) {
+								if (category == categoryPhrase){
 									category = uriParts[i];
-								} else {
-									category = uriParts[i] + " " + category;
+								}else {
+									category = String.format("%s %s",uriParts[i],category);
 								}
 							}
 						}
@@ -139,17 +140,26 @@ public class SpringEvents {
 						methodPhrase = "update";
 
 					EndpointPermission newEndpoint = EndpointPermission.builder()
-							.numericId(nextPossibleId++)
+							.numericId(++nextPossibleId)
 							.id(endpointId)
 							.display(methodPhrase + " " + categoryPhrase)
 							.category(category)
 							.description("-")
 							.build();
-					endpointPermissionDAL.create(newEndpoint);
-					AuthorizationFilter.universalEndpointsMap.put(endpointId, newEndpoint);
+//					endpointPermissionDAL.create(newEndpoint);
+//					AuthorizationFilter.universalEndpointsMap.put(endpointId, newEndpoint);
+					finalEndpoints.add(newEndpoint);
+				} else {
+					finalEndpoints.add(existingEndpointsMap.get(endpointId));
 				}
 			}
 		}
+		endpointPermissionDAL.truncateTable();
+		endpointPermissionDAL.bulkOp(BulkOp.fromAdded(finalEndpoints));
+		
+		AuthorizationFilter.universalEndpointsMap.putAll(
+				finalEndpoints.stream()
+						.collect(Collectors.toMap(EndpointPermission::getId, Function.identity())));
 
 	}
 }

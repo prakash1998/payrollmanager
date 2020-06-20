@@ -30,35 +30,35 @@ import com.pra.payrollmanager.validation.ValidationGroups;
 public class HotelMenuControl extends BaseControl<HotelMenuService> {
 	
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<List<HotelMenu>> getAllCategorys() {
+	public Response<List<HotelMenu>> getAllMenus() {
 		return Response.payload(service.getAll());
 	}
 
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<HotelMenu> getCategory(@PathVariable("id") @NotNull ObjectId categoryId)
+	public Response<HotelMenu> getMenu(@PathVariable("id") @NotNull ObjectId menuId)
 			throws DataNotFoundEx, AnyThrowable {
-		return Response.payload(service.getById(categoryId));
+		return Response.payload(service.getById(menuId));
 	}
 
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<HotelMenu> createCategory(@Valid @RequestBody HotelMenu category)
+	public Response<HotelMenu> createMenu(@Valid @RequestBody HotelMenu menu)
 			throws DuplicateDataEx, AnyThrowable {	
-		return Response.payload(service.create(category));
+		return Response.payload(service.create(menu));
 	}
 
 
 	@Validated(ValidationGroups.onUpdate.class)
 	@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<HotelMenu> updateCategory(@Valid @RequestBody HotelMenu category)
+	public Response<HotelMenu> updateMenu(@Valid @RequestBody HotelMenu menu)
 			throws DataNotFoundEx, AnyThrowable {
-		return Response.payload(service.update(category));
+		return Response.payload(service.update(menu));
 	}
 
 	@Validated(ValidationGroups.onUpdate.class)
 	@DeleteMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<HotelMenu> deleteCategory(@Valid @RequestBody HotelMenu category)
+	public Response<HotelMenu> deleteMenu(@Valid @RequestBody HotelMenu menu)
 			throws AnyThrowable, DataNotFoundEx {
-		return Response.payload(service.delete(category));
+		return Response.payload(service.delete(menu));
 	}
 
 }

@@ -51,9 +51,9 @@ public interface MongoTableOps<PK, DAO extends BaseDAO<PK>> extends WithDBTable 
 		return mongoTemplate().findAllAndRemove(query, this.tableName());
 	}
 
-	// default void deleteAll() {
-	// mongoTemplate().dropCollection(this.tableName());
-	// mongoTemplate().createCollection(this.tableName());
-	// }
+	default void truncateTable() {
+		mongoTemplate().dropCollection(this.tableName());
+		mongoTemplate().createCollection(this.tableName());
+	}
 
 }

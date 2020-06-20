@@ -23,15 +23,7 @@ public class CompanyDetailsDAL extends RestrictedAuditDAL<String, CompanyDetails
 	public FeaturePermission apiPermission() {
 		return FeaturePermissions.ROOT__COMPANY;
 	}
-
-	@Override
-	public CompanyDetailsDAO setAuditInfoOnCreate(CompanyDetailsDAO obj) {
-		if (authorityService.inGodMode() && !authorityService.hasAuthentication()) {
-			return obj;
-		}
-		return super.setAuditInfoOnCreate(obj);
-	}
-
+	
 	@Override
 	public Criteria findAllAccessCriteria() {
 		if (authorityService.inGodMode()) {

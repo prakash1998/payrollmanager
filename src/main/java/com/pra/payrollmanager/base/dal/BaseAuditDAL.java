@@ -32,20 +32,15 @@ public interface BaseAuditDAL<PK, DAO extends BaseAuditDAO<PK>> extends BaseDAL<
 	default boolean modificationValid(DAO dbObj, DAO objToSave) {
 		return dbObj.getModifiedDate().equals(objToSave.getModifiedDate());
 	}
-	
-	@Override
-	default void validateOnUpdate(DAO dbObj, DAO obj) {
-		if (obj.getModifiedDate() == null || (dbObj.getModifiedDate() == null || !modificationValid(dbObj, obj))) {
-			throw new StaleDataEx(String.format("Data became stale for : %s , Please refresh data", entity().name()));
-		}
-		BaseDAL.super.validateOnUpdate(dbObj, obj);
-	}
 
 	@Override
 	default DAO update(DAO obj) throws DataNotFoundEx {
 		DAO dbObj = this.findById(obj.primaryKeyValue());
 		
-		validateOnUpdate(dbObj, obj);
+		if (obj.getModifiedDate() == null || (dbObj.getModifiedDate() == null || !modificationValid(dbObj, obj))) {
+			throw new StaleDataEx(String.format("Data became stale for : %s , Please refresh data", entity().name()));
+		}
+		
 		if (!obj.equals(dbObj)) {
 			audit(BeanUtils.copyOf(dbObj));
 			return BaseDAL.super.update(setAuditInfoOnUpdate(dbObj, obj));

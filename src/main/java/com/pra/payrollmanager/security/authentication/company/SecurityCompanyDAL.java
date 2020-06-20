@@ -22,15 +22,7 @@ public class SecurityCompanyDAL extends AuditDAL<String, SecurityCompany> {
 	
 	@Override
 	public boolean modificationValid(SecurityCompany dbObj, SecurityCompany objToSave) {
-		return dbObj.getModifiedDate().isBefore(objToSave.getModifiedDate());
-	}
-	
-	@Override
-	public String user() {
-		if(authorityService.inGodMode()) {
-			return "god";
-		}
-		return super.user();
+		return true;
 	}
 
 }

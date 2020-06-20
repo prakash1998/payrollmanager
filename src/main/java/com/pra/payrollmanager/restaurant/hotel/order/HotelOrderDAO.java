@@ -1,12 +1,9 @@
 package com.pra.payrollmanager.restaurant.hotel.order;
 
-import javax.validation.constraints.NotNull;
-
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 
 import com.pra.payrollmanager.base.data.BaseAuditDAO;
-import com.pra.payrollmanager.validation.ValidationGroups;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,7 +27,6 @@ public class HotelOrderDAO extends BaseAuditDAO<ObjectId> {
 
 
 	@Id
-	@NotNull(groups = {ValidationGroups.onUpdate.class})
 	private ObjectId id;
 	
 	private Integer orderNumber;

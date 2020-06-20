@@ -25,10 +25,10 @@ public class BulkOp<T> {
 	@Builder.Default
 	Collection<T> removed = new ArrayList<>();
 
-//	public static <V> BulkOp<V> ofAdded(Collection<V> addedItems) {
-//		return BulkOp.<V>builder()
-//				.added(addedItems)
-//				.build();
-//	}
+	public static <V> BulkOp<V> fromAdded(Collection<V> addedItems) {
+		return BulkOp.<V>builder()
+				.added(addedItems)
+				.build();
+	}
 
 }

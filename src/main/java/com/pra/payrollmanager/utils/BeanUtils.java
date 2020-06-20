@@ -8,6 +8,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.Map;
 
 import com.google.common.io.Closeables;
 
@@ -26,7 +27,8 @@ public class BeanUtils {
 
 				// If it is a null or empty value copy to destination
 				if (value == null ||
-						(value instanceof Collection<?> && ((Collection<?>) value).isEmpty())) {
+						(value instanceof Collection<?> && ((Collection<?>) value).isEmpty()) ||
+						(value instanceof Map<?,?> && ((Map<?,?>) value).isEmpty())) {
 					field.set(to, field.get(from));
 				}
 			} catch (IllegalArgumentException | IllegalAccessException | SecurityException e) {

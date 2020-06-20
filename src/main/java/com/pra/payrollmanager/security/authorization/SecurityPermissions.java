@@ -8,8 +8,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.pra.payrollmanager.base.data.BulkOp;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.security.authorization.permission.DynamicSecurityPermission;
+import com.pra.payrollmanager.user.root.permissions.feature.FeaturePermission;
 import com.pra.payrollmanager.user.root.permissions.security.SecurityPermission;
 import com.pra.payrollmanager.user.root.permissions.security.SecurityPermissionDAL;
 
@@ -98,24 +100,31 @@ public class SecurityPermissions {
 			throw new RuntimeException(e.getMessage());
 		}
 
-		List<SecurityPermission> permissionsInDB = dataAccess.findAll();
+		List<SecurityPermission> updatedDbPermissions = dataAccess.findAll();
+//				.stream()
+//				.map(p -> {
+//					if (allPermisssions.containsKey(p.getNumericId())) {
+//						SecurityPermission newP = allPermisssions.get(p.getNumericId());
+//						return p;
+//					}
+//					return p;
+//				}).collect(Collectors.toList());
 
-		Set<Integer> numericPermissionIdsInDB = permissionsInDB.stream()
+		Set<Integer> numericPermissionIdsInDB = updatedDbPermissions.stream()
 				.map(SecurityPermission::getNumericId)
 				.collect(Collectors.toSet());
-		
+
 		List<SecurityPermission> newlyCreatedPermissions = allPermisssions.keySet().stream()
 				.filter(id -> !numericPermissionIdsInDB.contains(id))
 				.map(allPermisssions::get)
 				.collect(Collectors.toList());
 		
-		try {
-//			dataAccess.deleteAll();
-			dataAccess.insert(newlyCreatedPermissions);
-			universalSecurityPermissionMap.putAll(allPermisssions);
-		} catch (DuplicateDataEx e) {
-			throw new RuntimeException("Problem while inseting permissions in DB");
-		}
+		updatedDbPermissions.addAll(newlyCreatedPermissions);
+
+		dataAccess.truncateTable();
+		dataAccess.bulkOp(BulkOp.fromAdded(updatedDbPermissions));
+		universalSecurityPermissionMap.putAll(allPermisssions);
+
 	}
 
 	// public static void main(String[] args) throws IllegalArgumentException,

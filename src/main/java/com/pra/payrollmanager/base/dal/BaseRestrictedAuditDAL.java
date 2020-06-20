@@ -27,9 +27,9 @@ public interface BaseRestrictedAuditDAL<PK, DAO extends BaseAuditDAO<PK>>
 	}
 
 	@Override
-	default void validateOnUpdate(DAO dbObj, DAO obj) {
-		validateItemAccess(setAuditInfoOnUpdate(dbObj, BeanUtils.copyOf(obj)));
-		BaseAuditDAL.super.validateOnUpdate(dbObj, obj);
+	default void validateBeforeUpdate(DAO dbObj, DAO obj) {
+		validateItemAccess(obj);
+		BaseAuditDAL.super.validateBeforeUpdate(dbObj, obj);
 	}
 
 	@Override

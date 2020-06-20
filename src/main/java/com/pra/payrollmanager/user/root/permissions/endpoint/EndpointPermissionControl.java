@@ -38,10 +38,7 @@ public class EndpointPermissionControl extends BaseControl<EndpointPermissionSer
 	public Response<List<EndpointPermission>> gePermissions(@RequestBody Set<Integer> numericIds) {
 		return Response.payload(AuthorizationFilter.universalEndpointsMap.values().stream()
 				.filter(p -> numericIds.contains(p.getNumericId()))
-				.map(p -> EndpointPermission.builder()
-						.numericId(p.getNumericId())
-						.id(p.getId())
-						.build())
+				.map(p -> EndpointPermission.of(p.getNumericId(), p.getId()))
 				.collect(Collectors.toList()));
 	}
 
