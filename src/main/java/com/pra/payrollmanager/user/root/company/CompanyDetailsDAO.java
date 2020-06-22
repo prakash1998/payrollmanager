@@ -1,6 +1,8 @@
 package com.pra.payrollmanager.user.root.company;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.annotation.Id;
 
@@ -29,7 +31,10 @@ public class CompanyDetailsDAO extends BaseAuditDAO<String> {
 	@Id
 	private String id;
 	private String name;
-	private String desc;
+	private String description;
+	
+	@Builder.Default
+	private Set<Integer> imgIds = new HashSet<>();
 	
 	private List<String> categories;
 	

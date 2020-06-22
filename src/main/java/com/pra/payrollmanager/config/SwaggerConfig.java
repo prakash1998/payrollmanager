@@ -101,4 +101,8 @@ public class SwaggerConfig {
 		return swaggerDocket("Admin", "com.pra.payrollmanager.restaurant.admin");
 	}
 
+	@Bean
+	public Docket appUtilsApi() {
+		return swaggerDocket("App Utils", "com.pra.payrollmanager.apputils");
+	}
 }

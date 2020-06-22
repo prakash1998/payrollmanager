@@ -1,12 +1,13 @@
-package com.pra.payrollmanager.restaurant.hotel.menu;
+package com.pra.payrollmanager.apputils.filemanager;
 
-import javax.validation.constraints.NotNull;
+import java.net.URL;
+
+import javax.persistence.Transient;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 
 import com.pra.payrollmanager.base.data.BaseAuditDAO;
-import com.pra.payrollmanager.validation.ValidationGroups;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,30 +22,27 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @Accessors(chain=true)
 @EqualsAndHashCode(callSuper = false)
-public class HotelMenu extends BaseAuditDAO<ObjectId> {
-
+public class AppFile extends BaseAuditDAO<ObjectId> {
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 403084656361695436L;
-
+	private static final long serialVersionUID = 4682728248992723534L;
+	
 	@Id
-	@NotNull(groups = {ValidationGroups.onUpdate.class})
 	private ObjectId id;
-
-	@NotNull
-	private String name;
 	
-	private String imgId;
+	private String type;
 	
-	private String description;
+	@Builder.Default
+	private Boolean secured = false;
 	
-	private String category;
-	
-	private Double price;
+	@Transient
+	private URL url;
 
 	@Override
 	public ObjectId primaryKeyValue() {
-		return id;
-	}
+		return this.id;
+	};
+
 }

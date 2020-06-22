@@ -49,6 +49,9 @@ public class CompanyDetailsDTO extends BaseAuditDTO<CompanyDetailsDAO> {
 	private String description;
 	private String address;
 	
+	@Builder.Default
+	private Set<Integer> imgIds = new HashSet<>();
+	
 	private boolean locked;
 	private Location location;
 

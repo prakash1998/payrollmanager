@@ -78,11 +78,10 @@ public class SecurityUserService extends AuditServiceDAO<String, SecurityUser, S
 
 	@CacheEvict
 	public void login(String userId) {
-		SecurityUser dbUser = this.loadUserByUsername(userId);
-		if (dbUser.getLoggedIn())
+		SecurityUser userWithCompany = this.loadUserByUsername(userId);
+		if (userWithCompany.getLoggedIn())
 			return;
-		dataAccessLayer.updateLogin(dbUser.setLoggedIn(true));
-
+		dataAccessLayer.logInOnToken(userWithCompany);
 	}
 
 	public void loginUser(SecurityUser user) {
@@ -91,14 +90,9 @@ public class SecurityUserService extends AuditServiceDAO<String, SecurityUser, S
 
 	@CacheEvict
 	public void logout(String userId) {
-		SecurityUser dbUser = this.loadUserByUsername(userId);
-		if (dbUser.getLoggedIn()) {
-			try {
-				super.update(dbUser.setLoggedIn(false));
-			} catch (DataNotFoundEx e) {
-				throw UncheckedException.appException(CompanyEntityNames.SECURITY_USER, ExceptionType.ENTITY_NOT_FOUND,
-						userId);
-			}
+		SecurityUser userWithCompany = this.loadUserByUsername(userId);
+		if (userWithCompany.getLoggedIn()) {
+			dataAccessLayer.logOut(userWithCompany.getUsername());
 		}
 	}
 

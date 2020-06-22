@@ -31,6 +31,8 @@ public class FeaturePermissions {
 	public static final FeaturePermission HOTEL__ORDERS = FeaturePermission.of(6).exclude(ApiFeatures.AUDIT_LOG);
 
 	public static final FeaturePermission HOTEL__ORDER_ITEMS = FeaturePermission.of(7).exclude(ApiFeatures.AUDIT_LOG);
+	
+	public static final FeaturePermission BASE__FILES = FeaturePermission.of(8).exclude(ApiFeatures.REALTIME);
 
 	public static void persistApiPermissionsIfNot(FeaturePermissionDAL dataAccess) {
 		Map<Integer, FeaturePermission> allPermisssions = new HashMap<>();
