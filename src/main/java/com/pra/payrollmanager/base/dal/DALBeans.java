@@ -5,9 +5,12 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.pra.payrollmanager.security.authorization.AuthorityService;
 
+import lombok.Setter;
+
 abstract public class DALBeans {
 
 	@Autowired
+	@Setter
 	private MongoTemplate mongoTemplate;
 
 	public MongoTemplate mongoTemplate() {
@@ -15,6 +18,7 @@ abstract public class DALBeans {
 	}
 	
 	@Autowired
+	@Setter
 	protected AuthorityService authorityService;
 	
 	public AuthorityService authorityService() {

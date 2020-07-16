@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AuthorizationServiceException;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.pra.payrollmanager.security.authentication.company.SecurityCompany;
 import com.pra.payrollmanager.security.authentication.user.SecurityUser;
 import com.pra.payrollmanager.security.authentication.user.SecurityUserPermissionService;
+import com.pra.payrollmanager.security.authorization.mappings.roleresource.Resource;
 import com.pra.payrollmanager.user.root.company.CompanyDetailsDTO;
 import com.pra.payrollmanager.user.root.permissions.endpoint.EndpointPermission;
 import com.pra.payrollmanager.user.root.permissions.security.SecurityPermission;
@@ -45,27 +47,27 @@ public class AuthorityService {
 		}
 		return auth;
 	}
-	
+
 	private void validateSecurityCompany(SecurityCompany company) {
-		if(!company.getEnabled()) {
+		if (!company.getEnabled()) {
 			throw new AuthorizationServiceException("Disabled :  " + company.getId() + " is disabled by Admin.");
 		}
-		if(company.getAccountLocked()) {
+		if (company.getAccountLocked()) {
 			throw new AuthorizationServiceException("Locked :  " + company.getId() + " is locked by Admin.");
 		}
-		if(company.getAccountExpired()) {
+		if (company.getAccountExpired()) {
 			throw new AuthorizationServiceException("Expired :  " + company.getId() + " is expired.");
 		}
 	}
-	
+
 	private void validateSecurityUser(SecurityUser user) {
-		if(!user.isEnabled()) {
+		if (!user.isEnabled()) {
 			throw new AuthorizationServiceException("Disabled :  " + user.getUsername() + " is disabled by Admin.");
 		}
-		if(user.getAccountLocked()) {
+		if (user.getAccountLocked()) {
 			throw new AuthorizationServiceException("Locked :  " + user.getUsername() + " is locked by Admin.");
 		}
-		if(user.getAccountExpired()) {
+		if (user.getAccountExpired()) {
 			throw new AuthorizationServiceException("Expired :  " + user.getUsername() + " is expired.");
 		}
 	}
@@ -84,12 +86,12 @@ public class AuthorityService {
 					"Unauthorized Access : [" + permission.getDisplay() + "] is not assigned to company");
 		}
 
-		if (user.getUsername().equals(CompanyDetailsDTO.SUPER_USER_NAME))
+		if (this.isSuperUser())
 			return;
 
-		Set<Integer> userPermissions = securityUserPermissionService.loadEndpointPermissionsForUserId(user.getUserId());
+		Set<String> userPermissions = securityUserPermissionService.loadEndpointsForUser();
 
-		if (!userPermissions.contains(permission.getNumericId())) {
+		if (!userPermissions.contains(permission.getId())) {
 			throw new AuthorizationServiceException(
 					"Unauthorized Access :  [" + permission.getDisplay() + "] is not assigned");
 		}
@@ -99,11 +101,9 @@ public class AuthorityService {
 		if (inGodMode()) {
 			return;
 		}
-		
+
 		SecurityCompany company = this.getSecurityCompany();
-		validateSecurityCompany(company);
 		SecurityUser user = this.getSecurityUser();
-		validateSecurityUser(user);
 
 		List<SecurityPermission> fullPermissions = Stream.of(permissions)
 				.map(p -> SecurityPermissions.universalSecurityPermissionMap.get(p.getNumericId()))
@@ -129,7 +129,7 @@ public class AuthorityService {
 		if (user.getUsername().equals(CompanyDetailsDTO.SUPER_USER_NAME))
 			return;
 
-		Set<Integer> userPermissions = securityUserPermissionService.loadPermissionsForUserId(user.getUserId());
+		Set<Integer> userPermissions = securityUserPermissionService.loadPermissionsForUser();
 
 		boolean userAuthorized = false;
 		for (SecurityPermission permission : fullPermissions) {
@@ -148,6 +148,21 @@ public class AuthorityService {
 					"Unauthorized Access : None of [" + apiPermissions.toString() + "] is assigned");
 		}
 	}
+	
+	public Set<ObjectId> getUserResourceIds() {
+		return securityUserPermissionService.loadResourcesForUser();
+	}
+
+	public boolean hasAccessToResource(Resource resource) {
+		return hasAccessToResourceId(resource.resourceId());
+	}
+
+	public boolean hasAccessToResourceId(ObjectId resourceId) {
+		if (inGodMode()) {
+			return true;
+		}
+		return getUserResourceIds().contains(resourceId);
+	}
 
 	public SecurityUser getSecurityUser() {
 		return (SecurityUser) this.getAuthentication().getPrincipal();
@@ -158,19 +173,23 @@ public class AuthorityService {
 	}
 
 	public String getUserId() {
-		if(this.inGodMode() && !this.hasAuthentication()) {
+		if (this.inGodMode() && !this.hasAuthentication()) {
 			return "god-su";
 		}
-		
+
 		return this.getSecurityUser().getUserId();
+	}
+	
+	public boolean isSuperUser() {
+		return this.getSecurityUser().getUsername().equals(CompanyDetailsDTO.SUPER_USER_NAME);
 	}
 
 	public String getUserName() {
-		
-		if(this.inGodMode() && !this.hasAuthentication()) {
+
+		if (this.inGodMode() && !this.hasAuthentication()) {
 			return "god";
 		}
-		
+
 		return this.getSecurityUser().getUsername();
 	}
 

@@ -1,6 +1,7 @@
 package com.pra.payrollmanager.user.root.permissions.screen;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.TypeAlias;
 
 import com.pra.payrollmanager.base.data.BaseDAO;
 
@@ -15,8 +16,9 @@ import lombok.experimental.Accessors;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Accessors(chain=true)
+@Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
+@TypeAlias("w")
 public class ScreenPermission implements BaseDAO<String> {
 
 	/**
@@ -38,23 +40,19 @@ public class ScreenPermission implements BaseDAO<String> {
 				.description("-")
 				.build();
 	}
-
-	public static ScreenPermission of() {
-		return ScreenPermission.builder().build();
+	
+	public static ScreenPermission of(String id,String category) {
+		return ScreenPermission.builder()
+				.id(id)
+				.display(id.replace("__", "_").replace("_", " "))
+				.category(category)
+				.description("-")
+				.build();
 	}
 
 	@Override
 	public String primaryKeyValue() {
 		return id;
 	}
-
-//	@Override
-//	public ScreenPermissionDTO toPlainDTO() {
-//		return ScreenPermissionDTO.builder()
-//				.id(id)
-//				.display(display)
-//				.category(category)
-//				.description(description)
-//				.build();
-//	}
+	
 }

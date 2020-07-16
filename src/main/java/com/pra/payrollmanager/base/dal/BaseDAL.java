@@ -19,12 +19,24 @@ import com.pra.payrollmanager.utils.DBQueryUtils;
 
 public interface BaseDAL<PK, DAO extends BaseDAO<PK>> extends MongoTableOps<PK, DAO> {
 
+	default boolean existsById(PK key) {
+		return MongoTableOps.super._existsById(key);
+	}
+
+	default List<DAO> findAll() {
+		return MongoTableOps.super._findAll();
+	}
+
 	default List<DAO> findWith(Query query) {
-		return this.find(query);
+		return MongoTableOps.super._find(query);
 	}
 
 	default DAO findOneWith(Query query) {
-		return this.findOne(query);
+		return MongoTableOps.super._findOne(query);
+	}
+
+	default Collection<DAO> deleteWith(Query query) {
+		return MongoTableOps.super._findAllAndRemove(query);
 	}
 
 	@Transactional
@@ -40,13 +52,13 @@ public interface BaseDAL<PK, DAO extends BaseDAO<PK>> extends MongoTableOps<PK, 
 
 		Collection<DAO> updatedItems = bulkOp.getUpdated();
 		if (!updatedItems.isEmpty()) {
-			Collection<DAO> updated = this.insert(updatedItems);
+			Collection<DAO> updated = MongoTableOps.super._insert(updatedItems);
 			dataBuilder = dataBuilder.removed(updated);
 		}
 
 		Collection<DAO> addedItems = bulkOp.getAdded();
 		if (!addedItems.isEmpty()) {
-			Collection<DAO> added = this.insert(addedItems);
+			Collection<DAO> added = MongoTableOps.super._insert(addedItems);
 			dataBuilder = dataBuilder.added(added);
 		}
 
@@ -58,7 +70,7 @@ public interface BaseDAL<PK, DAO extends BaseDAO<PK>> extends MongoTableOps<PK, 
 	}
 
 	default List<DAO> findByIds(Set<PK> keyList) {
-		return findWith(DBQueryUtils.idInQuery(keyList));
+		return this.findWith(DBQueryUtils.idInArrayQuery(keyList.toArray()));
 	}
 
 	default DAO findByIdUnchecked(PK key) {
@@ -78,7 +90,7 @@ public interface BaseDAL<PK, DAO extends BaseDAO<PK>> extends MongoTableOps<PK, 
 		if (this.exists(obj)) {
 			throw CustomExceptions.duplicateEx(entity(), String.valueOf(obj.primaryKeyValue()));
 		} else {
-			return this.insert(obj);
+			return MongoTableOps.super._insert(obj);
 			// return obj;
 		}
 	}
@@ -104,18 +116,18 @@ public interface BaseDAL<PK, DAO extends BaseDAO<PK>> extends MongoTableOps<PK, 
 		DAO dbObj = this.findById(obj.primaryKeyValue());
 		validateBeforeUpdate(dbObj, obj);
 		if (!obj.equals(dbObj)) {
-			return this.save(obj);
+			return MongoTableOps.super._save(obj);
 		}
 		return dbObj;
 	}
 
-	default DAO applyPatchAndGet(PK key, Update update) throws DataNotFoundEx {
-		this.updateFirst(DBQueryUtils.idEqualsQuery(key), update);
-		return findById(key);
-	}
-	
 	default UpdateResult applyPatch(PK key, Update update) throws DataNotFoundEx {
-		return this.updateFirst(DBQueryUtils.idEqualsQuery(key), update);
+		return MongoTableOps.super._updateFirst(DBQueryUtils.idEqualsQuery(key), update);
+	}
+
+	default DAO applyPatchAndGet(PK key, Update update) throws DataNotFoundEx {
+		this.applyPatch(key, update);
+		return findById(key);
 	}
 
 	// default DAO upsert(DAO obj) {
@@ -137,11 +149,7 @@ public interface BaseDAL<PK, DAO extends BaseDAO<PK>> extends MongoTableOps<PK, 
 	}
 
 	default Collection<DAO> deleteByIds(Collection<PK> keys) {
-		return this.deleteWith(DBQueryUtils.idInQuery(keys));
-	}
-
-	default Collection<DAO> deleteWith(Query query) {
-		return this.findAllAndRemove(query);
+		return this.deleteWith(DBQueryUtils.idInArrayQuery(keys.toArray()));
 	}
 
 }

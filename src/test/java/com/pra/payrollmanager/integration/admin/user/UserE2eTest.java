@@ -15,18 +15,17 @@ import org.springframework.security.test.context.support.WithUserDetails;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.pra.payrollmanager.admin.common.user.UserControl;
-import com.pra.payrollmanager.admin.common.user.UserDAO;
 import com.pra.payrollmanager.admin.common.user.UserDTO;
 import com.pra.payrollmanager.base.BaseE2eIntegrationTest;
 import com.pra.payrollmanager.config.MockUserDetailService;
-import com.pra.payrollmanager.entity.CompanyEntityNames;
-import com.pra.payrollmanager.security.authentication.user.SecurityUserRepo;
-import com.pra.payrollmanager.security.authorization.SecurityPermissions;
+import com.pra.payrollmanager.security.authentication.company.SecurityCompany;
+import com.pra.payrollmanager.security.authentication.user.SecurityUser;
+import com.pra.payrollmanager.security.authentication.user.SecurityUserDAL;
 
 public class UserE2eTest extends BaseE2eIntegrationTest<UserControl> {
 	
 	@Autowired
-	SecurityUserRepo securityUserRepo;
+	SecurityUserDAL securityUserDAL;
 
 	UserDTO temp = UserDTO.builder().userName("test1")
 			.password("test2")
@@ -36,7 +35,15 @@ public class UserE2eTest extends BaseE2eIntegrationTest<UserControl> {
 
 	@Override
 	public void initUserStore(MockUserDetailService authService) {
-//		authService.addUserInStore(TESTER, SecurityPermissions.USER_DETAILS__MANAGE);
+		
+		SecurityUser user = SecurityUser.builder()
+				.username(TESTER)
+				.company(SecurityCompany.builder()
+						.id(TESTER)
+						.build())
+				.build();
+		
+		authService.addUsersInStore(user);
 	}
 
 	@Override
@@ -68,8 +75,6 @@ public class UserE2eTest extends BaseE2eIntegrationTest<UserControl> {
 
 	@Override
 	public void cleanUp() throws Exception {
-		securityUserRepo.deleteById("test1");
-		super.cleanUpTableForTESTER(UserDAO.class, CompanyEntityNames.USER.table());
 	}
 
 }

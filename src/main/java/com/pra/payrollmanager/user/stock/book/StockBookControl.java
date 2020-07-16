@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.bson.types.ObjectId;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,7 +34,7 @@ public class StockBookControl extends BaseControl<StockBookService> {
 	}
 
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<StockBookDTO> getStockFor(@PathVariable("id") @NotNull String productId)
+	public Response<StockBookDTO> getStockFor(@PathVariable("id") @NotNull ObjectId productId)
 			throws DataNotFoundEx, AnyThrowable {
 		return Response.payload(service.getById(productId));
 	}

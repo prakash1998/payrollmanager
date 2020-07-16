@@ -21,18 +21,21 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pra.payrollmanager.annotations.EnableEmbeddedMongo;
+import com.pra.payrollmanager.base.data.AuditInfo;
 import com.pra.payrollmanager.config.MockUserDetailService;
-import com.pra.payrollmanager.config.TestingConfig;
+import com.pra.payrollmanager.config.UnitTestingConfig;
 import com.pra.payrollmanager.response.dto.Response;
 
 @SpringBootTest(
 		webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-		classes = TestingConfig.class)
+		classes = UnitTestingConfig.class)
 @TestInstance(value = Lifecycle.PER_CLASS)
+@EnableEmbeddedMongo
 abstract public class BaseE2eIntegrationTest<CONTROL> {
-	
+
 	protected final static String TESTER = "test-user-pra";
-	
+
 	@Autowired
 	protected MockUserDetailService authService;
 
@@ -98,6 +101,6 @@ abstract public class BaseE2eIntegrationTest<CONTROL> {
 	public abstract void cleanUp() throws Exception;
 
 	public <T> void cleanUpTableForTESTER(Class<T> clazz, String tableName) {
-		mongoTemplate.remove(Query.query(Criteria.where("modifier").is(TESTER)), clazz, tableName);
+		mongoTemplate.remove(Query.query(Criteria.where(AuditInfo.MODIFIER_FIELD).is(TESTER)), clazz, tableName);
 	}
 }

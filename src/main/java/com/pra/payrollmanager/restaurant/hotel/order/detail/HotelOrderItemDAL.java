@@ -23,7 +23,7 @@ public class HotelOrderItemDAL extends AbstractDAL<ObjectId, HotelOrderItemDAO> 
 	}
 	
 	public List<HotelOrderItemDAO> getbyOrderIds(List<ObjectId> orderIds){
-		return this.findWith(DBQueryUtils.inQuery("orderId", orderIds));
+		return this.findWith(DBQueryUtils.inArrayQuery("orderId", orderIds.toArray()));
 	}
 
 

@@ -2,6 +2,7 @@ package com.pra.payrollmanager.user.common.notification;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.TypeAlias;
 
 import com.pra.payrollmanager.base.data.BaseAuditDAO;
 
@@ -19,6 +20,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @Accessors(chain=true)
 @EqualsAndHashCode(callSuper = false)
+@TypeAlias("q")
 public class Notification extends BaseAuditDAO<ObjectId> {
 
 	/**
@@ -34,7 +36,7 @@ public class Notification extends BaseAuditDAO<ObjectId> {
 
 	private NotificationType type;
 
-	private String referenceId;
+	private String reference;
 
 	@Override
 	public ObjectId primaryKeyValue() {

@@ -1,7 +1,16 @@
 package com.pra.payrollmanager.security.authorization.mappings.rolepermission;
 
-import com.pra.payrollmanager.base.data.BaseMapDAO;
+import org.springframework.data.annotation.TypeAlias;
 
+import com.pra.payrollmanager.base.data.BaseMapDAO;
+import com.pra.payrollmanager.security.authorization.mappings.userrole.UserRoleMap;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Data
+@EqualsAndHashCode(callSuper = true)
+@TypeAlias("n")
 public class RolePermissionMap extends BaseMapDAO<String, Integer> {
 
 	/**

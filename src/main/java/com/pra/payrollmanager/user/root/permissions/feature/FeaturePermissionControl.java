@@ -6,7 +6,6 @@ import javax.validation.Valid;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,12 +27,6 @@ public class FeaturePermissionControl extends BaseControl<FeaturePermissionServi
 	public Response<List<FeaturePermission>> getAllPermissions() {
 		return Response
 				.payload(service.getAll());
-	}
-
-	@GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<FeaturePermission> getPermission(@PathVariable String id) throws DataNotFoundEx, AnyThrowable {
-		return Response
-				.payload(service.getById(id));
 	}
 
 	@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)

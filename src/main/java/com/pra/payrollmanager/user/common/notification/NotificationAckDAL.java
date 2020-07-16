@@ -46,7 +46,8 @@ public class NotificationAckDAL extends AuditDAL<ObjectId, NotificationAck> {
 
 	@Override
 	public NotificationAck setAuditInfoOnDelete(NotificationAck obj) {
-		obj.setDeleted(null);
+		obj.setDeletedBy(null);
+		obj.setDeletedDate(null);
 		return obj;
 	}
 

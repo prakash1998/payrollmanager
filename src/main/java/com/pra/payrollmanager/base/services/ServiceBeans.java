@@ -19,6 +19,7 @@ abstract public class ServiceBeans<DAL extends BaseDAL<?, ?>> {
 	}
 
 	@Autowired
+	@Setter
 	protected ModelMapper modelMapper;
 
 	public ModelMapper modelMapper() {

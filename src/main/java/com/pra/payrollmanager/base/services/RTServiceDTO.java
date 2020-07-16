@@ -12,6 +12,8 @@ import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.message.MessageSendingService;
 
+import lombok.Setter;
+
 abstract public class RTServiceDTO<PK,
 		DAO extends BaseDAO<PK>,
 		DTO,
@@ -30,6 +32,7 @@ abstract public class RTServiceDTO<PK,
 	}
 
 	@Autowired
+	@Setter
 	protected MessageSendingService messageService;
 
 	@Override

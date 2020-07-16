@@ -5,7 +5,10 @@ import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
+import org.bson.types.ObjectId;
+
 import com.pra.payrollmanager.base.data.BaseAuditDTO;
+import com.pra.payrollmanager.base.data.BulkOp;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +21,7 @@ import lombok.experimental.Accessors;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Accessors(chain=true)
+@Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
 public class RoleDTO extends BaseAuditDTO<RoleDAO> {
 
@@ -33,19 +36,21 @@ public class RoleDTO extends BaseAuditDTO<RoleDAO> {
 	@Builder.Default
 	private Set<Integer> permissions = new HashSet<>();
 	@Builder.Default
-	private Set<Integer> endpoints = new HashSet<>();
+	private Set<String> endpoints = new HashSet<>();
 	@Builder.Default
 	private Set<String> screenIds = new HashSet<>();
 	@Builder.Default
+	private Set<ObjectId> resources = new HashSet<>();
+	@Builder.Default
 	private Set<String> users = new HashSet<>();
 
-//	@Override
-//	public RoleDAO toPlainDAO() {
-//		return RoleDAO.builder()
-//				.id(roleId)
-//				.name(roleName)
-//				.screenIds(screenIds)
-//				.build();
-//	}
+	// @Override
+	// public RoleDAO toPlainDAO() {
+	// return RoleDAO.builder()
+	// .id(roleId)
+	// .name(roleName)
+	// .screenIds(screenIds)
+	// .build();
+	// }
 
 }

@@ -2,6 +2,7 @@ package com.pra.payrollmanager.restaurant.hotel.order;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.TypeAlias;
 
 import com.pra.payrollmanager.base.data.BaseAuditDAO;
 
@@ -18,6 +19,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @Accessors(chain=true)
 @EqualsAndHashCode(callSuper = false)
+@TypeAlias("h")
 public class HotelOrderDAO extends BaseAuditDAO<ObjectId> {
 
 	/**

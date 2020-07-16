@@ -1,61 +1,57 @@
 package com.pra.payrollmanager.security.authorization;
 
-import java.lang.reflect.Field;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import com.pra.payrollmanager.base.data.BulkOp;
-import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.user.root.permissions.screen.ScreenPermission;
 import com.pra.payrollmanager.user.root.permissions.screen.ScreenPermissionDAL;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 public class ScreenPermissions {
 
-	public static final ScreenPermission USER_SCREEN = ScreenPermission.of();
+	private interface Screens {
+		String name();
+	}
+
+	private enum UserScreens implements Screens {
+		HOME, STOCK_BOOK, COMPANY, PERMISSION_CONFIG, FEATURE_CONFIG, SCREEN_CONFIG , ENDPOINT_CONFIG
+	};
+
+	private enum AdminScreens implements Screens {
+		USERS, ROLES, PRODUCTS
+	};
+
+	private static void checkedInsertInSet(Set<String> set, Screens[] screens) {
+		Stream.of(screens).forEach(screen -> {
+			String screenId = screen.name();
+			boolean isNew = set.add(screenId);
+			if (!isNew) {
+				throw new RuntimeException(
+						String.format("Id - '%s' is repeated  for field %s , please resolve  it",
+								screenId));
+			}
+		});
+	}
 
 	public static void persistScreenPermissionsIfNot(ScreenPermissionDAL dataAccess) {
-		Map<String, ScreenPermission> allPermisssions = new HashMap<>();
-		Field[] allFields = ScreenPermissions.class.getDeclaredFields();
 
-		try {
-			for (Field field : allFields) {
-				if (field.getType() == ScreenPermission.class) {
-					ScreenPermission permission = (ScreenPermission) field.get(null);
-					if (allPermisssions.containsKey(field.getName())) {
-						throw new RuntimeException(
-								String.format("Id - '%s' is repeated  for field %s , please resolve  it",
-										permission.getId(), field.getName()));
-					} else {
-						allPermisssions.put(field.getName(),
-								ScreenPermission.of(field.getName()));
-					}
-				}
-			}
-		} catch (IllegalArgumentException | IllegalAccessException e) {
-			log.error("Error While Persisting Security Permissions in Database");
-			e.printStackTrace();
-			throw new RuntimeException(e.getMessage());
-		}
+		Set<String> allScreens = new HashSet<>();
 
-		Set<String> screenIdsInDb = dataAccess.findAll().stream()
+		checkedInsertInSet(allScreens, UserScreens.class.getEnumConstants());
+		checkedInsertInSet(allScreens, AdminScreens.class.getEnumConstants());
+
+		Set<String> screenIdsInDb = dataAccess._findAll().stream()
 				.map(ScreenPermission::getId)
 				.collect(Collectors.toSet());
 
-		List<ScreenPermission> permissionsToPersist = allPermisssions.keySet().stream()
+		List<ScreenPermission> screensToPersist = allScreens.stream()
 				.filter(id -> !screenIdsInDb.contains(id))
-				.map(allPermisssions::get)
+				.map(id -> ScreenPermission.of(id))
 				.collect(Collectors.toList());
-		try {
-			dataAccess.bulkOp(BulkOp.fromAdded(permissionsToPersist));
-		} catch (DuplicateDataEx e) {
-			throw new RuntimeException("Problem while inseting permissions in DB");
-		}
+
+		dataAccess._insert(screensToPersist);
 	}
 
 }

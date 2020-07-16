@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.TypeAlias;
 
 import com.mongodb.lang.NonNull;
 import com.pra.payrollmanager.base.data.BaseDAO;
@@ -23,6 +24,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @Accessors(chain=true)
 @EqualsAndHashCode(callSuper = false)
+@TypeAlias("u")
 public class FeaturePermission implements BaseDAO<String> {
 
 	/**
@@ -63,25 +65,13 @@ public class FeaturePermission implements BaseDAO<String> {
 				.build();
 	}
 	
-
-	public static FeaturePermission of(int numericId) {
-		return of(numericId, ApiFeatures.AUDIT_LOG, ApiFeatures.REALTIME);
+	public static FeaturePermission all(int numericId) {
+		return of(numericId, ApiFeatures.AUDIT_LOG, ApiFeatures.REALTIME,ApiFeatures.ACCESS_CONTROL);
 	}
 
 	@Override
 	public String primaryKeyValue() {
 		return id;
 	}
-
-//	@Override
-//	public FeaturePermissionDTO toPlainDTO() {
-//		return FeaturePermissionDTO.builder()
-//				.id(id)
-//				.numericId(numericId)
-//				.display(display)
-//				.description(description)
-//				.features(features)
-//				.build();
-//	}
 
 }

@@ -62,7 +62,7 @@ public class CompanyDetailsDTO extends BaseAuditDTO<CompanyDetailsDAO> {
 
 	@ApiModelProperty(hidden = true) 
 	@Builder.Default
-	private Set<Integer> endpoints = new HashSet<>();
+	private Set<String> endpoints = new HashSet<>();
 
 	@ApiModelProperty(hidden = true) 
 	@Builder.Default
@@ -93,7 +93,7 @@ public class CompanyDetailsDTO extends BaseAuditDTO<CompanyDetailsDAO> {
 		return SecurityCompany.builder()
 				.id(id)
 				.permissions(permissions)
-				.endpointPermissions(endpoints)
+				.endpoints(endpoints)
 				.screenIds(screenIds)
 				.resourceFeatures(resourceFeatures)
 				.build()

@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import com.pra.payrollmanager.security.authentication.company.SecurityCompany;
 import com.pra.payrollmanager.security.authentication.user.SecurityUser;
 import com.pra.payrollmanager.user.root.permissions.security.SecurityPermission;
 
@@ -37,6 +38,9 @@ public class MockUserDetailService implements UserDetailsService {
 		
 		addUsersInStore(SecurityUser.builder()
 				.username(userName)
+				.company(SecurityCompany.builder()
+						.id("TEST")
+						.build())
 				.build());
 	}
 	

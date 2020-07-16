@@ -1,14 +1,11 @@
 package com.pra.payrollmanager.user.root.company;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +22,6 @@ import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.exception.unchecked.UnAuthorizedEx;
 import com.pra.payrollmanager.response.dto.Response;
 import com.pra.payrollmanager.security.authentication.company.SecurityCompany;
-import com.pra.payrollmanager.validation.FieldValidator;
 import com.pra.payrollmanager.validation.ValidationGroups;
 
 import springfox.documentation.annotations.ApiIgnore;
@@ -36,14 +32,13 @@ import springfox.documentation.annotations.ApiIgnore;
 @RequestMapping("company")
 public class CompanyDetailsControl extends BaseControl<CompanyDetailsService> {
 
-	@GetMapping(value = "self", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping("self")
 	public Response<CompanyDetailsDTO> getSelf() throws DataNotFoundEx, AnyThrowable {
 		SecurityCompany company = authService.getSecurityCompany();
 		return Response.payload(service.getById(company.getId()));
 	}
 
-	@PutMapping(value = "self", consumes = MediaType.APPLICATION_JSON_VALUE,
-			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping("self")
 	public Response<CompanyDetailsDTO> updateSelf(@Valid @RequestBody CompanyDetailsDTO company)
 			throws DataNotFoundEx, AnyThrowable {
 		SecurityCompany userCompany = authService.getSecurityCompany();
@@ -53,51 +48,44 @@ public class CompanyDetailsControl extends BaseControl<CompanyDetailsService> {
 		return Response.payload(service.updateSelf(company));
 	}
 
-	@PostMapping(value = "bulk/test", consumes = MediaType.APPLICATION_JSON_VALUE,
-			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping("bulk/test")
 	public Response<Void> bulkOp(@Valid @RequestBody BulkOp<CompanyDetailsDTO> company)
 			throws DataNotFoundEx, AnyThrowable {
 		return Response.ok();
 	}
 
-	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping
 	public Response<List<CompanyDetailsDTO>> getCompanyDetails() {
 		return Response.payload(service.getAll());
 	}
 
-	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping("/{id}")
 	public Response<CompanyDetailsDTO> getCompany(@PathVariable("id") @NotNull String companyId)
 			throws DataNotFoundEx, AnyThrowable {
 		return Response.payload(service.getById(companyId));
 	}
-	
+
 	@Validated(ValidationGroups.onCreate.class)
-	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping
 	public Response<CompanyDetailsDTO> createCompanyDetails(@Valid @RequestBody CompanyDetailsDTO company)
-			throws DuplicateDataEx, MethodArgumentNotValidException, NoSuchMethodException,
-			AnyThrowable {
-//
-//		FieldValidator.validateNotNull(company, "getSuperUserPassword",
-//				"Super user Password must be provided");
+			throws DuplicateDataEx, AnyThrowable {
 		return Response.payload(service.create(company));
 	}
 
-	@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping
 	public Response<CompanyDetailsDTO> updateCompanyDetails(@Valid @RequestBody CompanyDetailsDTO company)
 			throws DataNotFoundEx, AnyThrowable {
 		return Response.payload(service.update(company));
 	}
 
-	@PutMapping(value = "lock", consumes = MediaType.APPLICATION_JSON_VALUE,
-			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping("lock")
 	public Response<Void> lockCompany(@Valid @RequestBody CompanyDetailsDTO company)
 			throws DataNotFoundEx, AnyThrowable {
 		service.lockCompany(company);
 		return Response.ok();
 	}
 
-	@PutMapping(value = "activate", consumes = MediaType.APPLICATION_JSON_VALUE,
-			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping("activate")
 	public Response<Void> activateCompany(@Valid @RequestBody CompanyDetailsDTO company)
 			throws DataNotFoundEx, AnyThrowable {
 		service.activateCompany(company);

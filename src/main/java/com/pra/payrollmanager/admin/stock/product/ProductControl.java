@@ -5,7 +5,8 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import org.springframework.http.MediaType;
+import org.bson.types.ObjectId;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,36 +21,44 @@ import com.pra.payrollmanager.exception.AnyThrowable;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.response.dto.Response;
+import com.pra.payrollmanager.validation.ValidationGroups;
 
+@Validated
 @RestController
 @RequestMapping("products")
 public class ProductControl extends BaseControl<ProductService> {
 
-	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<List<ProductDTO>> getAllProducts() {
-		List<ProductDTO> products = service.getAll();
-		return Response.payload(products);
+	@GetMapping("allowed")
+	public Response<List<ProductDTO>> getAllowedProducts() {
+		return Response.payload(service.getOnlyAllowed());
 	}
 
-	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<ProductDTO> getProduct(@PathVariable("id") @NotNull String productId)
+	@GetMapping
+	public Response<List<ProductDTO>> getAllProducts() {
+		return Response.payload(service.getAll());
+	}
+
+	@GetMapping(value = "/{id}")
+	public Response<ProductDTO> getProduct(@PathVariable("id") @NotNull ObjectId productId)
 			throws DataNotFoundEx, AnyThrowable {
 		return Response.payload(service.getById(productId));
 	}
 
-	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping
 	public Response<ProductDTO> createProduct(@Valid @RequestBody ProductDTO product)
 			throws DuplicateDataEx, AnyThrowable {
 		return Response.payload(service.create(product));
 	}
 
-	@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@Validated(ValidationGroups.onUpdate.class)
+	@PutMapping
 	public Response<ProductDTO> updateProduct(@Valid @RequestBody ProductDTO product)
 			throws DataNotFoundEx, AnyThrowable {
 		return Response.payload(service.update(product));
 	}
 
-	@DeleteMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@Validated(ValidationGroups.onUpdate.class)
+	@DeleteMapping
 	public Response<ProductDTO> deleteProduct(@Valid @RequestBody ProductDTO product)
 			throws AnyThrowable, DataNotFoundEx {
 		return Response.payload(service.delete(product));

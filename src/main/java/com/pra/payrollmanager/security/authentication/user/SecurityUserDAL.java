@@ -63,7 +63,7 @@ public class SecurityUserDAL extends AuditDAL<String, SecurityUser> {
 	public void logOut(String userName) throws DataNotFoundEx {
 		if (this.existsById(userName)) {
 			Update update = Update.update("loggedIn", false);
-			this.updateFirst(DBQueryUtils.idEqualsQuery(userName), update);
+			this.applyPatch(userName, update);
 		} else {
 			throw CustomExceptions.notFoundEx(entity(), userName);
 		}

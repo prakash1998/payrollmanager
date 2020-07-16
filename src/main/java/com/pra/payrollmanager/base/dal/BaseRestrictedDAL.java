@@ -2,6 +2,7 @@ package com.pra.payrollmanager.base.dal;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -10,39 +11,9 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import com.pra.payrollmanager.base.data.BaseDAO;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
-import com.pra.payrollmanager.exception.util.CustomExceptions;
 
-public interface BaseRestrictedDAL<PK, DAO extends BaseDAO<PK>> extends BaseDAL<PK, DAO>, DataRestrictionSupport {
-
-	default Criteria findAllAccessCriteria() {
-		return null;
-	}
-
-	default Predicate<DAO> hasAccessToItem() {
-		return null;
-	}
-
-	default void validateItemAccess(DAO item) {
-		Predicate<DAO> hasAccessToItem = hasAccessToItem();
-		if (hasAccessToItem == null)
-			return;
-
-		if (!hasAccessToItem.test(item))
-			throw CustomExceptions.notAuthorizedEx(entity(),
-					item.primaryKeyValue().toString());
-	}
-
-	default void validateItemAccess(Collection<DAO> items) {
-		Predicate<DAO> hasAccessToItem = hasAccessToItem();
-		if (hasAccessToItem == null)
-			return;
-
-		for (DAO item : items) {
-			if (!hasAccessToItem.test(item))
-				throw CustomExceptions.notAuthorizedEx(entity(),
-						item.primaryKeyValue().toString());
-		}
-	}
+public interface BaseRestrictedDAL<PK, DAO extends BaseDAO<PK>>
+		extends BaseDAL<PK, DAO>, DataRestrictionSupport<PK, DAO> {
 
 	default void validateDelete(Query query) {
 		List<DAO> dbObjs = BaseDAL.super.findWith(query);
@@ -52,46 +23,80 @@ public interface BaseRestrictedDAL<PK, DAO extends BaseDAO<PK>> extends BaseDAL<
 	@Override
 	default List<DAO> findAll() {
 
-		Criteria findAccessCriteria = findAllAccessCriteria();
+		if (!accessControlEnabled())
+			return BaseDAL.super.findAll();
+
+		Criteria findAllAccessCriteria = findAllAccessCriteria();
 		Predicate<DAO> hasAccessToItem = hasAccessToItem();
+		Function<List<DAO>, List<DAO>> filterItemsWithAccess = filterItemsWithAccess();
 
-		if (findAccessCriteria == null) {
+		if (findAllAccessCriteria == null) {
 			List<DAO> allData = BaseDAL.super.findAll();
-			if (hasAccessToItem == null) {
-				return allData;
+
+			if (filterItemsWithAccess != null) {
+				return filterItemsWithAccess.apply(allData);
 			}
-			return allData.stream()
-					.filter(hasAccessToItem)
-					.collect(Collectors.toList());
+
+			if (hasAccessToItem != null) {
+				return allData.stream()
+						.filter(hasAccessToItem)
+						.collect(Collectors.toList());
+			}
+
+			return allData;
 		}
 
-		List<DAO> filteredByCriteria = BaseDAL.super.findWith(Query.query(findAccessCriteria));
-		if (hasAccessToItem == null) {
-			return filteredByCriteria;
-		}
-
-		return filteredByCriteria.stream()
-				.filter(hasAccessToItem)
-				.collect(Collectors.toList());
+		List<DAO> filteredByCriteria = BaseDAL.super.findWith(Query.query(findAllAccessCriteria));
+		return filteredByCriteria;
+		// if (hasAccessToItem == null) {
+		// return filteredByCriteria;
+		// }
+		//
+		// return filteredByCriteria.stream()
+		// .filter(hasAccessToItem)
+		// .collect(Collectors.toList());
 	}
 
 	@Override
 	default List<DAO> findWith(Query query) {
-		Criteria findAccessCriteria = findAllAccessCriteria();
-		Predicate<DAO> hasAccessToItem = hasAccessToItem();
 
-		if (findAccessCriteria != null)
-			query = query.addCriteria(findAccessCriteria);
+		if (!accessControlEnabled())
+			return BaseDAL.super.findWith(query);
+
+		Criteria findAllAccessCriteria = findAllAccessCriteria();
+		Predicate<DAO> hasAccessToItem = hasAccessToItem();
+		Function<List<DAO>, List<DAO>> filterItemsWithAccess = filterItemsWithAccess();
+
+		if (findAllAccessCriteria == null) {
+			List<DAO> allData = BaseDAL.super.findWith(query);
+
+			if (filterItemsWithAccess != null) {
+				return filterItemsWithAccess.apply(allData);
+			}
+
+			if (hasAccessToItem != null) {
+				return allData.stream()
+						.filter(hasAccessToItem)
+						.collect(Collectors.toList());
+			}
+
+			return allData;
+		}
+
+		if (findAllAccessCriteria != null)
+			query = query.addCriteria(findAllAccessCriteria);
 
 		List<DAO> filteredByCriteria = BaseDAL.super.findWith(query);
 
-		if (hasAccessToItem == null) {
-			return filteredByCriteria;
-		}
+		// if (hasAccessToItem == null) {
+		// return filteredByCriteria;
+		// }
+		//
+		// return filteredByCriteria.stream()
+		// .filter(hasAccessToItem)
+		// .collect(Collectors.toList());
 
-		return filteredByCriteria.stream()
-				.filter(hasAccessToItem)
-				.collect(Collectors.toList());
+		return filteredByCriteria;
 	}
 
 	@Override
@@ -126,10 +131,10 @@ public interface BaseRestrictedDAL<PK, DAO extends BaseDAO<PK>> extends BaseDAL<
 		return BaseDAL.super.deleteWith(query);
 	}
 
-	@Override
-	default Collection<DAO> insert(Collection<DAO> objList) {
-		validateItemAccess(objList);
-		return BaseDAL.super.insert(objList);
-	}
+	// @Override
+	// default Collection<DAO> insert(Collection<DAO> objList) {
+	// validateItemAccess(objList);
+	// return BaseDAL.super.insert(objList);
+	// }
 
 }

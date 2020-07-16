@@ -5,6 +5,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
@@ -22,7 +23,9 @@ interface BaseFileService {
 	AmazonS3 s3Client();
 
 	default String deleteFileFromBucket(String bucket,String fileIdToDelete) {
-		s3Client().deleteObject(new DeleteObjectRequest(bucket, fileIdToDelete));
+		CompletableFuture.runAsync(() -> {			
+			s3Client().deleteObject(new DeleteObjectRequest(bucket, fileIdToDelete));
+		});
 		return fileIdToDelete;
 	}
 	

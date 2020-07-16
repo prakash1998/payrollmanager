@@ -13,7 +13,7 @@ import lombok.experimental.Accessors;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Accessors(chain=true)
+@Accessors(chain = true)
 public class BulkOp<T> {
 
 	@Builder.Default
@@ -29,6 +29,24 @@ public class BulkOp<T> {
 		return BulkOp.<V>builder()
 				.added(addedItems)
 				.build();
+	}
+
+	public Collection<T> getAll() {
+		ArrayList<T> collector = new ArrayList<>();
+
+		if (!this.added.isEmpty()) {
+			collector.addAll(this.added);
+		}
+
+		if (!this.updated.isEmpty()) {
+			collector.addAll(this.updated);
+		}
+
+		if (!this.removed.isEmpty()) {
+			collector.addAll(this.removed);
+		}
+
+		return collector;
 	}
 
 }

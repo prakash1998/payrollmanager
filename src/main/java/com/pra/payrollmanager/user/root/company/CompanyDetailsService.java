@@ -27,7 +27,7 @@ public class CompanyDetailsService
 		dto.setLocked(company.getAccountLocked());
 		dto.setPermissions(company.getPermissions());
 		dto.setResourceFeatures(company.getResourceFeatures());
-		dto.setEndpoints(company.getEndpointPermissions());
+		dto.setEndpoints(company.getEndpoints());
 		dto.setScreenIds(company.getScreenIds());
 		return dto;
 	}

@@ -1,6 +1,7 @@
 package com.pra.payrollmanager.user.root.permissions.security;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.TypeAlias;
 
 import com.mongodb.lang.NonNull;
 import com.pra.payrollmanager.base.data.BaseDAO;
@@ -18,6 +19,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @Accessors(chain=true)
 @EqualsAndHashCode(callSuper = false)
+@TypeAlias("x")
 public class SecurityPermission implements BaseDAO<String> {
 
 	/**
@@ -43,27 +45,16 @@ public class SecurityPermission implements BaseDAO<String> {
 				.description("-")
 				.build();
 	}
-
+	
 	public static SecurityPermission of(int numericId) {
 		return SecurityPermission.builder()
 				.numericId(numericId)
 				.build();
 	}
 
-
 	@Override
 	public String primaryKeyValue() {
 		return id;
 	}
-
-//	@Override
-//	public SecurityPermissionDTO toPlainDTO() {
-//		return SecurityPermissionDTO.builder()
-//				.id(id)
-//				.numericId(numericId)
-//				.display(display)
-//				.category(category)
-//				.description(description)
-//				.build();
-//	}
+	
 }

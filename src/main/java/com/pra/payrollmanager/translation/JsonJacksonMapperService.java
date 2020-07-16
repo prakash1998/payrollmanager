@@ -1,18 +1,13 @@
 package com.pra.payrollmanager.translation;
 
-import java.io.IOException;
-
 import org.bson.types.ObjectId;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -40,7 +35,11 @@ public class JsonJacksonMapperService {
 		mapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, false);
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 		// mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-		mapper.registerModule(new JavaTimeModule());
+		
+		JavaTimeModule javaTimeModule = new JavaTimeModule();
+//		javaTimeModule.addSerializer(new InstantSerializer());
+		mapper.registerModule(javaTimeModule);
+//		mapper.registerModule(new JodaModule());
 	}
 
 	public ObjectMapper mapper() {

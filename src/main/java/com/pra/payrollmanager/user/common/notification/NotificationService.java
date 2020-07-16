@@ -41,20 +41,16 @@ public class NotificationService extends AuditRTServiceDAO<ObjectId, Notificatio
 	}
 
 	@Transactional
-	public void sendNotification(NotificationType type, String display, Set<String> targetedUsers) {
-		try {
-			Notification savedNotification = super.create(
-					Notification.builder()
-							.type(type)
-							.display(display)
-							.sender(authorityService().getUserName())
-							.build(),
-					targetedUsers);
-			acknowledgeDal.addUsersForAck(savedNotification.getId(), targetedUsers);
-		} catch (DuplicateDataEx e) {
-			// e.printStackTrace();
-			log.error("tried to insert duplicate notification..");
-		}
+	public void sendNotification(NotificationType type, String reference, String display, Set<String> targetedUsers) {
+		Notification savedNotification = super.create(
+				Notification.builder()
+						.type(type)
+						.reference(reference)
+						.display(display)
+						.sender(authorityService().getUserName())
+						.build(),
+				targetedUsers);
+		acknowledgeDal.addUsersForAck(savedNotification.getId(), targetedUsers);
 	}
 
 	@Transactional

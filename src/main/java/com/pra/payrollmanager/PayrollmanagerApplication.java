@@ -2,24 +2,25 @@ package com.pra.payrollmanager;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@EnableCaching(proxyTargetClass = true)
-@EnableScheduling
 @EnableWebSecurity
-@SpringBootApplication
+@SpringBootApplication(exclude = EmbeddedMongoAutoConfiguration.class)
+@ComponentScan(basePackages = "com.pra.payrollmanager",
+		excludeFilters = {
+				@ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.pra.payrollmanager.restaurant.*")
+		})
 public class PayrollmanagerApplication {
-	
 
 	public static void main(String[] args) {
 		log.debug("App started");
 		SpringApplication.run(PayrollmanagerApplication.class, args);
 	}
-
 
 }

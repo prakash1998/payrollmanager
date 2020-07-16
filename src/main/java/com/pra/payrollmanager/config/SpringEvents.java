@@ -1,30 +1,28 @@
 package com.pra.payrollmanager.config;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpMethod;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-import com.pra.payrollmanager.base.data.BulkOp;
 import com.pra.payrollmanager.entity.EntityUtils;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.filter.AuthorizationFilter;
 import com.pra.payrollmanager.security.WebSecurityConfig;
-import com.pra.payrollmanager.security.authentication.company.SecurityCompanyService;
+import com.pra.payrollmanager.security.authentication.company.SecurityCompanyDAL;
 import com.pra.payrollmanager.security.authorization.FeaturePermissions;
 import com.pra.payrollmanager.security.authorization.ScreenPermissions;
 import com.pra.payrollmanager.security.authorization.SecurityPermissions;
@@ -37,7 +35,8 @@ import com.pra.payrollmanager.user.root.permissions.security.SecurityPermissionD
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Component
+@Service
+@Profile({"dev","prod"})
 public class SpringEvents {
 
 	@Autowired
@@ -53,7 +52,7 @@ public class SpringEvents {
 	private ScreenPermissionDAL screenPermissionDAL;
 
 	@Autowired
-	private SecurityCompanyService securityCompanyService;
+	private SecurityCompanyDAL securityCompanyDAL;
 
 	@Autowired
 	private RequestMappingHandlerMapping requestHandlerMapping;
@@ -63,7 +62,7 @@ public class SpringEvents {
 		// creating all common tables on boot if not exists
 		EntityUtils.createTableForCommonEntities(securityPermissionDAL);
 		// creating all tables for existing companies if not exists
-		securityCompanyService.getAll().stream()
+		securityCompanyDAL._findAll().stream()
 				.forEach(company -> {
 					EntityUtils.createTableForCompanyEntities(securityPermissionDAL.mongoTemplate(),
 							company.getTablePrefix());
@@ -77,15 +76,15 @@ public class SpringEvents {
 
 	private void persistEndpointsIfNot() throws DuplicateDataEx {
 
-		List<EndpointPermission> existingEndpoints = endpointPermissionDAL.findAll();
+		List<EndpointPermission> existingEndpoints = endpointPermissionDAL._findAll();
 
 		Map<String, EndpointPermission> existingEndpointsMap = existingEndpoints.stream()
 				.collect(Collectors.toMap(EndpointPermission::getId, Function.identity()));
 
-		int nextPossibleId = existingEndpoints.stream()
-				.reduce(BinaryOperator.maxBy(Comparator.comparingInt(EndpointPermission::getNumericId)))
-				.map(EndpointPermission::getNumericId)
-				.orElse(0);
+//		int nextPossibleId = existingEndpoints.stream()
+//				.reduce(BinaryOperator.maxBy(Comparator.comparingInt(EndpointPermission::getNumericId)))
+//				.map(EndpointPermission::getNumericId)
+//				.orElse(0);
 
 		List<EndpointPermission> finalEndpoints = new ArrayList<>();
 
@@ -140,7 +139,7 @@ public class SpringEvents {
 						methodPhrase = "update";
 
 					EndpointPermission newEndpoint = EndpointPermission.builder()
-							.numericId(++nextPossibleId)
+//							.numericId(++nextPossibleId)
 							.id(endpointId)
 							.display(methodPhrase + " " + categoryPhrase)
 							.category(category)
@@ -155,7 +154,7 @@ public class SpringEvents {
 			}
 		}
 		endpointPermissionDAL.truncateTable();
-		endpointPermissionDAL.bulkOp(BulkOp.fromAdded(finalEndpoints));
+		endpointPermissionDAL._insert(finalEndpoints);
 		
 		AuthorizationFilter.universalEndpointsMap.putAll(
 				finalEndpoints.stream()

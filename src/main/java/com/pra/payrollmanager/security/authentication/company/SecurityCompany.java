@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.TypeAlias;
 
 import com.pra.payrollmanager.base.data.BaseAuditDAO;
 import com.pra.payrollmanager.security.authorization.permission.ApiFeatures;
@@ -26,6 +27,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @Accessors(chain=true)
 @EqualsAndHashCode(callSuper = false)
+@TypeAlias("k")
 public class SecurityCompany extends BaseAuditDAO<String> {
 
 	/**
@@ -45,7 +47,7 @@ public class SecurityCompany extends BaseAuditDAO<String> {
 	@Builder.Default
 	private Set<Integer> permissions = new HashSet<>();
 	@Builder.Default
-	private Set<Integer> endpointPermissions = new HashSet<>();
+	private Set<String> endpoints = new HashSet<>();
 	@Builder.Default
 	private Set<String> screenIds = new HashSet<>();
 	@Builder.Default
@@ -56,7 +58,7 @@ public class SecurityCompany extends BaseAuditDAO<String> {
 	}
 
 	public boolean hasAccessTo(EndpointPermission permission) {
-		return endpointPermissions.contains(permission.getNumericId());
+		return endpoints.contains(permission.getId());
 	}
 
 	public boolean hasAccessTo(FeaturePermission permission, ApiFeatures service) {

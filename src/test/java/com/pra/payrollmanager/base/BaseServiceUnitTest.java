@@ -14,22 +14,27 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.pra.payrollmanager.base.dal.AbstractDAL;
+import com.pra.payrollmanager.base.dal.BaseDAL;
 import com.pra.payrollmanager.base.data.BaseDAO;
-import com.pra.payrollmanager.base.services.ServiceDTO;
+import com.pra.payrollmanager.base.services.BaseServiceDTO;
+import com.pra.payrollmanager.base.services.ServiceBeans;
+import com.pra.payrollmanager.config.AppConfig;
+import com.pra.payrollmanager.config.AuthoritiyServiceForUnitTest;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
+import com.pra.payrollmanager.security.authentication.user.SecurityUserService;
 
-@SpringBootTest
 @TestInstance(value = Lifecycle.PER_CLASS)
-public abstract class BaseServiceUnitTest<DAO extends BaseDAO<?>,
+public abstract class BaseServiceUnitTest<PK,
+		DAO extends BaseDAO<PK>,
 		DTO,
-		DAL extends AbstractDAL<?, DAO>,
-		SERVICE extends ServiceDTO<?, ?, ?, DAL>> {
+		DAL extends BaseDAL<PK, DAO>,
+		SERVICE extends ServiceBeans<DAL> & BaseServiceDTO<PK, DAO, DTO, DAL>> {
 
-	@Autowired
 	protected SERVICE entityService;
-
+	
+	abstract public SERVICE setEntityService();
+	
 	protected DAL mockDalService;
 
 	private Class<DAO> daoClazz;
@@ -41,12 +46,13 @@ public abstract class BaseServiceUnitTest<DAO extends BaseDAO<?>,
 		// class in immediate parent only
 		Type sooper = getClass().getGenericSuperclass();
 		daoClazz = (Class<DAO>) ((ParameterizedType) sooper)
-				.getActualTypeArguments()[0];
-		dtoClazz = (Class<DTO>) ((ParameterizedType) sooper)
 				.getActualTypeArguments()[1];
-		dalClazz = (Class<DAL>) ((ParameterizedType) sooper)
+		dtoClazz = (Class<DTO>) ((ParameterizedType) sooper)
 				.getActualTypeArguments()[2];
+		dalClazz = (Class<DAL>) ((ParameterizedType) sooper)
+				.getActualTypeArguments()[3];
 		mockDalService = Mockito.mock(dalClazz);
+		entityService = setEntityService();
 	}
 
 	// protected DTO entityDto;
@@ -60,6 +66,17 @@ public abstract class BaseServiceUnitTest<DAO extends BaseDAO<?>,
 	public abstract List<DAO> initMockDaoStore();
 
 	public void setBaseMockDalMethods() throws DuplicateDataEx, DataNotFoundEx {
+		
+		Mockito.doAnswer(invocation -> {
+			return daoClazz;
+		}).when(mockDalService)
+		.daoClazz();
+		
+		Mockito.doAnswer(invocation -> {
+			return new AuthoritiyServiceForUnitTest();
+		}).when(mockDalService)
+		.authorityService();
+		
 		Mockito.doAnswer(invocation -> {
 			Object[] arguments = invocation.getArguments();
 			if (arguments != null && arguments.length > 0
@@ -74,6 +91,7 @@ public abstract class BaseServiceUnitTest<DAO extends BaseDAO<?>,
 					throw new DuplicateDataEx();
 				} else {
 					mockDataStore.add(entity);
+					return entity;
 				}
 			}
 			return null;
@@ -96,6 +114,7 @@ public abstract class BaseServiceUnitTest<DAO extends BaseDAO<?>,
 									? entity
 									: i)
 							.collect(Collectors.toList());
+					return item.get();
 				} else {
 					throw new DataNotFoundEx();
 				}
@@ -118,6 +137,7 @@ public abstract class BaseServiceUnitTest<DAO extends BaseDAO<?>,
 					mockDataStore = mockDataStore.stream()
 							.filter(i -> !i.primaryKeyValue().equals(key))
 							.collect(Collectors.toList());
+					return item.get();
 				} else {
 					throw new DataNotFoundEx();
 				}
@@ -161,5 +181,6 @@ public abstract class BaseServiceUnitTest<DAO extends BaseDAO<?>,
 		setBaseMockDalMethods();
 		initMockDal(mockDalService);
 		entityService.setDataAccessLayer(mockDalService);
+		entityService.setModelMapper(new AppConfig().modelMapper());
 	}
 }

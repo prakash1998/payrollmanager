@@ -5,6 +5,7 @@ import java.util.HashSet;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.annotation.TypeAlias;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -24,6 +25,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @Accessors(chain=true)
 @EqualsAndHashCode(callSuper = false )
+@TypeAlias("l")
 public class SecurityUser extends BaseAuditDAO<String> implements UserDetails {
 	/**
 	 * 
@@ -48,7 +50,7 @@ public class SecurityUser extends BaseAuditDAO<String> implements UserDetails {
 	private SecurityCompany company;
 	@Transient
 	private String userId;
-
+	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return new HashSet<>();

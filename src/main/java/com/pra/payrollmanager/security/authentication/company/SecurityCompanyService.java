@@ -1,38 +1,31 @@
 package com.pra.payrollmanager.security.authentication.company;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.pra.payrollmanager.apputils.cachemanager.AppCacheService;
 import com.pra.payrollmanager.base.services.AuditServiceDAO;
 import com.pra.payrollmanager.constants.CacheNameStore;
-import com.pra.payrollmanager.entity.CommonEntityNames;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.exception.unchecked.NotUseThisMethod;
-import com.pra.payrollmanager.exception.util.ExceptionType;
-import com.pra.payrollmanager.exception.util.UncheckedException;
 import com.pra.payrollmanager.security.authentication.user.SecurityUser;
 import com.pra.payrollmanager.security.authentication.user.SecurityUserService;
 
 @Service
-@CacheConfig(cacheNames = CacheNameStore.SECURITY_COMPANY_STORE)
 public class SecurityCompanyService extends AuditServiceDAO<String, SecurityCompany, SecurityCompanyDAL> {
 
 	@Autowired
 	SecurityUserService securityUserService;
 
-	@Cacheable
+	@Autowired
+	AppCacheService cacheService;
+
 	public SecurityCompany loadCompanyById(String companyId) {
-		System.out.println("fetching company from db........");
-		try {
+		return cacheService.cached(CacheNameStore.SECURITY_COMPANY_STORE, companyId, (key) -> {
 			return super.getById(companyId);
-		} catch (DataNotFoundEx e) {
-			throw UncheckedException.appException(CommonEntityNames.COMPANY, ExceptionType.ENTITY_NOT_FOUND, companyId);
-		}
+		});
 	}
 
 	@Override
@@ -47,9 +40,11 @@ public class SecurityCompanyService extends AuditServiceDAO<String, SecurityComp
 	}
 
 	@Override
-	@CacheEvict(cacheNames = { CacheNameStore.SECURITY_COMPANY_STORE, CacheNameStore.SECURITY_USER_STORE },
-			allEntries = true)
 	public SecurityCompany update(SecurityCompany company) throws DataNotFoundEx {
+
+		cacheService.removeByKey(CacheNameStore.SECURITY_COMPANY_STORE, company.getId());
+		cacheService.clearCaches(CacheNameStore.SECURITY_USER_STORE);
+
 		return super.update(company);
 	}
 

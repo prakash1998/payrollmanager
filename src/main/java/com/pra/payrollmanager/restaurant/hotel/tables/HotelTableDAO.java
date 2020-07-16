@@ -2,6 +2,7 @@ package com.pra.payrollmanager.restaurant.hotel.tables;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.TypeAlias;
 
 import com.pra.payrollmanager.base.data.BaseDAO;
 
@@ -18,6 +19,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @Accessors(chain=true)
 @EqualsAndHashCode(callSuper = false)
+@TypeAlias("j")
 public class HotelTableDAO implements BaseDAO<ObjectId> {
 
 	/**

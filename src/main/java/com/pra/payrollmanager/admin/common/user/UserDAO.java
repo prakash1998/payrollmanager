@@ -1,6 +1,7 @@
 package com.pra.payrollmanager.admin.common.user;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.TypeAlias;
 
 import com.pra.payrollmanager.base.data.BaseAuditDAO;
 
@@ -17,6 +18,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @Accessors(chain=true)
 @EqualsAndHashCode(callSuper = false )
+@TypeAlias("b")
 public class UserDAO extends BaseAuditDAO<String> {
 
 	/**

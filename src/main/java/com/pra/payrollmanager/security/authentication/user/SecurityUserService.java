@@ -1,27 +1,21 @@
 package com.pra.payrollmanager.security.authentication.user;
 
+import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.pra.payrollmanager.apputils.cachemanager.AppCacheService;
 import com.pra.payrollmanager.base.services.AuditServiceDAO;
 import com.pra.payrollmanager.constants.CacheNameStore;
 import com.pra.payrollmanager.entity.CompanyEntityNames;
 import com.pra.payrollmanager.exception.checked.CredentialNotMatchedEx;
-import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
-import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.exception.util.CustomExceptions;
-import com.pra.payrollmanager.exception.util.ExceptionType;
-import com.pra.payrollmanager.exception.util.UncheckedException;
 import com.pra.payrollmanager.security.authentication.company.SecurityCompany;
 import com.pra.payrollmanager.security.authentication.company.SecurityCompanyService;
 
 @Service
-@CacheConfig(cacheNames = CacheNameStore.SECURITY_USER_STORE)
 public class SecurityUserService extends AuditServiceDAO<String, SecurityUser, SecurityUserDAL>
 		implements UserDetailsService {
 
@@ -31,21 +25,18 @@ public class SecurityUserService extends AuditServiceDAO<String, SecurityUser, S
 	@Autowired
 	SecurityCompanyService securityCompanyService;
 
-	@Cacheable
+	@Autowired
+	AppCacheService cacheService;
+
 	public SecurityUser loadUserByUsername(String userId) {
-		String[] companyUser = userId.split("-");
-		String companyId = companyUser[0];
-		String userName = companyUser[1];
-		SecurityCompany company = securityCompanyService.loadCompanyById(companyId);
-		try {
+		return cacheService.cached(CacheNameStore.SECURITY_USER_STORE, userId, (key) -> {
+			Pair<String, String> companyUserPair = UserIdConversionUtils.splitCompanyUser(userId);
+			SecurityCompany company = securityCompanyService.loadCompanyById(companyUserPair.getValue0());
 			System.out.println("fetching user from db. .......");
-			return dataAccessLayer.findById(userName, company.getTablePrefix())
+			return dataAccessLayer.findById(companyUserPair.getValue1(), company.getTablePrefix())
 					.setUserId(userId)
 					.setCompany(company);
-		} catch (DataNotFoundEx e) {
-			throw UncheckedException.appException(CompanyEntityNames.SECURITY_USER, ExceptionType.ENTITY_NOT_FOUND,
-					userName);
-		}
+		});
 	}
 
 	private SecurityUser withEncodedPassword(SecurityUser user) {
@@ -54,12 +45,7 @@ public class SecurityUserService extends AuditServiceDAO<String, SecurityUser, S
 
 	@Override
 	public SecurityUser create(SecurityUser user) {
-		try {
-			return super.create(this.withEncodedPassword(user));
-		} catch (DuplicateDataEx e) {
-			throw UncheckedException.appException(CompanyEntityNames.SECURITY_USER, ExceptionType.DUPLICATE_ENTITY,
-					user.getUsername());
-		}
+		return super.create(this.withEncodedPassword(user));
 	}
 
 	public void createSuperUser(SecurityUser user, String tablePrefix) {
@@ -76,8 +62,8 @@ public class SecurityUserService extends AuditServiceDAO<String, SecurityUser, S
 		super.update(this.withEncodedPassword(dbUser));
 	}
 
-	@CacheEvict
 	public void login(String userId) {
+		cacheService.removeByKey(CacheNameStore.SECURITY_USER_STORE, userId);
 		SecurityUser userWithCompany = this.loadUserByUsername(userId);
 		if (userWithCompany.getLoggedIn())
 			return;
@@ -88,8 +74,8 @@ public class SecurityUserService extends AuditServiceDAO<String, SecurityUser, S
 		this.login(user.getUserId());
 	}
 
-	@CacheEvict
 	public void logout(String userId) {
+		cacheService.removeByKey(CacheNameStore.SECURITY_USER_STORE, userId);
 		SecurityUser userWithCompany = this.loadUserByUsername(userId);
 		if (userWithCompany.getLoggedIn()) {
 			dataAccessLayer.logOut(userWithCompany.getUsername());
@@ -101,12 +87,7 @@ public class SecurityUserService extends AuditServiceDAO<String, SecurityUser, S
 	}
 
 	public void deleteUser(SecurityUser user) {
-		try {
-			super.delete(user);
-		} catch (DataNotFoundEx e) {
-			throw UncheckedException.appException(CompanyEntityNames.SECURITY_USER, ExceptionType.ENTITY_NOT_FOUND,
-					user.getUsername());
-		}
+		super.delete(user);
 	}
 
 }

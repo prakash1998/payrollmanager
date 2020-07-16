@@ -12,11 +12,15 @@ public class EntityUtils {
 		EntityName[] tables = entityEnum.getEnumConstants();
 		for (EntityName entity : tables) {
 			String collectionName = prefix + entity.table();
-			String auditCollectionName = collectionName + AuditDAL.AUDIT_POSTFIX;
+
 			if (!mongoTemplate.collectionExists(collectionName))
 				mongoTemplate.createCollection(collectionName);
-			if (!mongoTemplate.collectionExists(auditCollectionName))
-				mongoTemplate.createCollection(auditCollectionName);
+
+			if (entity.withAudit()) {
+				String auditCollectionName = collectionName + AuditDAL.AUDIT_POSTFIX;
+				if (!mongoTemplate.collectionExists(auditCollectionName))
+					mongoTemplate.createCollection(auditCollectionName);
+			}
 		}
 	}
 

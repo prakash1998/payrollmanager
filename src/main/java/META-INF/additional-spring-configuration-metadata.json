@@ -38,5 +38,35 @@
     "name": "spring.kafka.proprties.reconnect.backoff.max.ms",
     "type": "java.lang.String",
     "description": "A description for 'spring.kafka.proprties.reconnect.backoff.max.ms'"
+  },
+  {
+    "name": "amazon.aws.s3.bucket.private",
+    "type": "java.lang.String",
+    "description": "A description for 'amazon.aws.s3.bucket.private'"
+  },
+  {
+    "name": "amazon.aws.access-key-id",
+    "type": "java.lang.String",
+    "description": "A description for 'amazon.aws.access-key-id'"
+  },
+  {
+    "name": "amazon.aws.s3.region",
+    "type": "java.lang.String",
+    "description": "A description for 'amazon.aws.s3.region'"
+  },
+  {
+    "name": "amazon.aws.s3.url",
+    "type": "java.lang.String",
+    "description": "A description for 'amazon.aws.s3.url'"
+  },
+  {
+    "name": "amazon.aws.access-key-secret",
+    "type": "java.lang.String",
+    "description": "A description for 'amazon.aws.access-key-secret'"
+  },
+  {
+    "name": "amazon.aws.s3.bucket.public",
+    "type": "java.lang.String",
+    "description": "A description for 'amazon.aws.s3.bucket.public'"
   }
 ]}

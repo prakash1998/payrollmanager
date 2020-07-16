@@ -11,17 +11,18 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import com.pra.payrollmanager.base.data.BaseAuditDAO;
 import com.pra.payrollmanager.base.services.ApiRestriction;
 import com.pra.payrollmanager.security.authorization.permission.ApiFeatures;
+import com.pra.payrollmanager.utils.BeanUtils;
 
 public interface AuditSupport<PK, DAO extends BaseAuditDAO<PK>> extends ApiRestriction, WithUser {
 
 	public static final String REPLACED_ID = "_pk";
 
 	public static final String AUDIT_POSTFIX = "_ODT";
-	
+
 	MongoTemplate mongoTemplate();
-	
+
 	Class<DAO> daoClazz();
-	
+
 	String auditTableName();
 
 	default boolean auditLogEnabled() {
@@ -48,15 +49,15 @@ public interface AuditSupport<PK, DAO extends BaseAuditDAO<PK>> extends ApiRestr
 	default void clearCreationInfo(DAO obj) {
 		// set null because else it will store false
 		// by passing we can ignore storing it in db
-		obj.setDeleted(null);
+		obj.setDeletedDate(null);
 		// obj.setDeletedBy(null);
 		obj.setCreatedBy(null);
 		obj.setCreatedDate(null);
 	}
 
 	default DAO setAuditInfoOnDelete(DAO obj) {
-		obj.setDeleted(true);
 		obj.setDeletedBy(user());
+		obj.setDeletedDate(Instant.now());
 		return obj;
 	}
 
@@ -80,8 +81,9 @@ public interface AuditSupport<PK, DAO extends BaseAuditDAO<PK>> extends ApiRestr
 
 	default void audit(DAO obj) {
 		if (auditLogEnabled()) {
-			clearCreationInfo(obj);
-			Document doc = objectToAuditDocument(obj);
+			DAO objToAudit = BeanUtils.copyOf(obj);
+			clearCreationInfo(objToAudit);
+			Document doc = objectToAuditDocument(objToAudit);
 			mongoTemplate().insert(doc, auditTableName());
 		}
 	}

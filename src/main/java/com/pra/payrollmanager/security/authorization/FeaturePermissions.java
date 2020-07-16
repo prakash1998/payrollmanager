@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.pra.payrollmanager.base.data.BulkOp;
-import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.security.authorization.permission.ApiFeatures;
 import com.pra.payrollmanager.user.root.permissions.feature.FeaturePermission;
 import com.pra.payrollmanager.user.root.permissions.feature.FeaturePermissionDAL;
@@ -18,21 +16,28 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class FeaturePermissions {
 
-	public static final FeaturePermission ADMIN__USERS = FeaturePermission.of(1);
+	public static final FeaturePermission ADMIN__USERS = FeaturePermission.of(1, ApiFeatures.AUDIT_LOG,
+			ApiFeatures.REALTIME);
 
-	public static final FeaturePermission ROOT__COMPANY = FeaturePermission.of(2);
+	public static final FeaturePermission ROOT__COMPANY = FeaturePermission.of(2, ApiFeatures.AUDIT_LOG,
+			ApiFeatures.REALTIME);
 
-	public static final FeaturePermission PRODUCT__STOCKBOOK = FeaturePermission.of(3);
+	public static final FeaturePermission PRODUCT__STOCKBOOK = FeaturePermission.all(3);
 
-	public static final FeaturePermission USER__NOTIFICATIONS = FeaturePermission.of(4);
+	public static final FeaturePermission USER__NOTIFICATIONS = FeaturePermission.of(4, ApiFeatures.AUDIT_LOG,
+			ApiFeatures.REALTIME);
 
-	public static final FeaturePermission HOTEL__TABLES = FeaturePermission.of(5).exclude(ApiFeatures.AUDIT_LOG);
+	public static final FeaturePermission HOTEL__TABLES = FeaturePermission.of(5, ApiFeatures.REALTIME);
 
-	public static final FeaturePermission HOTEL__ORDERS = FeaturePermission.of(6).exclude(ApiFeatures.AUDIT_LOG);
+	public static final FeaturePermission HOTEL__ORDERS = FeaturePermission.of(6, ApiFeatures.REALTIME);
 
-	public static final FeaturePermission HOTEL__ORDER_ITEMS = FeaturePermission.of(7).exclude(ApiFeatures.AUDIT_LOG);
-	
-	public static final FeaturePermission BASE__FILES = FeaturePermission.of(8).exclude(ApiFeatures.REALTIME);
+	public static final FeaturePermission HOTEL__ORDER_ITEMS = FeaturePermission.of(7, ApiFeatures.REALTIME);
+
+	public static final FeaturePermission BASE__FILES = FeaturePermission.of(8, ApiFeatures.AUDIT_LOG);
+
+	public static final FeaturePermission RESOURCE__PRODUCT = FeaturePermission.of(9, ApiFeatures.AUDIT_LOG);
+
+	public static final FeaturePermission ROOT__PERMISSIONS = FeaturePermission.of(10, ApiFeatures.ACCESS_CONTROL);
 
 	public static void persistApiPermissionsIfNot(FeaturePermissionDAL dataAccess) {
 		Map<Integer, FeaturePermission> allPermisssions = new HashMap<>();
@@ -59,7 +64,7 @@ public class FeaturePermissions {
 			throw new RuntimeException(e.getMessage());
 		}
 
-		List<FeaturePermission> modifiedDbPermissions = dataAccess.findAll().stream()
+		List<FeaturePermission> modifiedDbPermissions = dataAccess._findAll().stream()
 				.map(p -> {
 					if (allPermisssions.containsKey(p.getNumericId())) {
 						FeaturePermission newP = allPermisssions.get(p.getNumericId());
@@ -80,7 +85,7 @@ public class FeaturePermissions {
 		modifiedDbPermissions.addAll(newPermissionsToPersist);
 
 		dataAccess.truncateTable();
-		dataAccess.bulkOp(BulkOp.fromAdded(modifiedDbPermissions));
+		dataAccess._insert(modifiedDbPermissions);
 
 	}
 }

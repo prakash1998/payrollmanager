@@ -1,6 +1,8 @@
 package com.pra.payrollmanager.admin.stock.product;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.TypeAlias;
 
 import com.pra.payrollmanager.base.data.BaseAuditDAO;
 import com.pra.payrollmanager.security.authorization.mappings.roleresource.Resource;
@@ -17,9 +19,10 @@ import lombok.experimental.Accessors;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Accessors(chain=true)
+@Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
-public class ProductDAO extends BaseAuditDAO<String> implements Resource<String> {
+@TypeAlias("c")
+public class ProductDAO extends BaseAuditDAO<ObjectId> implements Resource {
 
 	/**
 	 * 
@@ -27,21 +30,13 @@ public class ProductDAO extends BaseAuditDAO<String> implements Resource<String>
 	private static final long serialVersionUID = 403084656361695436L;
 
 	@Id
-	private String id;
+	private ObjectId id;
 	private String name;
 
 	@Override
-	public String primaryKeyValue() {
+	public ObjectId primaryKeyValue() {
 		return id;
 	}
-
-//	@Override
-//	public ProductDTO toPlainDTO() {
-//		return ProductDTO.builder()
-//				.productId(id)
-//				.productName(name)
-//				.build();
-//	}
 
 	@Override
 	public ResourceType resourceType() {
@@ -49,13 +44,7 @@ public class ProductDAO extends BaseAuditDAO<String> implements Resource<String>
 	}
 
 	@Override
-	public String resourceId() {
-		return this.id;
-	}
-
-	@Override
 	public String display() {
 		return name;
 	}
-
 }

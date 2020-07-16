@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Repository;
 
 import com.pra.payrollmanager.base.dal.RestrictedAuditDAL;
+import com.pra.payrollmanager.base.data.AuditInfo;
 import com.pra.payrollmanager.entity.CommonEntityNames;
 import com.pra.payrollmanager.security.authorization.FeaturePermissions;
 import com.pra.payrollmanager.user.root.permissions.feature.FeaturePermission;
@@ -23,13 +24,14 @@ public class CompanyDetailsDAL extends RestrictedAuditDAL<String, CompanyDetails
 	public FeaturePermission apiPermission() {
 		return FeaturePermissions.ROOT__COMPANY;
 	}
-	
+
 	@Override
 	public Criteria findAllAccessCriteria() {
 		if (authorityService.inGodMode()) {
 			return null;
 		}
-		return DBQueryUtils.startsWithCriteria("createdBy", authorityService.getSecurityCompany().getId() + "-");
+		return DBQueryUtils.startsWithCriteria(AuditInfo.CREATED_BY_FIELD,
+				authorityService.getSecurityCompany().getId() + "-");
 	}
 
 	@Override

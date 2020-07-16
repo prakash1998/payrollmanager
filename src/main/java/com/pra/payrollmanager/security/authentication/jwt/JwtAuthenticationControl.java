@@ -79,14 +79,14 @@ public class JwtAuthenticationControl {
 				godCompany.setCreatedDate(now);
 				godCompany.setModifier("god");
 				godCompany.setModifiedDate(now);
-//				securityCompanyService.createFrom(godCompany);
-//				CompanyDetailsDAO godDAO = companyDetailService.toDAO(godCompany);
+				// securityCompanyService.createFrom(godCompany);
+				// CompanyDetailsDAO godDAO = companyDetailService.toDAO(godCompany);
 				companyDetailService.create(godCompany);
 			}
 		}
-		if(!authService.inGodMode())
+		if (!authService.inGodMode())
 			authenticate(authenticationRequest.getUserId(), authenticationRequest.getPassword());
-		
+
 		final SecurityUser userDetails = userService.loadUserByUsername(authenticationRequest.getUserId());
 		userService.login(userDetails.getUserId());
 		final String token = jwtTokenService.generateToken(userDetails);
