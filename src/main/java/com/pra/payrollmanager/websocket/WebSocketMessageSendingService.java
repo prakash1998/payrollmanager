@@ -32,7 +32,7 @@ public class WebSocketMessageSendingService {
 		// || wsMessage.isIgnoreTargeted()
 		) {
 			String compnayPrefix = wsMessage.getCompanyId() + "-";
-			simpUserRegistry.getUsers()
+			simpUserRegistry.getUsers().stream()
 					.forEach(simpUser -> {
 						String userId = simpUser.getName();
 						if (
@@ -41,9 +41,10 @@ public class WebSocketMessageSendingService {
 							messageTemplate.convertAndSendToUser(userId, topic, messageString);
 					});
 		} else {
-			wsMessage.getTargetedUserIds().forEach(userId -> {
-				messageTemplate.convertAndSendToUser(userId, topic, messageString);
-			});
+			wsMessage.getTargetedUserIds().stream()
+					.forEach(userId -> {
+						messageTemplate.convertAndSendToUser(userId, topic, messageString);
+					});
 		}
 	}
 

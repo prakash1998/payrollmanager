@@ -88,7 +88,7 @@ public class JwtAuthenticationControl {
 			authenticate(authenticationRequest.getUserId(), authenticationRequest.getPassword());
 
 		final SecurityUser userDetails = userService.loadUserByUsername(authenticationRequest.getUserId());
-		userService.login(userDetails.getUserId());
+		userService.loginUser(userDetails);
 		final String token = jwtTokenService.generateToken(userDetails);
 		return Response.payload(JwtResponse.builder()
 				.jwt(token)

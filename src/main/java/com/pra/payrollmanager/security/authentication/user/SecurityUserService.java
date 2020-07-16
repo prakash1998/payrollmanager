@@ -63,23 +63,24 @@ public class SecurityUserService extends AuditServiceDAO<String, SecurityUser, S
 	}
 
 	public void login(String userId) {
-		cacheService.removeByKey(CacheNameStore.SECURITY_USER_STORE, userId);
 		SecurityUser userWithCompany = this.loadUserByUsername(userId);
 		if (userWithCompany.getLoggedIn())
 			return;
-		dataAccessLayer.logInOnToken(userWithCompany);
+		dataAccessLayer.logIn(userWithCompany.getUsername());
+		cacheService.removeByKey(CacheNameStore.SECURITY_USER_STORE, userId);
 	}
 
 	public void loginUser(SecurityUser user) {
-		this.login(user.getUserId());
+		dataAccessLayer.logInOnToken(user);
+		cacheService.removeByKey(CacheNameStore.SECURITY_USER_STORE, user.getUserId());
 	}
 
 	public void logout(String userId) {
-		cacheService.removeByKey(CacheNameStore.SECURITY_USER_STORE, userId);
 		SecurityUser userWithCompany = this.loadUserByUsername(userId);
-		if (userWithCompany.getLoggedIn()) {
-			dataAccessLayer.logOut(userWithCompany.getUsername());
-		}
+		if (!userWithCompany.getLoggedIn())
+			return;
+		dataAccessLayer.logOut(userWithCompany.getUsername());
+		cacheService.removeByKey(CacheNameStore.SECURITY_USER_STORE, userId);
 	}
 
 	public void logoutUser(SecurityUser user) {
