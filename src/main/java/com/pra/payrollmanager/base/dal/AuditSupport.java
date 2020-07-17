@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import com.pra.payrollmanager.base.data.BaseAuditDAO;
 import com.pra.payrollmanager.base.services.ApiRestriction;
 import com.pra.payrollmanager.security.authorization.permission.ApiFeatures;
-import com.pra.payrollmanager.utils.BeanUtils;
+import com.pra.payrollmanager.utils.ObjectUtils;
 
 public interface AuditSupport<PK, DAO extends BaseAuditDAO<PK>> extends ApiRestriction, WithUser {
 
@@ -81,7 +81,7 @@ public interface AuditSupport<PK, DAO extends BaseAuditDAO<PK>> extends ApiRestr
 
 	default void audit(DAO obj) {
 		if (auditLogEnabled()) {
-			DAO objToAudit = BeanUtils.copyOf(obj);
+			DAO objToAudit = ObjectUtils.copyOf(obj);
 			clearCreationInfo(objToAudit);
 			Document doc = objectToAuditDocument(objToAudit);
 			mongoTemplate().insert(doc, auditTableName());

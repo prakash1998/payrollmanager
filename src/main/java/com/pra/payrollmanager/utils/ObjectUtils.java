@@ -5,12 +5,13 @@ import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Map;
 
+import com.pra.payrollmanager.exception.unchecked.AppException;
 import com.rits.cloning.Cloner;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class BeanUtils {
+public class ObjectUtils {
 
 	private static Cloner cloner = new Cloner();
 
@@ -84,5 +85,10 @@ public class BeanUtils {
 		// log.error("Error when tried to close stream",e);
 		// }
 		// }
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> T unSafeCast(Object obj) {
+		return (T) obj;
 	}
 }

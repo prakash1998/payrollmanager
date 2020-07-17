@@ -11,6 +11,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
 import com.pra.payrollmanager.security.authorization.AuthorityService;
+import com.pra.payrollmanager.utils.ObjectUtils;
 
 @Service
 public class AppCacheService {
@@ -25,12 +26,11 @@ public class AppCacheService {
 		return String.format("%s-%s", authService.getSecurityCompany().getId(), key);
 	}
 
-	@SuppressWarnings("unchecked")
 	public <T> T cached(String cacheStore, String key, Function<Object, T> functionToCache) {
 		Cache cache = cacheManager.getCache(cacheStore);
 		ValueWrapper value = cache.get(key);
 		if (value != null)
-			return (T) value.get();
+			return ObjectUtils.unSafeCast(value.get());
 		T result = functionToCache.apply(key);
 		cache.put(key, result);
 		return result;

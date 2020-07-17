@@ -106,7 +106,7 @@ public class SecurityUserPermissionService {
 	}
 
 	public Set<String> loadUsersWithResource(ObjectId resourceId) {
-		return cacheService.cacheWithUserId(CacheNameStore.USER_RESOURCE_STORE, (key) -> {
+		return cacheService.cached(CacheNameStore.RESOURCE_USER_STORE, resourceId.toString(), (key) -> {
 			Set<String> userRoles = roleResourceMapDAL.getKeysForValue(resourceId);
 			Map<String, Set<String>> roleUsersMap = userRoleMapDAL.getKeysForValues(userRoles);
 			return userRoles.stream()

@@ -8,6 +8,8 @@ public class CacheNameStore {
 	
 	public static final String USER_RESOURCE_STORE = "user-resource-st";
 	
+	public static final String RESOURCE_USER_STORE = "resource-user-st";
+	
 	public static final String USER_ENDPOINT_STORE = "user-endpoint-st";
 	
 	public static final String USER_SCREEN_STORE = "user-screen-st";

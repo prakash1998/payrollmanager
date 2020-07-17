@@ -73,10 +73,6 @@ public class RoleService extends ServiceDTO<String, RoleDAO, RoleDTO, RoleDAL> {
 	@Override
 	@Transactional
 	public RoleDTO create(RoleDTO role) throws DuplicateDataEx, AnyThrowable {
-		cacheService.clearCaches(CacheNameStore.USER_PERMISSION_STORE,
-				CacheNameStore.USER_ENDPOINT_STORE,
-				CacheNameStore.USER_RESOURCE_STORE);
-
 		rolePermissionMapDAL.replaceEntries(role.getRoleId(), role.getPermissions());
 		roleEndpointMapDAL.replaceEntries(role.getRoleId(), role.getEndpoints());
 		roleResourceMapDAL.replaceEntries(role.getRoleId(), role.getResources());
@@ -86,10 +82,7 @@ public class RoleService extends ServiceDTO<String, RoleDAO, RoleDTO, RoleDAL> {
 	@Transactional
 	@Override
 	public RoleDTO update(RoleDTO role) throws DataNotFoundEx, AnyThrowable {
-
-		cacheService.clearCaches(CacheNameStore.USER_PERMISSION_STORE,
-				CacheNameStore.USER_ENDPOINT_STORE,
-				CacheNameStore.USER_RESOURCE_STORE);
+		clearCaches();
 
 		rolePermissionMapDAL.replaceEntries(role.getRoleId(), role.getPermissions());
 		roleEndpointMapDAL.replaceEntries(role.getRoleId(), role.getEndpoints());
@@ -100,15 +93,19 @@ public class RoleService extends ServiceDTO<String, RoleDAO, RoleDTO, RoleDAL> {
 	@Override
 	@Transactional
 	public RoleDTO delete(RoleDTO role) throws DataNotFoundEx, AnyThrowable {
-
-		cacheService.clearCaches(CacheNameStore.USER_PERMISSION_STORE,
-				CacheNameStore.USER_ENDPOINT_STORE,
-				CacheNameStore.USER_RESOURCE_STORE);
+		clearCaches();
 
 		rolePermissionMapDAL.deleteEntriesByKey(role.getRoleId());
 		roleEndpointMapDAL.deleteEntriesByKey(role.getRoleId());
 		roleResourceMapDAL.deleteEntriesByKey(role.getRoleId());
 		return super.delete(role);
+	}
+
+	private void clearCaches() {
+		cacheService.clearCaches(CacheNameStore.USER_PERMISSION_STORE,
+				CacheNameStore.USER_ENDPOINT_STORE,
+				CacheNameStore.USER_RESOURCE_STORE,
+				CacheNameStore.RESOURCE_USER_STORE);
 	}
 
 }
