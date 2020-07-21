@@ -30,6 +30,7 @@ import com.pra.payrollmanager.security.authentication.jwt.dto.JwtResponse;
 import com.pra.payrollmanager.security.authentication.user.SecurityUser;
 import com.pra.payrollmanager.security.authentication.user.SecurityUserService;
 import com.pra.payrollmanager.security.authorization.AuthorityService;
+import com.pra.payrollmanager.security.authorization.permission.ApiFeatures;
 import com.pra.payrollmanager.user.root.company.CompanyDetailsDTO;
 import com.pra.payrollmanager.user.root.company.CompanyDetailsService;
 
@@ -62,8 +63,7 @@ public class JwtAuthenticationControl {
 	@Autowired
 	private SecurityCompanyService securityCompanyService;
 
-	@PostMapping(value = "/auth/token", consumes = MediaType.APPLICATION_JSON_VALUE,
-			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping("/auth/token")
 	public Response<JwtResponse> createAuthenticationToken(@Valid @RequestBody JwtRequest authenticationRequest)
 			throws CredentialNotMatchedEx, DuplicateDataEx, AnyThrowable {
 		if (authService.inGodMode()) {
@@ -89,16 +89,11 @@ public class JwtAuthenticationControl {
 
 		final SecurityUser userDetails = userService.loadUserByUsername(authenticationRequest.getUserId());
 		userService.loginUser(userDetails);
-		final String token = jwtTokenService.generateToken(userDetails);
-		return Response.payload(JwtResponse.builder()
-				.jwt(token)
-				.refreshToken(refreshToken(token, userDetails.getPassword()))
-				.refreshCoolDown(JWT_REFRESH_COOLDOWN)
-				.build());
+
+		return generateJwtResponse(userDetails);
 	}
 
-	@PostMapping(value = "/auth/refresh-token", consumes = MediaType.APPLICATION_JSON_VALUE,
-			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping("/auth/refresh-token")
 	public Response<JwtResponse> refreshAuthenticationToken(@Valid @RequestBody JwtRefreshRequest refreshRequest) {
 		String expiredJwt = refreshRequest.getExpiredJwt();
 		String userId;
@@ -153,10 +148,20 @@ public class JwtAuthenticationControl {
 					.build();
 		}
 
-		final String token = jwtTokenService.generateToken(userDetails);
+		return generateJwtResponse(userDetails);
+	}
+
+	public Response<JwtResponse> generateJwtResponse(SecurityUser userDetails) {
+		String token = jwtTokenService.generateToken(userDetails);
+		String refreshToken = refreshToken(token, userDetails.getPassword());
+
+		boolean realTimeAccess = userDetails.getCompany().getResourceFeatures().values().stream()
+				.anyMatch(features -> features.contains(ApiFeatures.REALTIME));
+
 		return Response.payload(JwtResponse.builder()
 				.jwt(token)
-				.refreshToken(refreshToken(token, userDetails.getPassword()))
+				.refreshToken(refreshToken)
+				.realTimeAccess(realTimeAccess)
 				.refreshCoolDown(JWT_REFRESH_COOLDOWN)
 				.build());
 	}

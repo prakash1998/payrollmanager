@@ -44,8 +44,8 @@ public class StockBookService
 
 		notificationService.sendNotification(NotificationType.STOCKS,
 				productId.toString(),
-				String.format("%s is updated",
-						Optional.ofNullable(product.getName()).orElse(product.getId().toString())),
+				String.format("%s is updated to %s",
+						Optional.ofNullable(product.getName()).orElse(product.getId().toString()), obj.getQuantity()),
 				targetedUserIds(obj));
 	}
 

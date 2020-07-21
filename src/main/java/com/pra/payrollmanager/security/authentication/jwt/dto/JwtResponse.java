@@ -11,4 +11,5 @@ public class JwtResponse {
 	private String jwt;
 	private String refreshToken;
 	private long refreshCoolDown;
+	private boolean realTimeAccess;
 }

@@ -22,11 +22,19 @@ public interface DBQueryUtils {
 	}
 
 	public static Query inArrayQuery(String field, Object[] array) {
-		return inValuesQuery(field,array);
+		return inValuesQuery(field, array);
 	}
 
 	public static Query inValuesQuery(String field, Object... values) {
-		return Query.query(Criteria.where(field).in(values));
+		return Query.query(inValuesCriteria(field, values));
+	}
+
+	public static Criteria inArrayCriteria(String field, Object[] array) {
+		return inValuesCriteria(field, array);
+	}
+
+	public static Criteria inValuesCriteria(String field, Object... values) {
+		return Criteria.where(field).in(values);
 	}
 
 	public static Criteria idEqualsCriteria(Object value) {

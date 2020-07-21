@@ -38,7 +38,7 @@ public class FeaturePermissionDAL extends RestrictedDAL<String, FeaturePermissio
 
 	@Override
 	public Criteria findAllAccessCriteria() {
-		return DBQueryUtils.idInArrayCriteria(
+		return DBQueryUtils.inArrayCriteria("numericId",
 				companyPermissionService.loadApiFeaturesForCompany().toArray());
 	}
 
