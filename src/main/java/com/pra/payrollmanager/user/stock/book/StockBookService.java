@@ -5,10 +5,13 @@ import java.util.Set;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import com.pra.payrollmanager.admin.stock.product.ProductDAL;
 import com.pra.payrollmanager.admin.stock.product.ProductDAO;
+import com.pra.payrollmanager.apputils.mailer.MailerService;
 import com.pra.payrollmanager.base.services.AuditRTServiceDTO;
 import com.pra.payrollmanager.constants.KafkaTopics;
 import com.pra.payrollmanager.exception.AnyThrowable;
@@ -23,13 +26,13 @@ public class StockBookService
 		extends AuditRTServiceDTO<ObjectId, StockBookDAO, StockBookDTO, StockBookDAL> {
 
 	@Autowired
-	NotificationService notificationService;
+	private NotificationService notificationService;
 
 	@Autowired
-	ProductDAL productDAL;
+	private ProductDAL productDAL;
 
 	@Autowired
-	SecurityUserPermissionService userPermissionService;
+	private SecurityUserPermissionService userPermissionService;
 
 	@Override
 	public String mqTopic() {

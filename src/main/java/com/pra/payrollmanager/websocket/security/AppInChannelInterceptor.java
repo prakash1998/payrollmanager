@@ -19,10 +19,15 @@ public class AppInChannelInterceptor implements ChannelInterceptor {
 	@Override
 	public Message<?> preSend(Message<?> message, MessageChannel channel) {
 		StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-		if (accessor.getCommand().equals(StompCommand.CONNECT)) {
-			this.validateOnConnect(accessor);
+		StompCommand command = accessor.getCommand();
+		
+		if(command == null) {
+			return message;
 		}
-		if (accessor.getCommand().equals(StompCommand.SUBSCRIBE)) {
+		
+		if (command.equals(StompCommand.CONNECT)) {
+			this.validateOnConnect(accessor);
+		}else if (command.equals(StompCommand.SUBSCRIBE)) {
 			this.validateOnSubscribe(accessor);
 		}
 		return message;

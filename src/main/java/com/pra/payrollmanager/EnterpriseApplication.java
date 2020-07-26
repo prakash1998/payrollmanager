@@ -16,11 +16,11 @@ import lombok.extern.slf4j.Slf4j;
 		excludeFilters = {
 				@ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.pra.payrollmanager.restaurant.*")
 		})
-public class PayrollmanagerApplication {
+public class EnterpriseApplication {
 
 	public static void main(String[] args) {
 		log.debug("App started");
-		SpringApplication.run(PayrollmanagerApplication.class, args);
+		SpringApplication.run(EnterpriseApplication.class, args);
 	}
 
 }

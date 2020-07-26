@@ -68,5 +68,20 @@
     "name": "amazon.aws.s3.bucket.public",
     "type": "java.lang.String",
     "description": "A description for 'amazon.aws.s3.bucket.public'"
+  },
+  {
+    "name": "blobstore.provider",
+    "type": "java.lang.String",
+    "description": "A description for 'blobstore.provider'"
+  },
+  {
+    "name": "blobstore.secret",
+    "type": "java.lang.String",
+    "description": "A description for 'blobstore.secret'"
+  },
+  {
+    "name": "blobstore.id",
+    "type": "java.lang.String",
+    "description": "A description for 'blobstore.id'"
   }
 ]}
