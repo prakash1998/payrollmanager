@@ -53,7 +53,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 		config.setApplicationDestinationPrefixes("/app");
 		config.enableSimpleBroker(TOPIC_PREFIX, DIRECT_USER_PREFIX)
 				.setTaskScheduler(new DefaultManagedTaskScheduler())
-				.setHeartbeatValue(new long[] { 60000, 60000 });
+				.setHeartbeatValue(new long[] { 40000, 40000 });
 		// , "/queue"
 	}
 
