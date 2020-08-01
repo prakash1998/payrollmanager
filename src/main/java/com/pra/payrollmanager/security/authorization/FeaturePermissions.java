@@ -16,8 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class FeaturePermissions {
 
-	public static final FeaturePermission ADMIN__USERS = FeaturePermission.of(1, ApiFeatures.AUDIT_LOG,
-			ApiFeatures.REALTIME);
+	public static final FeaturePermission ADMIN__USERS = FeaturePermission.of(1, ApiFeatures.AUDIT_LOG);
 
 	public static final FeaturePermission ROOT__COMPANY = FeaturePermission.of(2, ApiFeatures.AUDIT_LOG,
 			ApiFeatures.REALTIME);

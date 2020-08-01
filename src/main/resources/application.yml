@@ -1,0 +1,5 @@
+auth:
+  god_mode: false
+spring:
+  profiles:
+    active: dev

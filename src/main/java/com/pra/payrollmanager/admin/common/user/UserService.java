@@ -7,14 +7,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.pra.payrollmanager.apputils.cachemanager.AppCacheService;
-import com.pra.payrollmanager.base.services.AuditRTServiceDTO;
+import com.pra.payrollmanager.base.services.AuditServiceDTO;
 import com.pra.payrollmanager.constants.CacheNameStore;
-import com.pra.payrollmanager.constants.KafkaTopics;
 import com.pra.payrollmanager.exception.AnyThrowable;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
@@ -25,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class UserService extends AuditRTServiceDTO<String, UserDAO, UserDTO, UserDAL> {
+public class UserService extends AuditServiceDTO<String, UserDAO, UserDTO, UserDAL> {
 
 	private final SecurityUserService securityUserService;
 
@@ -92,9 +90,9 @@ public class UserService extends AuditRTServiceDTO<String, UserDAO, UserDTO, Use
 		return toDTO(dataAccessLayer.getByFirstName(name));
 	}
 
-	@Override
-	public String mqTopic() {
-		return KafkaTopics.USERS;
-	}
+//	@Override
+//	public String mqTopic() {
+//		return KafkaTopics.USERS;
+//	}
 
 }

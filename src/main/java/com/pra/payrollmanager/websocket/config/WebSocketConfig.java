@@ -25,6 +25,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	public static final String WS_ENDPOINT_PREFIX = "/stomp";
 	public static final String TOPIC_PREFIX = "/topic";
 	public static final String DIRECT_USER_PREFIX = "/user";
+	public static final String APP_PREFIX = "/app";
 
 	ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
@@ -50,10 +51,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry config) {
-		config.setApplicationDestinationPrefixes("/app");
+		config.setApplicationDestinationPrefixes(APP_PREFIX);
 		config.enableSimpleBroker(TOPIC_PREFIX, DIRECT_USER_PREFIX)
 				.setTaskScheduler(new DefaultManagedTaskScheduler())
-				.setHeartbeatValue(new long[] { 40000, 40000 });
+				.setHeartbeatValue(new long[] { 45000, 45000 });
 		// , "/queue"
 	}
 

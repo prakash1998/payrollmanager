@@ -17,7 +17,7 @@ public class AppConfig {
 
 	@Autowired
 	JsonJacksonMapperService mapperService;
-
+	
 	// json configuration
 	@Bean
 	public ObjectMapper objectMapper() {

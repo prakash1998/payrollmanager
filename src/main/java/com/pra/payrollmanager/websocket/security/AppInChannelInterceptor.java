@@ -20,14 +20,14 @@ public class AppInChannelInterceptor implements ChannelInterceptor {
 	public Message<?> preSend(Message<?> message, MessageChannel channel) {
 		StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
 		StompCommand command = accessor.getCommand();
-		
-		if(command == null) {
+
+		if (command == null) {
 			return message;
 		}
-		
+
 		if (command.equals(StompCommand.CONNECT)) {
 			this.validateOnConnect(accessor);
-		}else if (command.equals(StompCommand.SUBSCRIBE)) {
+		} else if (command.equals(StompCommand.SUBSCRIBE)) {
 			this.validateOnSubscribe(accessor);
 		}
 		return message;
@@ -38,11 +38,16 @@ public class AppInChannelInterceptor implements ChannelInterceptor {
 	}
 
 	private void validateOnSubscribe(StompHeaderAccessor accessor) {
-		if (!accessor.getDestination()
+		log.debug("Validate condition on connect excecuted.");
+		String topicString = accessor.getDestination();
+		if (topicString.startsWith(WebSocketConfig.APP_PREFIX)
+				|| topicString.startsWith(WebSocketConfig.TOPIC_PREFIX)) {
+			return;
+		}
+		if (!topicString
 				.startsWith(WebSocketConfig.DIRECT_USER_PREFIX + "/" + accessor.getUser().getName())) {
 			throw new UnAuthorizedEx("Tried to access unathorized topic");
 		}
-		log.debug("Validate condition on connect excecuted.");
 	}
 
 }

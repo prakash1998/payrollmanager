@@ -14,9 +14,9 @@ public class AdminConsumers {
 	@Autowired
 	WebSocketMessageSendingService messageSenderService;
 
-	@KafkaListener(topics = KafkaTopics.USERS , autoStartup = "${spring.kafka.enabled}")
-	public void sendToUsers(MessageProxy message) {
-		messageSenderService.send(KafkaTopics.USERS, message);
-	}
-	
+//	@KafkaListener(topics = KafkaTopics.USERS , autoStartup = "${spring.kafka.enabled}")
+//	public void sendToUsers(MessageProxy message) {
+//		messageSenderService.send(KafkaTopics.USERS, message);
+//	}
+//	
 }

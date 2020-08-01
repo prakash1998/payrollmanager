@@ -18,7 +18,6 @@ import com.pra.payrollmanager.base.BaseServiceUnitTest;
 import com.pra.payrollmanager.exception.AnyThrowable;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
-import com.pra.payrollmanager.message.MessageSendingService;
 import com.pra.payrollmanager.security.authentication.user.SecurityUser;
 import com.pra.payrollmanager.security.authentication.user.SecurityUserService;
 import com.pra.payrollmanager.security.authorization.mappings.userrole.UserRoleMapDAL;
@@ -68,7 +67,7 @@ public class UserSeviceTest extends BaseServiceUnitTest<String, UserDAO, UserDTO
 				.when(mockSecurityService)
 				.create(Mockito.any(SecurityUser.class));
 		
-		entityService.setMessageService(Mockito.mock(MessageSendingService.class));
+//		entityService.setMessageService(Mockito.mock(MessageSendingService.class));
 	}
 
 	@Test
