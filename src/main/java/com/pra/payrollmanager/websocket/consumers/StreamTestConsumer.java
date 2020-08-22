@@ -27,11 +27,11 @@ public class StreamTestConsumer {
 	@Value("${spring.kafka.enabled}")
 	private boolean kafkaEnabled;
 
+	@Autowired(required = false)
+	private KafkaTemplate<String, MessageProxy> kafkaTemplate;
+	
 	@Autowired
 	private SimpMessagingTemplate messageTemplate;
-
-	@Autowired
-	private KafkaTemplate<String, MessageProxy> kafkaTemplate;
 
 	@MessageMapping("/" + KafkaTopics.LIVE_TEXT_EDITOR)
 	public void liveText(TextContainer message) {

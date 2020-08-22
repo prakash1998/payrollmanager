@@ -5,7 +5,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.data.mongodb.core.query.Update;
 
 import com.pra.payrollmanager.base.dal.BaseDAL;
 import com.pra.payrollmanager.base.data.BaseDAO;
@@ -38,7 +37,7 @@ public interface BaseServiceDTO<PK,
 
 	default List<DTO> postProcessMultiGet(List<DAO> objList) {
 		return objList.stream()
-				.map(obj -> postProcessGet(obj))
+				.map(obj -> toDTO(obj))
 				.collect(Collectors.toList());
 	}
 

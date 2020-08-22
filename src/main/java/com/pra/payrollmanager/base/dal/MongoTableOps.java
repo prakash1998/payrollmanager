@@ -3,6 +3,8 @@ package com.pra.payrollmanager.base.dal;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.data.mongodb.core.BulkOperations;
+import org.springframework.data.mongodb.core.BulkOperations.BulkMode;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -55,6 +57,11 @@ public interface MongoTableOps<PK, DAO extends BaseDAO<PK>> extends WithDBTable 
 	@Transactional
 	default UpdateResult _updateMulti(Query query, Update update) {
 		return mongoTemplate().updateMulti(query, update, this.tableName());
+	}
+
+	@Transactional
+	default BulkOperations _bulkOps(BulkMode mode) {
+		return mongoTemplate().bulkOps(mode, this.tableName());
 	}
 
 	@Transactional

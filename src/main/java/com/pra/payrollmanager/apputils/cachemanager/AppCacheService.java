@@ -23,8 +23,8 @@ public class AppCacheService {
 	@Value("${spring.kafka.enabled}")
 	private boolean kafkaEnabled;
 
-	@Autowired
-	KafkaTemplate<String, CacheSyncMsg> cacheSyncTopic;
+	@Autowired(required = false)
+	KafkaTemplate<String, CacheSyncMsg> cacheSyncTemplate;
 
 	@Autowired
 	CacheManager cacheManager;
@@ -36,7 +36,7 @@ public class AppCacheService {
 		Cache cache = cacheManager.getCache(cacheStore);
 		cache.evictIfPresent(key);
 		if (kafkaEnabled) {
-			cacheSyncTopic.send(KafkaTopics.CACHE_SYNC, CacheSyncMsg.of(CacheEvictionMsg.of(cacheStore, key)));
+			cacheSyncTemplate.send(KafkaTopics.CACHE_SYNC, CacheSyncMsg.of(CacheEvictionMsg.of(cacheStore, key)));
 		}
 	}
 
@@ -46,7 +46,7 @@ public class AppCacheService {
 			cache.evictIfPresent(key);
 		});
 		if (kafkaEnabled) {
-			cacheSyncTopic.send(KafkaTopics.CACHE_SYNC, CacheSyncMsg.of(CacheEvictionMsg.of(cacheStore, keys)));
+			cacheSyncTemplate.send(KafkaTopics.CACHE_SYNC, CacheSyncMsg.of(CacheEvictionMsg.of(cacheStore, keys)));
 		}
 	}
 
@@ -55,7 +55,7 @@ public class AppCacheService {
 			cacheManager.getCache(store).clear();
 		});
 		if (kafkaEnabled) {
-			cacheSyncTopic.send(KafkaTopics.CACHE_SYNC,
+			cacheSyncTemplate.send(KafkaTopics.CACHE_SYNC,
 					CacheSyncMsg.of(Stream.of(cacheStores).map(store -> CacheEvictionMsg.of(store))
 							.collect(Collectors.toList())));
 		}

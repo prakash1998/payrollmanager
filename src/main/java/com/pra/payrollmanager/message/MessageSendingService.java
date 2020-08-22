@@ -14,7 +14,7 @@ public class MessageSendingService {
 	@Value("${spring.kafka.enabled}")
 	private boolean kafkaEnabled;
 
-	@Autowired
+	@Autowired(required = false)
 	private KafkaTemplate<String, MessageProxy> messageTemplate;
 
 	@Autowired

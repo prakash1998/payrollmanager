@@ -3,6 +3,7 @@ package com.pra.payrollmanager.config.kafka;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +21,10 @@ import com.pra.payrollmanager.message.MessageProxy;
 import com.pra.payrollmanager.translation.JsonJacksonMapperService;
 
 @Configuration
+@ConditionalOnProperty(
+		value = "spring.kafka.enabled",
+		havingValue = "true",
+		matchIfMissing = false)
 public class KafkaBaseConfig {
 
 	@Autowired
