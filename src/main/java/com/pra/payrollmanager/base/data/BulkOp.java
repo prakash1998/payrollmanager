@@ -33,20 +33,20 @@ public class BulkOp<T> {
 
 	public Collection<T> getAll() {
 		ArrayList<T> collector = new ArrayList<>();
-
 		if (!this.added.isEmpty()) {
 			collector.addAll(this.added);
 		}
-
 		if (!this.updated.isEmpty()) {
 			collector.addAll(this.updated);
 		}
-
 		if (!this.removed.isEmpty()) {
 			collector.addAll(this.removed);
 		}
-
 		return collector;
+	}
+
+	public boolean isEmpty() {
+		return this.added.isEmpty() && this.updated.isEmpty() && this.removed.isEmpty();
 	}
 
 }

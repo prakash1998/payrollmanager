@@ -1,6 +1,7 @@
 package com.pra.payrollmanager.apputils.cachemanager;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -47,6 +48,21 @@ public class AppCacheService {
 		});
 		if (kafkaEnabled) {
 			cacheSyncTemplate.send(KafkaTopics.CACHE_SYNC, CacheSyncMsg.of(CacheEvictionMsg.of(cacheStore, keys)));
+		}
+	}
+
+	public void removeByKeys(List<String> cacheStores, Collection<String> keys) {
+		cacheStores.forEach(cacheStore -> {
+			Cache cache = cacheManager.getCache(cacheStore);
+			keys.forEach(key -> {
+				cache.evictIfPresent(key);
+			});
+		});
+
+		if (kafkaEnabled) {
+			cacheSyncTemplate.send(KafkaTopics.CACHE_SYNC, CacheSyncMsg.of(cacheStores.stream()
+					.map(cacheStore -> CacheEvictionMsg.of(cacheStore, keys))
+					.collect(Collectors.toList())));
 		}
 	}
 

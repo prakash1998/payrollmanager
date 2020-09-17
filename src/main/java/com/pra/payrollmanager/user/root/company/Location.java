@@ -2,6 +2,8 @@ package com.pra.payrollmanager.user.root.company;
 
 import java.io.Serializable;
 
+import org.springframework.data.annotation.TypeAlias;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -15,6 +17,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain=true)
+@TypeAlias("2")
 public class Location implements Serializable{
 
 	/**

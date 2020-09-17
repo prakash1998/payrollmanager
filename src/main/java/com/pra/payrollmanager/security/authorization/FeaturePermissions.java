@@ -38,6 +38,8 @@ public class FeaturePermissions {
 
 	public static final FeaturePermission ROOT__PERMISSIONS = FeaturePermission.of(10, ApiFeatures.ACCESS_CONTROL);
 
+	public static final FeaturePermission ACCOUNTING__ORDERS = FeaturePermission.of(11, ApiFeatures.AUDIT_LOG);
+
 	public static void persistApiPermissionsIfNot(FeaturePermissionDAL dataAccess) {
 		Map<Integer, FeaturePermission> allPermisssions = new HashMap<>();
 		Field[] allFields = FeaturePermissions.class.getDeclaredFields();

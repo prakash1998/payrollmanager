@@ -1,4 +1,4 @@
-package com.pra.payrollmanager.admin.stock.product;
+package com.pra.payrollmanager.admin.product;
 
 import java.util.List;
 
@@ -30,8 +30,8 @@ public class ProductDAL extends ResourceAuditDAL<ProductDAO> {
 	}
 
 	public List<ProductDAO> findWithAccessControl() {
-		return super.findWith(
-				Query.query(DBQueryUtils.idInArrayCriteria(authorityService().getUserResourceIds().toArray())));
+		Query query = Query.query(DBQueryUtils.idInArrayCriteria(authorityService().getUserResourceIds().toArray()));
+		return super.findWithoutAuditInfo(query);
 	}
 
 }

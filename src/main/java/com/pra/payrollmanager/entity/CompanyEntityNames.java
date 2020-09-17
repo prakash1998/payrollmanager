@@ -20,6 +20,14 @@ public enum CompanyEntityNames implements EntityName {
 			"ROLE_RESOURCE_MAPPING"
 	), PRODUCT(
 			"PRODUCTS", true
+	), TAX(
+			"TAXES"
+	), CUSTOMER(
+			"CUSTOMERS"
+	), ACCOUNTING_ORDERS(
+			"ACC_ORDERS"
+	), ACCOUNTING_ORDER_DETAIL(
+			"ACC_ORDER_DETAIL"
 	), STOCKBOOK(
 			"STOCK_BOOK", true
 	), NOTIFICATION(

@@ -1,4 +1,4 @@
-package com.pra.payrollmanager.admin.stock.product;
+package com.pra.payrollmanager.admin.accounting.taxes;
 
 import java.util.List;
 
@@ -7,7 +7,6 @@ import javax.validation.constraints.NotNull;
 
 import org.bson.types.ObjectId;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,43 +24,38 @@ import com.pra.payrollmanager.validation.ValidationGroups;
 
 @Validated
 @RestController
-@RequestMapping("products")
-public class ProductControl extends BaseControl<ProductService> {
-
-	@GetMapping("allowed")
-	public Response<List<ProductDTO>> getAllowedProducts() {
-		return Response.payload(service.getOnlyAllowed());
-	}
+@RequestMapping("accounts/taxes")
+public class TaxControl extends BaseControl<TaxService> {
 
 	@GetMapping
-	public Response<List<ProductDTO>> getAllProducts() {
+	public Response<List<TaxDAO>> getAllTaxs() {
 		return Response.payload(service.getAll());
 	}
 
 	@GetMapping(value = "/{id}")
-	public Response<ProductDTO> getProduct(@PathVariable("id") @NotNull ObjectId productId)
+	public Response<TaxDAO> getTax(@PathVariable("id") @NotNull ObjectId taxId)
 			throws DataNotFoundEx, AnyThrowable {
-		return Response.payload(service.getById(productId));
+		return Response.payload(service.getById(taxId));
 	}
 
 	@PostMapping
-	public Response<ProductDTO> createProduct(@Valid @RequestBody ProductDTO product)
+	public Response<TaxDAO> createTax(@Valid @RequestBody TaxDAO tax)
 			throws DuplicateDataEx, AnyThrowable {
-		return Response.payload(service.create(product));
+		return Response.payload(service.create(tax));
 	}
 
 	@Validated(ValidationGroups.onUpdate.class)
 	@PutMapping
-	public Response<ProductDTO> updateProduct(@Valid @RequestBody ProductDTO product)
+	public Response<TaxDAO> updateTax(@Valid @RequestBody TaxDAO tax)
 			throws DataNotFoundEx, AnyThrowable {
-		return Response.payload(service.update(product));
+		return Response.payload(service.update(tax));
 	}
 
-	@Validated(ValidationGroups.onUpdate.class)
-	@DeleteMapping
-	public Response<ProductDTO> deleteProduct(@Valid @RequestBody ProductDTO product)
-			throws AnyThrowable, DataNotFoundEx {
-		return Response.payload(service.delete(product));
-	}
+//	@Validated(ValidationGroups.onUpdate.class)
+//	@DeleteMapping
+//	public Response<TaxDAO> deleteTax(@Valid @RequestBody TaxDAO tax)
+//			throws AnyThrowable, DataNotFoundEx {
+//		return Response.payload(service.delete(tax));
+//	}
 
 }

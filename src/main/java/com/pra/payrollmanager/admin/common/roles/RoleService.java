@@ -2,15 +2,13 @@ package com.pra.payrollmanager.admin.common.roles;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.pra.payrollmanager.apputils.async.AsyncWrapperService;
 import com.pra.payrollmanager.apputils.cachemanager.AppCacheService;
 import com.pra.payrollmanager.base.services.ServiceDTO;
 import com.pra.payrollmanager.constants.CacheNameStore;
@@ -25,16 +23,19 @@ import com.pra.payrollmanager.security.authorization.mappings.roleresource.RoleR
 public class RoleService extends ServiceDTO<String, RoleDAO, RoleDTO, RoleDAL> {
 
 	@Autowired
-	RolePermissionMapDAL rolePermissionMapDAL;
+	private RolePermissionMapDAL rolePermissionMapDAL;
 
 	@Autowired
-	RoleEndpointMapDAL roleEndpointMapDAL;
+	private RoleEndpointMapDAL roleEndpointMapDAL;
 
 	@Autowired
-	RoleResourceMapDAL roleResourceMapDAL;
+	private RoleResourceMapDAL roleResourceMapDAL;
 
 	@Autowired
-	AppCacheService cacheService;
+	private AppCacheService cacheService;
+
+	@Autowired
+	private AsyncWrapperService async;
 
 	@Override
 	public RoleDTO postProcessSave(RoleDTO dtoToSave, RoleDAO objFromDB) {
@@ -48,17 +49,26 @@ public class RoleService extends ServiceDTO<String, RoleDAO, RoleDTO, RoleDAL> {
 	@Override
 	public RoleDTO postProcessGet(RoleDAO obj) {
 		RoleDTO dto = super.postProcessGet(obj);
-		dto.setPermissions(rolePermissionMapDAL.getValuesForKey(dto.getRoleId()));
-		dto.setEndpoints(roleEndpointMapDAL.getValuesForKey(dto.getRoleId()));
-		dto.setResources(roleResourceMapDAL.getValuesForKey(dto.getRoleId()));
+		String roleId = dto.getRoleId();
+		var t1 = async.async(() -> rolePermissionMapDAL.getValuesForKey(roleId));
+		var t2 = async.async(() -> roleEndpointMapDAL.getValuesForKey(roleId));
+		var t3 = async.async(() -> roleResourceMapDAL.getValuesForKey(roleId));
+		dto.setPermissions(async.await(t1));
+		dto.setEndpoints(async.await(t2));
+		dto.setResources(async.await(t3));
 		return dto;
 	}
 
 	@Override
 	public List<RoleDTO> postProcessMultiGet(List<RoleDAO> objList) {
-		Map<String, Set<Integer>> rolePermissionMap = rolePermissionMapDAL.getValuesForAllKeys();
-		Map<String, Set<String>> roleEndpointMap = roleEndpointMapDAL.getValuesForAllKeys();
-		Map<String, Set<ObjectId>> roleResourceMap = roleResourceMapDAL.getValuesForAllKeys();
+
+		var t1 = async.async(() -> rolePermissionMapDAL.getValuesForAllKeys());
+		var t2 = async.async(() -> roleEndpointMapDAL.getValuesForAllKeys());
+		var t3 = async.async(() -> roleResourceMapDAL.getValuesForAllKeys());
+
+		var rolePermissionMap = async.await(t1);
+		var roleEndpointMap = async.await(t2);
+		var roleResourceMap = async.await(t3);
 
 		return objList.stream().map(roleDao -> {
 			RoleDTO role = toDTO(roleDao);

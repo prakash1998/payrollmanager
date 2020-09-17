@@ -5,8 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.springframework.data.mongodb.core.BulkOperations;
-import org.springframework.data.mongodb.core.BulkOperations.BulkMode;
+import org.springframework.data.mongodb.core.query.Field;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +28,19 @@ public interface BaseDAL<PK, DAO extends BaseDAO<PK>> extends MongoTableOps<PK, 
 		return MongoTableOps.super._findAll();
 	}
 
+	default List<DAO> findAll(String... selectionFields) {
+		return this.findWith(new Query(), selectionFields);
+	}
+
 	default List<DAO> findWith(Query query) {
+		return MongoTableOps.super._find(query);
+	}
+
+	default List<DAO> findWith(Query query, String... selectionFields) {
+		Field mongoField = query.fields();
+		for (String field : selectionFields) {
+			mongoField = mongoField.exclude(field);
+		}
 		return MongoTableOps.super._find(query);
 	}
 
@@ -44,7 +55,7 @@ public interface BaseDAL<PK, DAO extends BaseDAO<PK>> extends MongoTableOps<PK, 
 	@Transactional
 	default BulkOp<DAO> bulkOp(BulkOp<DAO> bulkOp) {
 		Collection<DAO> removedItems = bulkOp.getRemoved();
-		
+
 		BulkOp.BulkOpBuilder<DAO> dataBuilder = BulkOp.builder();
 		if (!removedItems.isEmpty()) {
 			Collection<DAO> removed = this.deleteByIds(removedItems.stream()

@@ -1,6 +1,7 @@
 package com.pra.payrollmanager.base.dal;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,17 +16,21 @@ public interface BaseAuditDAL<PK, DAO extends BaseAuditDAO<PK>> extends BaseDAL<
 		return this.tableName().concat(AUDIT_POSTFIX);
 	}
 
+	default List<DAO> findWithoutAuditInfo(Query query) {
+		return BaseDAL.super.findWith(query, "modifier", "modifiedDate", "createdBy", "createdDate");
+	}
+
 	@Override
 	default DAO create(DAO obj) {
 		return BaseDAL.super.create(setAuditInfoOnCreate(obj));
 	}
 
-//	@Override
-//	default Collection<DAO> insert(Collection<DAO> objList) {
-//		return BaseDAL.super.insert(objList.stream()
-//				.map(obj -> setAuditInfoOnCreate(obj))
-//				.collect(Collectors.toList()));
-//	}
+	// @Override
+	// default Collection<DAO> insert(Collection<DAO> objList) {
+	// return BaseDAL.super.insert(objList.stream()
+	// .map(obj -> setAuditInfoOnCreate(obj))
+	// .collect(Collectors.toList()));
+	// }
 
 	default boolean modificationValid(DAO dbObj, DAO objToSave) {
 		return dbObj.getModifiedDate().equals(objToSave.getModifiedDate());
@@ -34,11 +39,11 @@ public interface BaseAuditDAL<PK, DAO extends BaseAuditDAO<PK>> extends BaseDAL<
 	@Override
 	default DAO update(DAO obj) throws DataNotFoundEx {
 		DAO dbObj = this.findById(obj.primaryKeyValue());
-		
+
 		if (obj.getModifiedDate() == null || (dbObj.getModifiedDate() == null || !modificationValid(dbObj, obj))) {
 			throw new StaleDataEx(String.format("Data became stale for : %s , Please refresh data", entity().name()));
 		}
-		
+
 		if (!obj.equals(dbObj)) {
 			audit(dbObj);
 			return BaseDAL.super.update(setAuditInfoOnUpdate(dbObj, obj));

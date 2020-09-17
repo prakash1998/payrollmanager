@@ -38,15 +38,4 @@ public class UserDAO extends BaseAuditDAO<String> {
 		return this.userName;
 	}
 
-//	@Override
-//	public UserDTO toPlainDTO() {
-//		return UserDTO.builder()
-//				.userName(userName)
-//				.password(null)
-//				.firstName(firstName)
-//				.lastName(lastName)
-//				.phone(phone)
-//				.email(email)
-//				.build();
-//	}
 }

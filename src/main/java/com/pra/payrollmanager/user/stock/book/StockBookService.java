@@ -9,8 +9,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import com.pra.payrollmanager.admin.stock.product.ProductDAL;
-import com.pra.payrollmanager.admin.stock.product.ProductDAO;
+import com.pra.payrollmanager.admin.product.ProductDAL;
+import com.pra.payrollmanager.admin.product.ProductDAO;
 import com.pra.payrollmanager.apputils.mailer.MailerService;
 import com.pra.payrollmanager.base.services.AuditRTServiceDTO;
 import com.pra.payrollmanager.constants.KafkaTopics;

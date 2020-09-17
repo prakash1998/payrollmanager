@@ -1,5 +1,7 @@
 package com.pra.payrollmanager.admin.common.user;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -70,9 +72,11 @@ public class UserService extends AuditServiceDTO<String, UserDAO, UserDTO, UserD
 	@Override
 	public UserDTO update(UserDTO user) throws DataNotFoundEx, AnyThrowable {
 
-		cacheService.clearCaches(CacheNameStore.USER_PERMISSION_STORE,
+		cacheService.removeByKeys(Arrays.asList(
+				CacheNameStore.USER_PERMISSION_STORE,
 				CacheNameStore.USER_ENDPOINT_STORE,
-				CacheNameStore.USER_RESOURCE_STORE);
+				CacheNameStore.USER_RESOURCE_STORE),
+				Collections.singletonList(user.getUserName()));
 
 		userRoleMapDAL.replaceEntries(user.getUserName(), user.getRoleIds());
 		return super.update(user);
@@ -90,9 +94,9 @@ public class UserService extends AuditServiceDTO<String, UserDAO, UserDTO, UserD
 		return toDTO(dataAccessLayer.getByFirstName(name));
 	}
 
-//	@Override
-//	public String mqTopic() {
-//		return KafkaTopics.USERS;
-//	}
+	// @Override
+	// public String mqTopic() {
+	// return KafkaTopics.USERS;
+	// }
 
 }

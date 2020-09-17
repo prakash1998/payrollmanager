@@ -11,6 +11,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import com.pra.payrollmanager.exception.AnyThrowable;
 import com.pra.payrollmanager.exception.checked.CredentialNotMatchedEx;
+import com.pra.payrollmanager.exception.unchecked.AppException;
 import com.pra.payrollmanager.exception.unchecked.DataNotFoundEx;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.exception.unchecked.StaleDataEx;
@@ -86,6 +87,18 @@ public class CustomExceptionHandler {
 	
 	@ExceptionHandler(AnyThrowable.class)
 	public final ResponseEntity<Object> handleAnyThrowable(Exception ex, WebRequest request) {
+		exceptionInterceptor.intercept(ex);
+		return new ResponseEntity<>(
+				Response.builder()
+						.exception()
+						.addErrorMsg(ex.getMessage(), ex)
+						.build(),
+				new HttpHeaders(),
+				HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	@ExceptionHandler(AppException.class)
+	public final ResponseEntity<Object> handleAppException(Exception ex, WebRequest request) {
 		exceptionInterceptor.intercept(ex);
 		return new ResponseEntity<>(
 				Response.builder()

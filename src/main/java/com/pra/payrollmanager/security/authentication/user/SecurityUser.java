@@ -34,6 +34,7 @@ public class SecurityUser extends BaseAuditDAO<String> implements UserDetails {
 	// it is not in camel-case because of UserDetail implementation
 	@Id
 	private String username;
+//	private String email;
 	private String password;
 	@Builder.Default
 	private Boolean enabled = true;

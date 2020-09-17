@@ -30,7 +30,9 @@ import com.pra.payrollmanager.websocket.config.WebSocketConfig;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	public static final Set<String> openEndpoints = new HashSet<>(Arrays.asList(
-			"/auth/token", "/auth/token/refresh", WebSocketConfig.WS_ENDPOINT_PREFIX));
+			"/auth/token", "/auth/token/refresh", WebSocketConfig.WS_ENDPOINT
+	// ,WebSocketConfig.WS_ENDPOINT_SOCKJS_INFO
+	));
 
 	// @Autowired
 	// private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
@@ -65,8 +67,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		httpSecurity.cors().and().csrf().disable()
 				// dont authenticate this particular request
 				.authorizeRequests()
-//				.antMatchers(openEndpoints.toArray(new String[0]))
-//				.permitAll()
+				// .antMatchers(openEndpoints.toArray(new String[0]))
+				// .permitAll()
 				// all other requests need to be authenticated
 				.anyRequest()
 				.authenticated()
@@ -87,17 +89,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		web.ignoring()
-		.antMatchers(openEndpoints.toArray(new String[0]))
-		.antMatchers(
-				"/",
-				"/v2/api-docs", // swagger
-				"/webjars/**", // swagger-ui webjars
-				"/swagger-resources/**", // swagger-ui resources
-				"/configuration/**", // swagger configuration
-				"/*.html",
-				"/favicon.ico",
-				"/**/*.html",
-				"/**/*.css",
-				"/**/*.js");
+				.antMatchers(openEndpoints.toArray(new String[0]))
+				.antMatchers(
+						"/",
+						"/v2/api-docs", // swagger
+						"/webjars/**", // swagger-ui webjars
+						"/swagger-resources/**", // swagger-ui resources
+						"/configuration/**", // swagger configuration
+						"/*.html",
+						"/favicon.ico",
+						"/**/*.html",
+						"/**/*.css",
+						"/**/*.js");
 	}
 }

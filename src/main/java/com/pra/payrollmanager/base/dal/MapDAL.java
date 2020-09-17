@@ -17,6 +17,9 @@ import com.pra.payrollmanager.base.data.BulkOp;
 import com.pra.payrollmanager.exception.unchecked.DuplicateDataEx;
 import com.pra.payrollmanager.utils.DBQueryUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 abstract public class MapDAL<KEY extends Serializable,
 		VAL extends Serializable,
 		DAO extends BaseMapDAO<KEY, VAL>>

@@ -22,7 +22,8 @@ import com.pra.payrollmanager.websocket.security.AppWebSocketHandlerDecoratorFac
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-	public static final String WS_ENDPOINT_PREFIX = "/stomp";
+	public static final String WS_ENDPOINT = "/stomp";
+	public static final String WS_ENDPOINT_SOCKJS_INFO = "/stomp/info";
 	public static final String TOPIC_PREFIX = "/topic";
 	public static final String DIRECT_USER_PREFIX = "/user";
 	public static final String APP_PREFIX = "/app";
@@ -43,10 +44,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint(WS_ENDPOINT_PREFIX)
+		registry.addEndpoint(WS_ENDPOINT)
 				.setHandshakeHandler(assignPrincipalHandshakeHandler)
 				.addInterceptors(appHandshakeInterceptor)
 				.setAllowedOrigins("*");
+//				.withSockJS();
 	}
 
 	@Override
