@@ -2,6 +2,10 @@ package com.pra.payrollmanager.base.data;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,13 +21,13 @@ import lombok.experimental.Accessors;
 public class BulkOp<T> {
 
 	@Builder.Default
-	Collection<T> added = new ArrayList<>();
+	private Collection<T> added = new ArrayList<>();
 
 	@Builder.Default
-	Collection<T> updated = new ArrayList<>();
+	private Collection<T> updated = new ArrayList<>();
 
 	@Builder.Default
-	Collection<T> removed = new ArrayList<>();
+	private Collection<T> removed = new ArrayList<>();
 
 	public static <V> BulkOp<V> fromAdded(Collection<V> addedItems) {
 		return BulkOp.<V>builder()
@@ -47,6 +51,29 @@ public class BulkOp<T> {
 
 	public boolean isEmpty() {
 		return this.added.isEmpty() && this.updated.isEmpty() && this.removed.isEmpty();
+	}
+
+	public static <T> BulkOp<T> empty() {
+		return new BulkOp<>();
+	}
+
+	public static <T extends BaseDAO<?>> List<T> applyOps(List<T> list, BulkOp<T> ops) {
+
+		Map<Object, T> updatedMap = ops.getUpdated().stream()
+				.collect(Collectors.toMap(item -> item.primaryKeyValue(), item -> item));
+
+		Set<Object> removedSet = ops.getRemoved().stream()
+				.map(item -> item.primaryKeyValue())
+				.collect(Collectors.toSet());
+
+		List<T> updatedList = list.stream()
+				.filter(item -> !removedSet.contains(item.primaryKeyValue()))
+				.map(item -> updatedMap.getOrDefault(item.primaryKeyValue(), item))
+				.collect(Collectors.toList());
+
+		updatedList.addAll(ops.getAdded());
+
+		return updatedList;
 	}
 
 }

@@ -37,10 +37,10 @@ public class OrderDTO extends BaseAuditDTO<OrderDAO> {
 	private ObjectId id;
 
 	@NotNull(message = "Order ID must be provided.")
-	private Integer uId;
+	private Integer ref;
 
 	@NotNull(message = "Customer must be provided.")
-	private ObjectId customer;
+	private String customer;
 
 	@NotNull(message = "Order Date must be provided.")
 	private LocalDate date;

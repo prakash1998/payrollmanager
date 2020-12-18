@@ -1,7 +1,9 @@
 package com.pra.payrollmanager.config;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.modelmapper.convention.NamingConventions;
+import org.modelmapper.spi.MatchingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,7 +37,8 @@ public class AppConfig {
 		modelMapper.getConfiguration()
 				.setFieldMatchingEnabled(true)
 				.setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE)
-				.setSourceNamingConvention(NamingConventions.JAVABEANS_MUTATOR);
+				.setSourceNamingConvention(NamingConventions.JAVABEANS_MUTATOR)
+				.setMatchingStrategy(MatchingStrategies.STRICT);
 
 		return modelMapper;
 		// https://github.com/modelmapper/modelmapper/issues/212

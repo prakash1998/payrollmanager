@@ -1,5 +1,7 @@
 package com.pra.payrollmanager.user.accounting.order;
 
+import java.util.List;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -22,11 +24,17 @@ import com.pra.payrollmanager.validation.ValidationGroups;
 
 @Validated
 @RestController
-@RequestMapping("accounts/order")
+@RequestMapping("accounts/orders")
 public class OrderControl extends BaseControl<OrderService> {
+	
+	@GetMapping
+	public Response<List<OrderDTO>> getOrders()
+			throws DataNotFoundEx, AnyThrowable {
+		return Response.payload(service.getAll());
+	}
 
 	@GetMapping(value = "/{id}")
-	public Response<OrderDTO> getTable(@PathVariable("id") @NotNull ObjectId orderId)
+	public Response<OrderDTO> getOrder(@PathVariable("id") @NotNull ObjectId orderId)
 			throws DataNotFoundEx, AnyThrowable {
 		return Response.payload(service.getById(orderId));
 	}

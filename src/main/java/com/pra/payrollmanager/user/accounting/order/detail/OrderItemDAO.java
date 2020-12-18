@@ -15,6 +15,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.experimental.Accessors;
 
 @Data
@@ -35,12 +36,19 @@ public class OrderItemDAO extends BaseAuditDAO<ObjectId> {
 	private ObjectId id;
 
 	@NotNull
+	@NonNull
 	private Integer index;
 
 	@NotNull
+	@NonNull
+	private ObjectId product;
+
+	@NotNull
+	@NonNull
 	private Double qty;
 
 	@NotNull
+	@NonNull
 	private Double price;
 
 	private List<ObjectId> taxes;

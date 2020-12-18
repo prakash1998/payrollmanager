@@ -33,9 +33,9 @@ public class OrderDAO extends BaseAuditDAO<ObjectId> {
 	@Id
 	private ObjectId id;
 
-	private Integer uId;
+	private Integer ref;
 
-	private ObjectId custId;
+	private String customer;
 
 	private LocalDate date;
 	

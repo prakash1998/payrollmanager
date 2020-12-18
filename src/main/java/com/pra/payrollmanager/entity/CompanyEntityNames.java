@@ -25,7 +25,7 @@ public enum CompanyEntityNames implements EntityName {
 	), CUSTOMER(
 			"CUSTOMERS"
 	), ACCOUNTING_ORDERS(
-			"ACC_ORDERS"
+			"ACC_ORDERS" , true
 	), ACCOUNTING_ORDER_DETAIL(
 			"ACC_ORDER_DETAIL"
 	), STOCKBOOK(
